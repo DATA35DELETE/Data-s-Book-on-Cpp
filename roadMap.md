@@ -27,7 +27,7 @@
 - **İlk Kod**: cout ve cin
   - **iostream**: Tanım. `std::cout`, `std::cin`, `std::endl`. Örnek.
   - **C'den Farkı**: printf vs cout. scanf vs cin. Örnek.
-- **Parametreli Programlar Yazma**: argc ve argv. Tanım. Örnek.
+  - **Parametreli Programlar Yazma**: argc ve argv. Tanım. Örnek.
 - **Derleme Süreci**: Tanım. Neden Önemli?
   - **Ön İşleme (Preprocessor) (.i)**: Makro genişletme. Header birleştirme. Örnek.
   - **Derleme (.o)**: Object dosyası. Semboller. Örnek.

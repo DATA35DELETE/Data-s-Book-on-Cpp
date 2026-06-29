@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data's Book on Cpp</title>
+
+    <link rel="icon" type="image/x-icon" href="../Sources/favicon.png">
+
+    <script src="../Sources/JS/setBackgroundMedia.js"></script>
+
+    <link rel="stylesheet" href="../Sources/JS/hljs/vs2015.css">
+    <script src="../Sources/JS/hljs/highlight.min.js"></script>
+    <script>
+        window.onload = function() {
+            hljs.highlightAll();
+        };
+    </script>
+
+    <link rel="stylesheet" href="../Sources/CSS/main.css">
+</head>
+<body>
+    <h1>Giriş</h1>
+
+    <div style="height: 100px;"></div>
+    
+    <div id="mainDiv">
+        <h2>Yazılım Nedir?</h2>
+        <pre id="preh2">Yazılım, bir bilgisayara yapıcağı işleri özel bir dil ile anlatılan yazılara ve komutlara yazılım denir.</pre>
+
+        <h3>Donanım Nedir?</h3>
+        <pre id="preh3">Donanım, bir bilgisayar içerisindeki görebildiğim ve dokunabildiğimiz tüm nesnelerdir.</pre>
+
+        <pre id="preh3">Yazılım dillerinin hepsi bir donanım üzerinde çalışır. Yani burada bir ilişki vardır. Eğer yazılım var olmasaydı donanımlar işlevsiz devre kartlarına, donanım var olmasaydı ise yazılım var olmazdı.</pre>
+
+        <h3>Low-Level ve High-Level</h3>
+        <pre id="preh3">Low-Level, bir yazılım dilinin insan diline uzak, High-Level ise insan diline yakınlığını belirten bir belirteçtir.</pre>
+
+        <pre id="preh3">Low-Level diller, donanıma en yakın ve insan diline en uzak dillerdir. Genellikle sürücü yazılımı ve işletim sistemi kodlarken Low-Level dillere ihtiyaç duyarız. Örnek olarak ise C, C++, Assembly ve Rust dilleri örnek verilebilir. Bu dökümantasyonda içini dışını öğreneciğimiz C++ dili ise Low-Level yani donanıma yakın diller arasındadır.</pre>
+
+        <pre id="preh3">High-Level diller, donanıma uzak ve insan diline en yakın dillerdir. Genellikle basit uygulamalar,giriş seviye algoritmaları ve GUI gibi yerlerde kullanılır. Örnek olarak ise Python, Java, C# ve Ruby dilleri örnek verilebilir.</pre>
+
+        <h3>Yazılım Dilleri</h3>
+        <pre id="preh3">Yazılım dilleri, bilgisayarlara özel olarak üretilmiş ve komut vermek amacıyla yazılan bir dildir. Yazılım genel olarak donanıma elektrik sinyalleri aracığıyla ne yapması gerektiğini anlatan komut dizisidir. Dünya üzerinde sekiz binden fazla yazılım dili olasada hepsinin temelde yaptığı işlem donanımla fiziksel işlemler gerçekleştirmektir. Bazı farklar hariç hangi yazılım dilini yazdığımız fark etmez. Mantık aynı fakat sözdizimi yani Syntax farklıdır.</pre>
+
+        <h2>C++ Nedir?</h2>
+        <pre id="preh2">C++, C yazılım dilinin gelişmiş ve bazı özellikler eklenen bir versiyonudur.</pre>
+
+        <h3>Kısa Tarhiçesi</h3>
+        <pre id="preh3">C++, 1979 yılında C'nin de icat edildiği Bell Laboratuvarları'nda icat edilmiştir. Danimarkalı bir bilgisayar bilimci olan Bjarne Stroustrup tarafından icat edilmiştir. Projeye ilk olarak "C With Classes(Sınıflı C)" olarak başlansada ileride C++ ismini almıştır. C++'daki "++"" işaretleri ise "Bir arttırma" olarak işlem yapan operatördür.</pre>
+
+        <h3>C ile Farkı</h3>
+        <pre id="preh3">Peki sorabilirsiniz... Neden C değilde C++, çünkü nesne yönelimli programlama yani OOP! C'de desteklenen bir nesne yönelimli programala özelliği bulunmadığı için modern programlar yazılması güçlük yaratabilir. İşte bunu gören bilgisayar bilimci Stroustrup, C'ye OOP'i kazandırarak bizlere C++'ı sunmuş oldu. Ayrıca OOP'nin yanında bellek yönetimi C'ye kıyasla daha performanslıdır. Üstelik mevcut C kodları C++ içerisinde derlenebilir ve kullanılabilir. Tabi direkt C++ öğrenmek zor olabilir. Çünkü daha temelini anlamdan üst katmanlara geçmek temelsiz bir binaya benzer. Temel sağlam atılmadan üst katlar dengesiz olur. Bunun için ilk önce Data's Books serisinden <a href="https://data35delete.github.io/Data-s-Book-on-C/Lessons/1%20C%20İçindekiler.html">Data's Book on C</a> bakmanızı şiddetle tavsiye ederim. Eğer zaten oradan geliyor iseniz, temel konular bir kaçı hariç temel konular C'dekiyle aynıdır. Sadece Syntax değişmektedir. Tabi sadece dili öğretmek olmaz, bu dökümantasyonda Qt ve Unreal Engine'de mevcut!</pre>
+
+        <h3>Nasıl Kullanılır?</h3>
+        <pre id="preh3">C++ programlama dilini kullabilmemiz için tabikide bir Compiler yani derliyiceye ihtiyacımız vardır. C'de kullandığımız GCC, C için uygun olsada C++'da kullanamayız. Bu sebeble yine aynı paket içerisinde gelen G++ Compiler'ı kullanıcağız. Ayrıca IDE olarak ise de ben Visual Studio Code kullanıcağım fakat siz dilediğiniz IDE'yi kullanabilirsiniz.</pre>
+
+        <h3>Kullanım Alanları</h3>
+        <pre id="preh3">C++'ın kullanım alanları aşşağıda liste şeklinde verilmiştir;</pre>
+
+        <ul>
+            <li>İşletim sistemi yapımında</li>
+            <li>Sürücü yazılımı yapımında</li>
+            <li>Gömülü sistemlerde</li>
+            <li>Oyun yapımında</li>
+        </ul>
+
+        <h3>Prosedürel ve Nesne Yönelimli Programlama</h3>
+        <pre id="pewh3">Prosedürel, çağırma eylemini gerçekleştirebilen yazılım dillerine denir. Yani bir yazılımda bir fonksiyon, altsistem, üstsistem gibi yapılar çağrılabiliyorsa o yazılım dili prosedüreldir.</pre>
+
+        <pre id="preh3">Geldik C++'ın çıkış noktasına yani nesne yönelimli programlamaya... Nesne yönelimli programlama; nesne oluşturma, sınıf kalıtma, çokbiçimlilik, soyutlama ve kapsülleme gibi özelliklere sahip yazılım dillere denir. Nesne yönelimli programlama özelliğine sahip dillere ise C++, Java ve C# örnek verilebilir.</pre>
+
+        <h2>C++'ı Kurma</h2>
+        <pre id="preh3">Kurma adımları C'i kurma ile aynıdır. Bu sebeble Data's Book on C dökümantasyonundaki "Giriş" <a href="https://data35delete.github.io/Data-s-Book-on-C/Lessons/3%20C%20Giriş.html">sayfasını</a> inceleyin.</pre>
+
+        <h2>İlk Kod</h2>
+        <pre id="preh2">Kurulumun ardından klasikleşmiş olan bir "Hello World" programı yazalım. İlk olarak "main.cpp" adlı bir dosya oluşturalım ve içerisine;</pre>
+
+        <pre id="codeh2"><code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main()
+{
+    cout << "Hello World" << endl;
+
+    return 0;
+}</code>
+
+yazalım. Derliyelim ve çıktıyı gözlemliyelim;
+
+<code class="language-bash">g++ main.cpp -o main</code>
+
+Çıktı;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/3 Giriş.html/1.png" alt="3.1" width="80%">
+        </div>
+
+        <pre id="preh2">Tebrikler! İlk programınızı yazıp derlediniz. Peki bu koddaki yazılar ne iş yapıyorlar? Hadi onları inceleyelim.</pre>
+
+        <pre id="preh2"><code>#include &lt;iostream></code>; C++ yazılım dilinde Include programa bir kütüphane dahil etme komutudur. Bu komutta "iostream" kütüphanesini programamıza katacağımızı bildiriyoruz.</pre>
+
+        <pre id="preh2"><code>using namespace std;</code>; Print komutu olarak kullandığımız Cout işlevi "iostream" kütüphanesinin içerisindeki "std" adlı kısımda bulunmaktadır. Eğer eklemeseydik Cout'u <code>std::cout</code> olarak yazıcaktık. Takdir edersiniz ki bu yazım şekli zaman kaybı yarattığı için Namespace ile tanımlamış olduk. Namespace, bu gibi durumlarda kütüphanelerin altlarındaki "İsim alanı" adı verilen kod parçalarını daha rahat kullanabilmemizi sağlayan bir araçtır.</pre>
+
+        <pre id="preh3"><code>int main()</code>, ana fonksiyondur. Tüm program bu fonksiyonda başlar ve bu fonksiyonda bitmektedir.</pre>
+
+        <pre id="preh3"><code>cout << "Hello World" << endl;</code>, az önce bahsettiğimiz Cout, Print komutu yerine kullandığımız bir araçtır. "<<" işaretleri ise Operatörler sayfasında daha net göreceğimiz olan "Bit kaydırma" operatörüdür. İşlevi ise "Hello World" verisini Cout'a kaydırmaktır. Endl ise "\n" karakterine yani satır karakterine denk gelmektedir.</pre>
+
+        <pre id="preh3"><code>return 0;</code>, ana fonksiyonun döndürdüğü değerdir. Sıfır ile biterse başarılı, farklı bir sayı ile biterse hatalı bitmiş demektir.</pre>
+
+        <h3>Paramtreli Fonksiyon Yazma</h3>
+        <pre id="preh3">Paramtreli fonksiyon yazmak istersek ise Main fonksiyonun paramtrelerine gelecek verilerin atanacağı değişkenler yazılır ve kullanılır.</pre>
+
+        <pre id="preh3">Şimdi ise paramtreli bir program yazalım. Girilen paramteriyi alarak, "Paramtre olarak bu girildi ''...'" diyen bir program yazalım.</pre>
+
+        <pre id="codeh3"><code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main(int argc, char* argv[])
+{
+    cout << "Paramtre olarak bu girildi '" << argv[1] << "'" << endl;
+
+    return 0;
+}</code>
+
+Şeklinde yazarız. Derliyelim ve çalıştıralım;
+
+<code class="language-bash">g++ main.cpp -o main
+main merhaba</code>
+
+Çıktısı;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/3 Giriş.html/2.png" alt="3.2" width="80%">
+        </div>
+
+        <h2>Derlenme Süreci</h2>
+        <pre id="preh2">Derlenme süreci, bir dili başka bir dile çevrilirken adımlarla işlenmesine denir.</pre>
+
+        <pre id="preh2">Peki neden derleme sürecini önemlidir? Çünkü yemeğin malzemelerini almadan önce malzemelerin nereden geldiğini ve nasıl süreçlerden geçtiğini öğrenmek elzemdir. Derlenme süreci C ile aynıdır ve üç aşamadan oluşmaktadır. Önişlemci, derleme ve Linkinş adımlarında oluşur.</pre>
+
+        <h3>Önişlemci</h3>
+        <pre id="preh3">Önişlemci, kodun ilk olarak incelenerek düzenlendiği ve derleme kısmına hazır edildiği aşamaya denir. Bu kısımda makrolar, Include ile dahil edilen kütüphaneler ve koşula bağlı olarak derleme yapan <code>#ifdef</code> ile mevcut kod düzenlenir.</pre>
+
+        <h3>Derleme</h3>
+        <pre id="preh3">Önişlemciden gelen kod dosyası derleme ilk Assembly daha sonra ikili kod olan Binary'e çevrilir. Bu süreçcin ardından her kod dosyası için birer ".o" uzantılı dosyalar oluşturulur. Bu dosyalar mevcut C++ kodunun Binary'e çevrilmiş versiyonlarıdır. ".o" uzantılı dosyalar Linking aşamasına gönderilir.</pre>
+
+        <h3>Linking</h3>
+        <pre id="preh3">Derlenme aşamsının son kolu olan Linking'de derlenen dosyalar gerekli kısımları ve bağlantıları birbirlerine bağlanır ve tek bir çalıştıralabilir uygulama dönüştürülür.</pre>
+
+        <pre id="preh3">İşte bu şekilde Derlenme süreci gerçekleşmiş oldu. Artık malzemelerin kaynağını biliyoruz!</pre>
+
+        <h3>Standartlar</h3>
+        <pre id="preh3">Standartlar, belirli yıllarda düzenlenen ve genel olarak C++'ın nasıl derlendiğini ve yeni eklenen özellikleri denetleyen ve ekleyen ISO C++ komitesinin çıkardı sürümlere denir. Son çıkan standartlar ise C++11, C++14, C++17 ve C++20 standartlarıdır. Her bir standart bir hatayı düzeltmiş veya bir özelliği eklemiştir. Bu dökümantasyonun yazıldığı tarihte kominite C++26 standartını çıkartmaya çalışmaktadırlar.</pre>
+
+        <pre id="codeh3">Eğer kodumuzu belirli standartlara bağlı olarak derlemek istersek;
+<code>-std=c++xx</code>
+
+Şeklinde hangi standartı kullanıcaksak eğer onu yazıyoruz ve derliyoruz.
+
+Şimdi ise mevcut kodumuzu C++17 standartına göre derliyelim.
+
+<code class="language-bash">g++ main.cpp -o main -std=c++17</code>
+
+Çıktısı ise;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/3 Giriş.html/3.png" alt="3.3" width="80%">
+        </div>
+
+        <h2>Kaynakça</h2>
+        <ul>
+            <li><a href="https://en.wikipedia.org/wiki/List_of_programming_languages">https://en.wikipedia.org/wiki/List_of_programming_languages</a></li>
+            <li><a href="https://tr.wikipedia.org/wiki/C%2B%2B">https://tr.wikipedia.org/wiki/C%2B%2B</a></li>
+            <li><a href="https://en.wikipedia.org/wiki/Procedural_programming">https://en.wikipedia.org/wiki/Procedural_programming</a></li>
+            <li><a href="https://www.geeksforgeeks.org/cpp/writing-first-c-program-hello-world-example/">https://www.geeksforgeeks.org/cpp/writing-first-c-program-hello-world-example/</a></li>
+        </ul>
+    </div>
+
+    <div style="height: 100px;"></div>
+
+    <footer style="position: fixed; left: 0; bottom: 0; width: 100%; background: transparent; text-align: center; padding: 10px 0; z-index: 100;">
+        <div>
+            <a href="./2 Önsöz.html" style="margin-right: 20px; cursor:pointer;">
+                &larr; Önceki
+            </a>
+            <a href="" style="cursor:pointer;">
+                Sonraki &rarr;
+            </a>
+        </div>
+        <div>
+            <p>&copy; 2026 Data's Book</p>
+        </div>
+
+        <div style="position: absolute; right: 20px; bottom: 20px;">
+            <a href="./1 Cpp İçindekiler.html" style="text-decoration: none;">
+                İçindekiler
+            </a>
+        </div>
+    </footer>
+</body>
+</html>
+
+<!-- Muhammet Enes nam-ı diğer Data Delete tarafından sevgi ile yapıldı <3 -->
