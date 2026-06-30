@@ -50,7 +50,6 @@
 - **auto**: Tanım. Tip Çıkarımı. Örnek.
 - **Depolama Sınıfları**: Tanım
   > Tablo Halinde
-  - **auto**
   - **static**
   - **extern**
   - **register**
@@ -58,9 +57,6 @@
 - **Değişkenlerin Türünü Değiştirme**: Tanım.
   - **int → float**: Örnek.
   - **float → int**: Örnek.
-  - **char → int**: Örnek.
-  - **int → char**: Örnek.
-  - **C++ Cast Operatörleri**: `static_cast`, `dynamic_cast`, `const_cast`, `reinterpret_cast`. Örnek.
 - **Sabitlik**: `const`. `constexpr`. `#define`. Farkları. Örnek.
 - **typedef ve using**: Tanım. Farkları. Örnek.
  
@@ -88,6 +84,7 @@
 - **sizeof Operatörü**: Tanım. Örnek.
 - **Operatör Aşırı Yükleme (Operator Overloading)**: Tanım. Kullanım Senaryoları. Örnek.
 - **Yazdırma Komutunda cout ile Veri Yazdırma**: Tanım. Örnek.
+- **C++ Cast Operatörleri**: `static_cast`, `dynamic_cast`, `const_cast`, `reinterpret_cast`. Örnek.
  
 ---
  

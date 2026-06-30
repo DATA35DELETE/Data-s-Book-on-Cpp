@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data's Book on Cpp</title>
+
+    <link rel="icon" type="image/x-icon" href="../Sources/favicon.png">
+
+    <script src="../Sources/JS/setBackgroundMedia.js"></script>
+
+    <link rel="stylesheet" href="../Sources/JS/hljs/vs2015.css">
+    <script src="../Sources/JS/hljs/highlight.min.js"></script>
+    <script>
+        window.onload = function() {
+            hljs.highlightAll();
+        };
+    </script>
+
+    <link rel="stylesheet" href="../Sources/CSS/main.css">
+</head>
+<body>
+    <h1>Değişkenler</h1>
+
+    <div style="height: 100px;"></div>
+    
+    <div id="mainDiv">
+        <h2>Değişkenler Nedir?</h2>
+        <pre id="preh2">Değişkenler, yazılımlarda verileri geçici olarak saklamamızı sağlayan yapılardır. Değişkenlerin depolandığı donanımlar ise RAM ve işlemcinin içerisindeki Registers'larda depolanır.</pre>
+
+        <pre id="preh2">Değişkenler bizler için not defterleri gibi çalışır. Daha sonradan kullanıcağımız veriler bir değişken ismine atıyarak kullanıcağımız zamanlarda değişkeni çağrarak içerisindeki değerli kullanabiliriz. İstersekde değişkenin değerini değiştirebiliriz.</pre>
+
+        <h2>Sayısal Değişkenler</h2>
+        <pre id="preh2">Bilgisayarların yapıları gereği bir çok sayı türü vardır.</pre>
+
+        <h3>Short</h3>
+        <pre id="preh3">Short, C++ yazılım dilinde sayısal değişkenlerde en küçük sayı aralığına sahip değişken türüdür. -32,768 ila 32,767 sayılarının arasında bir değer alabilir. RAM'de Short değişken türü iki baytlık alan kaplar.</pre>
+
+        <pre id="codeh3"><code class="language-cpp">short besBin = 5000;</code>
+        
+<code>unsigned</code> eki ile Short veri türündeki negatif sayılar es geçilir ve pozitif tarafa eklenir. Yani aralık 0 ila 65,535 olarak güncellenir.
+
+<code class="language-cpp">unsigned short pozitifAltmisBin = 60000;</code>
+
+C'de de olduğu gibi C++'da da Türkçe karakterleri desteklememektedir.</pre>
+
+        <h3>Integer</h3>
+        <pre id="preh3">Integer, C++ yazılım dilinde en çok tercih edilen sayısal veri türüdür. -2,147,483,648 ila 2,147,483,647 arasında sayı tutabilir. RAM'de Integer değişken türü dört baytlık alan kaplamaktadır.</pre>
+
+        <pre id="codeh3"><code class="language-cpp">int eksiYuzMilyon = -1000000;</code>
+        
+<code>unsigned</code> eki ile Integer veri türündeki negatif sayılar es geçilir ve pozitif tarafa eklenir. Yani aralık 0 ila 4,294,967,295 olarak güncellenir.
+
+<code class="language-cpp">unsigned int yuzMilyon = 1000000;</code></pre>
+
+        <h3>Long</h3>
+        <pre id="preh3">Long, C++ yazılım dilinde en büyük aralığa sahip sayısal değişken türüdür.  -9,223,372,036,854,775,808 ila 9,223,372,036,854,775,807 aralığında değer alabilir. RAM'de Long değişken türü sekiz baytlık alan kaplar.</pre>
+
+        <pre id="codeh3"><code class="language-cpp">long long borc = -7685541716LL;</code>
+        
+Long ifadesi kullanırken çift şekilde yani <code>long long</code> olarak kullanılır. Ayrıca değeri tanımlarken sol tarafına "LL" harflerini koymalıyız ki program bunun bir Long değeri olduğunu algılasın.
+
+<code>unsigned</code> eki ile Long veri türündeki negatif sayılar es geçilir ve pozitif tarafa eklenir. Yani aralık 0 ila 1.8446744e+19 olarak güncellenir.
+
+<code class="language-cpp">unsigned long long dunyaNufusu = 8000000000LL;</code></pre>
+
+        <h3>Float</h3>
+        <pre id="preh3">Float, C++ yazılım dilinde ondalıklı sayıları belirtmek için kullanılan bir değişken türüdür. Aralığı ise 3.4 × 10^-38 ila 3.4 × 10^38 arasındaki sayıları tutabilir. RAM'de Float değişken türü dört baylık alan kaplar.</pre>
+
+        <pre id="codeh3"><code class="language-cpp">float eksiOnIkiBucuk = -12.5f;</code>
+        
+Float değişken türlerine veri atarken, değerlerin sol kısma "f" işareti koyulmalıdır. Çünkü program Float bir değer olduğunu algılasını sağlar.</pre>
+
+        <h3>Double</h3>
+        <pre id="preh3">Double, C++ yazılım dilinde en büyük ondalıklı sayı aralığına sahip değişken türüdür. Aralığı ise 4,94065645841246544E-324 ila 1,79769313486231570E+308 sayıları arasında değer alabilir.</pre>
+
+        <pre id="codeh3"><code class="language-cpp">double karmasikSayi = 2313123.34234e10;</code>
+        
+Float gibi sayının sol kısmına herhangi bir ifade yazılmaz. Bunun sebebi C++ yazılım dilinde tanımlanan tüm ondalıklı sayılar Double veri türünde olarak tanımlanır.</pre>
+
+        <h2>İsimlendirme Kuralları</h2>
+        <pre id="phre2">Pek tabi fark etmişsinizdir ki değişkenlerin isimlerini kafamıza göe koyamıyoruz. Bunun sebebi C++ yazılım dilindeki adlandırma kurallarıdır. Adlandırma kuralları bir dilde düzeni sağlar ve programın kafasının karışmasını önler. İsimlendirme kuralları normal bağlamsal yani isimin ne anlama geldiğine bakmaz(Özel ifadeler hariç). Şimdi isimlendirme kurallarını tablo şeklinde görelim.</pre>
+
+        <table id="tableh2" border="1">
+            <thead>
+                <tr>
+                    <th>Kural İsmi</th>
+                    <th>Açıklaması</th>
+                    <th>Doğru Kullanım</th>
+                    <th>Yanlış Kullanım</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>ASCII Kurallarına Uymak</td>
+                    <td>Değişken isimlendirirken sadece alfanumarik ve alt tire(_) kullanılmalıdır.</td>
+                    <td>karmasik_bir_sayi</td>
+                    <td>Karşmaşık Bir Sayı</td>
+                </tr>
+                <tr>
+                    <td>Harf veya Alt Tire İle Başlanmalı</td>
+                    <td>Değişken ismi harf veya alt tire ile başlamalı.</td>
+                    <td>12_sayisi</td>
+                    <td>sayi12</td>
+                </tr>
+                <tr>
+                    <td>Özel Kelimeler Olmamalı</td>
+                    <td>Değişken ismi C programlama dili için özel yeri olan yapıların ismi olmamamlı.</td>
+                    <td>forDongusuIcinMiktar</td>
+                    <td>for</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Char</h2>
+        <pre id="preh2">Char, C++ programlama dilinde tek bir karaterlik veriyi depolamak için kullanılan bir değişken türüdür. Sayı aralığı -128 ila 127 arasında sayı alır ve RAM'de bir baytlık yer kaplar. Değer tek tırnak(') içerisine yazılır.</pre>
+
+        <pre id="codeh2"><code class="language-cpp">char birA_Harfi = 'A';</code>
+        
+<code>unsigned</code> eki ile Char veri türündeki negatif sayılar es geçilir ve pozitif tarafa eklenir. Yani aralık 0 ila 255 olarak güncellenir.
+
+<code class="language-cpp">char birA_Harfi = 65;</code>
+
+Char aynı zamanda sayısal değerde alabildiğini söylemiştik. ASCII adlı bir tablo sayesinde hangi sayıların hangi harfe tekabul geldiğini görebiliriz. ASCII <code>unsigned</code> eki ile Char ifadeleri belirtir. ASCII tablosuna göre altmış beş saysısı büyük "A" harfine denk gelmektedir.
+
+Peki ya tek karakterlik bir yazı yerine çok karakterlik bir değeri atama yapmak isteseydik? İşte o zaman ilerki konularda daha detaylı işleceğimiz olan diziler yardımıza koşar. Dizi liste demek ve Char dizisi ile çok karakterli ifadeler yazılabilir. Çift tırnak(") içerisine yazılır. Ancak dikkat Char dizesi veya diğer adıyla String Integer veya Long'a benzemez. Bu sebeble o değişken tiplerinde yapılan işlemler bu yapıya zarar verebilir. Bu sebeble dikkatle kullanınız.
+
+<code class="language-cpp">char helloWord[] = "Hello World";</code></pre>
+
+        <h2>Boolean</h2>
+        <pre id="preh2">Boolean veya kısaca Bool, C'de bulunmayan fakat C++ tarafından eklenen yeni bir türdür. Evet normal şartlarda C dilinde Bool veri tipini kullanamazsınız. Çünkü tanımlı değildir. Bool veri tipine sahip değişkenlerin değerleri, açık ve bir anlamına gelen <code>true</code>; kapalı ve sıfır anlamına gelen <code>false</code> değerlerini alabilirler.</pre>
+
+        <pre id="codeh2"><code class="language-cpp">bool acik = true;
+bool kapali = false;</code>
+
+İstersekte sayısal olarak da yazabiliriz.
+
+<code class="language-cpp">bool acik = 1;
+bool kapali = 0;</code>
+
+Aynı anlama gelmektedirler.</pre>
+
+        <h2>Auto</h2>
+        <pre id="preh2">Auto; C++ yazılım dilindeki, değişken türlerini değere bakarak tipini belirleyen bir araçtır. Değişken tanımlarken veri tipinin girildiği kısma <code>auto</code> ifadesini girelim değişken tipi otomatik olarak belirlenir.</pre>
+
+        <pre id="codeh2"><code class="language-cpp">auto otomatikVeriTipiAtananDegisken = 123LL;</code>
+        
+İfadeye bakılırsa bu değişkenin tipi Long değişken türüdür.</pre>
+
+        <h2>Depolama Sınıfları</h2>
+        <pre id="preh2">C++ programlama dilinde depolama sınıfları, bir değişkenin nasıl saklancağını ve davranışlarını belirlen bir belirteçlerdir. Bu sınıfları tablo şeklinde aşağıda verilmiştir.</pre>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Ismi</th>
+                    <th>Açıklaması</th>
+                    <th>Kullanımı</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Static</td>
+                    <td>Herkese açık hale getiren bir depolama sınıfıdır.</td>
+                    <td>static int herkeseAcikDegisken = 12;</td>
+                </tr>
+                <tr>
+                    <td>Extern</td>
+                    <td>Dış kütüphaneleri içerisine veri yazdırabildiği ve atayabildiği değişken depolama sınıfıdır. Genellikle bir ".dll" veya ".so" dosyası bu değişkene bağlıdır ve çalışma zamanında o Extern değişkene verisini atar.</td>
+                    <td>extern long dllDegiskeni;</td>
+                </tr>
+                <tr>
+                    <td>Register</td>
+                    <td>Register ile depolama sınıfı belirnen değişkenler standart RAM'e kayıt olmak yerine işlemcinini en hızlı veri çekip yazdığı kısım Registers kısmına depolanırlar. Ancak kullanımı sık olmamalı ve sadece hız gerektiren işlemlerde kullanılmalıdır. Çünkü İşlemcilerin Regiser kısımları RAM gibi Gigabaytlar kadar değil on altı megabayt ve iki megabayt gibi çok küçük bir alana sahiptir. Yine de C++ bizlere bu kullanımı sunmaktadır.</td>
+                    <td>register int enHizliVeriDepolama = 32;</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Kullanıcıdan Veri Alma ve Verme</h2>
+        <pre id="preh2">Geldik C++ programlama dilinin C'ye göre avantajlı yanına... Girdiler ve çıktılar! Bu konu C programlama dilinde çıktı için printf ve girdi için ise scanf veya gets kullanılırdı. Bazen kolay olsada aslında güvenlik açıkları çok fazlaydır. Bu sebeble C++ geliştiricileri girdileri G/Ç[Giriş/Çıkış(Input/Output)] kütüphanesinde Cin ve Cout yapılarına dönüştürmüşledir.</pre>
+
+        <pre id="preh2">Cout yani C out, konsola çıktı vermemizi sağlar. Çıktı vermek için ise "Operatörler" daha detaylı işliceğimiz olna sola kaydırma operatörü aracılığıyla sağlar. Sola kaydırma kısaca sağdaki verileri soldaki kısma aktarır. Böylelikle değerle çıktı verilebilir hale gelir.</pre>
+
+        <pre id="codeh2">Bir Integer değerini Cout ile konsola yazdıralım.
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main()
+{
+    int birSayi = 14;
+
+    cout << birSayi << endl;
+
+    return 0;
+}</code>
+
+Derleyip çalıştırdığımızda çıktı "14" olucaktır. Gördüğünüz gibi bir değişkenin değerini bu şekilde yazdırabiliyoruz.</pre>
+
+        <pre id="preh2">Girdi almak istersekde Cin yani C in'i kullanırız. Cin, kullanıcının girdiği değeri sağ kaydırma operatörü ile tanımlanmak istenen değişkenin değerine atar. Aynı şekilde sağ kaydırma operatörünü "Operatörler" sayfasında daha detaylı işleceğiz. Girilen ifade Cin tarafından Char dizisi olarak dönmektedir.</pre>
+
+        <pre id="codeh2">Şimdi ise girilen bir yazı ifadesini Cin ile alarak Cout'la konsola tekrar yazdırsın.
+
+<code class="language-cpp">#include &ltiostream>
+
+using namespace std;
+
+int main()
+{
+    cout << "Bir ifade giriniz: ";
+
+    char inp[256];
+
+    cin >> inp;
+
+    cout << "Girilen ifade '" << inp << "'" << endl;
+
+    return 0;
+}</code>
+
+Çıktısı ise;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/4 Cpp Değişkenler.html/1.png" alt="4.1" width="80%">
+        </div>
+
+        <pre id="preh2">Alınan veri ise ilk kelime olarak alır.</pre>
+
+        <h2>Değişkenleri Türlerini Dönüştürme</h2>
+        <pre id="preh2">Artık değişken tanımlamayı ve kullanıcıdan girdi almayı biliyoruz. Fakat gelen veri Integer ve ihtiyacımız olan veri türü Float ise? O zaman hangi işleme başvurmalıyız? Bu gibi durumlarda değişken tiplerini dönüştürme yapısı gelir. Şimdi veri türlerinin nasıl dönüştürüldüğünü inceleyelim.</pre>
+
+        <h3>Integer &rarr; Float</h3>
+        <pre id="preh3">Elimizdeki Integer değerini Float'a dönüştürmek istiyorsak, Integer değerinin başına parantez içerisinde "float" yazarız. Bu yapı bize Integer değermizi Float değişken türüne dönüştürmemizi sağlar.</pre>
+
+        <pre id="codeh3">Şimdi bir Integer verisini Float'a dönüştürelim ve bu işlemi Cout ile çıktı halinde konsola yazdıralım.
+
+<code class="language-cpp">#include <iostream>
+
+using namespace std;
+
+int main()
+{
+    int integerBirDeger = 45;
+
+    float integerDegeriFloatHali = (float) integerBirDeger + 0.5f;
+    
+    cout << "'" << integerBirDeger << "'" << "-> '" << integerDegeriFloatHali << "'" << endl;
+
+    return 0;
+}</code>
+
+Float değeri gözleyebilmek için dönüşmüş Integer'a 0.5 değeri ekledim ve konsola yazdırdım.
+
+Çıktısı ise "'45'-> '45.5'" olucaktır.</pre>
+
+        <h3>Float &rarr; Integer</h3>
+        <pre id="preh3">Bu durumda ise parantezlerin içerisine "int" yazılır ve değer Float'dan Integer'a dönüşmüş olur. Ayrıca Integer'a dönüştüğü için ise noktadan sonraki yok olur.</pre>
+
+        <pre id="codeh3">Aynı işlemin bu sefer tersini gerçekleştirelim.
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main()
+{
+    float floatBirDeger = 12.45f;
+
+    int floatDegeriIntegerHali = (int) floatBirDeger;
+    
+    cout << "'" << floatBirDeger << "'" << " -> '" << floatDegeriIntegerHali << "'" << endl;
+
+    return 0;
+}</code>
+
+Çıktısı ise "'12.45' -> '12'" olucaktır.</pre>
+
+        <h2>Sabit Değişkenler</h2>
+        <pre id="preh2">Sabit değişkenler, bir kere veri atanıp daha sonra bir daha verisi değiştirilemeyen değişkenlerdir.</pre>
+
+        <pre id="preh2">C++ programlama dilinde kullanılabilir üç adet sabit değişken türü vardır. Mantıkları aynıdır fakat depolanma biçimleri ve RAM'in hangi bölgesine kayıt edildiği farklıdır.</pre>
+
+        <h3>Const</h3>
+        <pre id="preh3">Const, en çok kullanılan ikinci sabit değişken türüdür. Depolandığı kısım ise RAM'in sabir veriler adlı bir bölümüne kayıt edilir. Bu sayede sürekli değişiklik göstermesi gerek normal RAM bölgesinde depolanmaz ve yer tasarufu sağlanır.</pre>
+
+        <pre id="codeh3">Pi sayısını Float cinsinden Const ile tanımlayalım ve ekrana bastıralım.
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main()
+{
+    const float pi = 3.14f;
+
+    cout << "Pi sayisinin degeri yaklasik olarak ; " << pi << endl;
+
+    return 0;
+}</code>
+
+Çıktısı ise "Pi sayisinin degeri yaklasik olarak ; 3.14" şeklinde olucaktır.</pre>
+
+        <h3>Constexpr</h3>
+        <pre id="codeh3">Bu sabitlik türü ise değerlerin çalışma zamanında atanması yerine derleme zamanında atanarak performans ve hız kazandırır. Depolandığı kısım Const ile aynıdır.</pre>
+        
+        <pre id="codeh3">Aynı örneği bu sefer Constexpr ile yapalım.
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main()
+{
+    constexpr float pi = 3.14f;
+
+    cout << "Pi sayisinin degeri yaklasik olarak ; " << pi << endl;
+
+    return 0;
+}</code>
+
+Değişen bir durum yoktur fakat performans açısından en verimli olan sabitde Constexpr'dir. Çıktısı aynı olucaktır tabi...</pre>
+
+        <h3>Define</h3>
+        <pre id="preh3">Define, Const ve Constexpr'den farklı olarak bir değişken teknik olarak değildir. Bir makrodur ve RAM'de depolanmaz. Depolanmadığı için de değiştirilmez özelliği vardır. Bu sebeble sabit değişkenlerde sıklıkla kullanılır. Define veya diğer adıyla makro, zorunlu değildir fakat kullanımı sırasında değişkenin isminin harfleri büyük harf ile yazılması tavsiye edilir. Çünkü dediğimiz gibi Define teknik olarak bir değişken değildir. Define'i kullanırken başına diyez(#) işareti konulur. Bu durum "Önişlemciler" sayfasında daha detaylı işlenicektir.</pre>
+
+        <pre id="codeh3">Aynı örneğimizi Define ile yapalım.
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+#define PI 3.14f
+
+int main()
+{
+    cout << "Pi sayisinin degeri yaklasik olarak ; " << PI << endl;
+
+    return 0;
+}</code>
+
+Çıktısı diğer örneklerle aynıdır.</pre>
+
+        <h2>Typedef</h2>
+        <pre id="preh2">Typdef, değişken türlerini bir nevi bir değişken gibi atamamızı sağlayan bir yapıdır.</pre>
+
+        <pre id="preh2">Mesela biz Integer ifadesini "int" kelimesi ile ifade ediyoruz, ama başka şekilde ifade etmek istersek? Mesela "int" yernine "tamSayi" gibi... İşte bunun için Typdef kullanılır.</pre>
+
+        <pre id="codeh2"> Şimdiki örneğimizin Float değişken tipini Typedef ile "ondalikli" olarak değiştirelim ve Constexpr ile de sabit bir değişen olduğunu belirtelimç
+            
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+typedef float ondakilki;
+
+int main()
+{
+    constexpr ondakilki pi = 3.14f;
+
+    cout << "Pi sayisinin degeri yaklasik olarak ; " << pi << endl;
+
+    return 0;    
+}</code>
+
+Artık Float değişken tipimizin ismi "ondalikli" olarak bu kodda atanmış oldu. Çıktı değişmicektir.</pre>
+
+        <h2>Using</h2>
+        <pre id="preh2">İlk kod örneğimizde gördüğümüz gibi bir kütüphanenin içerisindeki isim alanlarını koda dahil etmek ve kolay kullanım için Using ile dahil edilir.</pre>
+
+        <pre id="codeh3">Ya Using ile isim alanı katılımını yapmasaydık? Şimdi bu durumda kodlarımızı yazalım.
+
+<code class="language-cpp">#include &lt;iostream>
+
+typedef float ondakilki;
+
+int main()
+{
+    constexpr ondakilki pi = 3.14f;
+
+    std::cout << "Pi sayisinin degeri yaklasik olarak ; " << pi << std::endl;
+
+    return 0;    
+}</code>
+
+Gördüğünüz gibi Cout ve Endl'nin sol taraflarına Std ifadesiyle iki adet iki nokta geldi. Bu durum aslında bişi şunu açıklar; Cout ve Endl elemanları Std adlı isim alanın içerisinde. Using, kolay kodlama için elzem niteliğindedir.
+
+Çıktı değişmicektir.</pre>
+
+        <h2>Kaynakça</h2>
+        <ul>
+            <li><a href="https://data35delete.github.io/Data-s-Book-on-C/Lessons/4%20C%20Değişkenler.html">https://data35delete.github.io/Data-s-Book-on-C/Lessons/4%20C%20Değişkenler.html</a></li>
+            <li><a href="https://data35delete.github.io/Data_s_Book_on_Assembly/tr/Lessons/3%20Assembly%20Giriş.html">https://data35delete.github.io/Data_s_Book_on_Assembly/tr/Lessons/3%20Assembly%20Giriş.html</a></li>
+            <li><a href="https://learn.microsoft.com/tr-tr/dotnet/visual-basic/language-reference/data-types/double-data-type">https://learn.microsoft.com/tr-tr/dotnet/visual-basic/language-reference/data-types/double-data-type</a></li>
+            <li><a href="https://www.geeksforgeeks.org/cpp/static-keyword-cpp/">https://www.geeksforgeeks.org/cpp/static-keyword-cpp/</a></li>
+            <li><a href="https://stackoverflow.com/questions/3207018/register-keyword-in-c">https://stackoverflow.com/questions/3207018/register-keyword-in-c</a></li>
+            <li><a href="https://learn.microsoft.com/en-us/cpp/cpp/auto-cpp?view=msvc-170">https://learn.microsoft.com/en-us/cpp/cpp/auto-cpp?view=msvc-170</a></li>
+            <li><a href="https://www.geeksforgeeks.org/cpp/understanding-constexper-specifier-in-cpp/">https://www.geeksforgeeks.org/cpp/understanding-constexper-specifier-in-cpp/</a></li>
+            <li><a href="https://www.geeksforgeeks.org/cpp/using-keyword-in-cpp-stl/">https://www.geeksforgeeks.org/cpp/using-keyword-in-cpp-stl/</a></li>
+        </ul>
+    </div>
+
+    <div style="height: 100px;"></div>
+
+    <footer style="position: fixed; left: 0; bottom: 0; width: 100%; background: transparent; text-align: center; padding: 10px 0; z-index: 100;">
+        <div>
+            <a href="./3 Giriş.html" style="margin-right: 20px; cursor:pointer;">
+                &larr; Önceki
+            </a>
+            <a href="" style="cursor:pointer;">
+                Sonraki &rarr;
+            </a>
+        </div>
+        <div>
+            <p>&copy; 2026 Data's Book</p>
+        </div>
+
+        <div style="position: absolute; right: 20px; bottom: 20px;">
+            <a href="./1 Cpp İçindekiler.html" style="text-decoration: none;">
+                İçindekiler
+            </a>
+        </div>
+    </footer>
+</body>
+</html>
+
+<!-- Muhammet Enes nam-ı diğer Data Delete tarafından sevgi ile yapıldı <3 -->
