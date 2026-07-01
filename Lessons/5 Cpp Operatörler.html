@@ -392,7 +392,7 @@ int main(){
         <h3>Tersi Alma</h3>
         <pre id="preh3">Tersi alma, sayısal değerin negatif ise pozitif; pozitif ise negatif durumunu alır. Alırken bir eksiltirek alır. İşaret ise yaklaşık işareti(~) işaretidir.</pre>
 
-        <pre id="codeh3">#include &lt;iostream>
+        <pre id="codeh3"><code class="language-cpp">#include &lt;iostream>
 
 using namespace std;
 
@@ -403,12 +403,12 @@ int main(){
     cout << tersBitwiseIslemi + 1 << endl; // -4, 1 artırdık ki eksiklik gelen 1'i yok sayalım.
 
     return 0;
-}</pre>
+}</code></pre>
 
         <h3>Sola Kaydırma</h3>
         <pre id="preh3">Sağdaki değerin bitlerini soldaki değere bitleri kadar sona ekler sıfır ekler. İşareti iki adet küçüktür(<<) işaretidir.</pre>
 
-        <pre id="codeh3"><code class="language-cpp">#include <iostream>
+        <pre id="codeh3"><code class="language-cpp">#include &lt;iostream>
 
 using namespace std;
 
@@ -416,7 +416,7 @@ int main(){
 
     int solaKaydirmaBitwiseIslemi =  7 << 4;
     /* 7 = 0111
-       4 = 0100
+       4 = 0000
 
        0111 << 0100 = 01110000 = 112
                       ^---^---
@@ -431,7 +431,66 @@ int main(){
         <h3>Sağa Kaydırma</h3>
         <pre id="preh3">Sağdaki değerin bitlerini soldaki değere bitleri kadar başından sonuna doğru sıfır ekler. İşareti iki adet büyüktür(<<) işaretidir.</pre>
 
-        <pre id="codeh3"><code class="language-cpp"></code></pre>
+        <pre id="codeh3"><code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main(){
+
+    int solaKaydirmaBitwiseIslemi =  8 >> 3;
+    /* 8 = 1000
+       3 = 000
+
+       0111 >> 000 =  0001 = 1
+                      ^--^
+                      3  8
+    */  
+
+    cout << solaKaydirmaBitwiseIslemi << endl; // 1
+
+    return 0;
+}</code></pre>
+
+        <h2>Ternary</h2>
+        <pre id="preh2">Ternary; parantezlerindeki değer bir ise birinci değerini, sıfır ise ikinci değerini sonuç olarak verir. İşaretleri soru işareti ve iki nokta(?:) işaretleridir.</pre>
+
+        <pre id="codeh2"><code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main(){
+
+    cout << ((1) ? "Birinci Deger" : "Ikinci Deger") << endl << endl; // "Birinci Deger"
+    
+    cout << ((0) ? "Birinci Deger" : "Ikinci Deger") << endl; // "Ikinci Deger"
+
+    return 0;
+}</code></pre>
+
+        <h2>Sizeof Operatörü</h2>
+        <pre id="preh2">Sizeof, değişken veya yapıların RAM'de ne kadar yer kapladıklarını sayı olarak sonuç veren operatördür.</pre>
+
+        <pre id="codeh2"><code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main(){
+
+    int s1 = 56;
+    constexpr double pi = 3.14;
+
+    cout << "s1'in RAM'de Kapladigi Alan; " << sizeof s1 << endl << "pi'nin RAM'de Kapladigi Alan; " << sizeof pi << endl;
+
+    return 0;
+}</code>
+
+Çıktı ise;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/5 Cpp Operatörler.html/3.png" alt="5.3" width="80%">
+        </div>
+
+        
 
         <h2>Kaynakça</h2>
         <ul>
