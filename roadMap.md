@@ -85,7 +85,7 @@
 - **Operatör Aşırı Yükleme (Operator Overloading)**: Tanım. Kullanım Senaryoları. Örnek.
 - **Yazdırma Komutunda cout ile Veri Yazdırma**: Tanım. Örnek.
 - **C++ Cast Operatörleri**: `static_cast`, `dynamic_cast`, `const_cast`, `reinterpret_cast`. Örnek.
- 
+
 ---
  
 ### C++ : Karar Yapıları

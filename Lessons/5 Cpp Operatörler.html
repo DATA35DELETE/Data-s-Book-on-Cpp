@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data's Book on Cpp</title>
+
+    <link rel="icon" type="image/x-icon" href="../Sources/favicon.png">
+
+    <script src="../Sources/JS/setBackgroundMedia.js"></script>
+
+    <link rel="stylesheet" href="../Sources/JS/hljs/vs2015.css">
+    <script src="../Sources/JS/hljs/highlight.min.js"></script>
+    <script>
+        window.onload = function() {
+            hljs.highlightAll();
+        };
+    </script>
+
+    <link rel="stylesheet" href="../Sources/CSS/main.css">
+</head>
+<body>
+    <h1>Operatörler</h1>
+
+    <div style="height: 100px;"></div>
+    
+    <div id="mainDiv">
+        <h2>Operatör Nedir?</h2>
+        <pre id="preh2">Operatörler, yazılım dillerinde; basit matematik, atama , mantıksal ve karşılaştırma işlemlerini yapabilmemizi sağlayan araçlardır. Operatörler matematik sembollerinden oluşur ve her birinin görevi farklıdır.</pre>
+
+        <pre id="preh2">Peki neden operatörleri kullanıyoruz? Çünkü neredeyse tüm her yapıların ana yapıtaşıdır. Toplama ile iki artı ikinin sonucu dört bulmamazı sağlayan operatörlerin ta kendisidir veya bir olayın bir mi yoksa sıfır mı olduğunu bizlere bildiren yine operatörlerdir. Kısaca her yapının her algoritmanın her uygulamanın en temel parçası operatörlerdir.</pre>
+
+        <h2>Atama Operatörü</h2>
+        <pre id="preh2">Atama operatörü, bir değişkene veri atamak için kullanılan operatördür. İşareti eşşittir(=) işaretidir.</pre>
+        
+        <pre id="preh2">Atama yönü sağdan sola değil, soldan sağa doğrudur.</pre>
+
+        <pre id="codeh2"><code class="language-cpp">
+int ornekBirAtama = 12;
+</code>
+
+Bu kısımda "ornekBirAtama" adlı değişkenin değerini on iki sayısal değerini atamış olduk.
+
+<code class="language-cpp">ornekBirAtama = 43;</code>
+
+Sonraki satırlarda istersek farklı bir değer atıyabiliriz.</pre>
+    
+        <h2>Aritmatik Operatörler</h2>
+        <pre id="preh2">Artimatik operatörler, basit matematiksel işlemlerini gerçekleştirebilceğimiz operatörlerdir.</pre>
+
+        <h3>Toplama</h3>
+        <pre id="preh3">İki değeri toplar. İşareti artı(+) işaretidir.</pre>
+
+        <pre id="codeh3"><code class="language-cpp">int ikiArtiIki = 2 + 2;</code>
+        
+"ikiArtiIki" değişkenin işlem sonucu değeri dört olur.</pre>
+
+        <h3>Çıkarma</h3>
+        <pre id="preh3">İki değeri birinden çıkartır. İşareti eksi(-) işaretidir.</pre>
+
+        <pre id="codeh3"><code class="language-cpp">int bir = 4 - 3;</code>
+        
+İşlemin sonucunda değişkenin değeri birdir.</pre>
+
+        <h3>Bölme</h3>
+        <pre id="preh3">İki değeri böler. İşareti eğik çizgi(/) işaretidir.</pre>
+
+        <pre id="codeh3"><code class="language-cpp">short iki = 4 / 2;</code>
+        
+İşlemin sonucunda değişkenin değeri iki olucaktır.</pre>
+
+        <h3>Çarpma</h3>
+        <pre id="preh3">İki değeri çarpar. İşareti yıldız(*) işaretidir.</pre>
+
+        <pre id="codeh3"><code class="language-cpp">long yirmiBir = 7 * 3;</code>
+        
+İşlemin sonucunda değişkenin değeri yirmi bir sayısıdır.</pre>
+
+        <h3>Mod Alma</h3>
+        <pre id="preh3">Mod alma, bir sayının başka bir sayıya bölümünden kalandır. İşareti yüzdelik(%) işaretidir.</pre>
+
+        <pre id="codeh3"><code class="language-cpp">int ciftMi = 8 % 2;</code>
+        
+İşlemin sonucunda değişkenin değeri sıfır olucaktır.</pre>
+
+        <h3>Aritmatik Atama Operatörleri</h3>
+        <pre id="preh3">Bu operatörler, aritmatik ve atama operatörlerinin birleşimi sonucu oluşan, hem atama hemde aritmatik işlemleri yapabilceğimiz bir operatör türüdür.</pre>
+
+        <pre id="codeh3">Örnek olarak bir değişken tanımlayalım ve aritmatik atama operatörleri ile üzerinde işlemler yapalım. Her işlemin sonucunda ise konsola yazdıralım.
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main()
+{
+    int sayi = 12;
+
+    cout << "sayi = " << sayi << endl;
+
+    sayi += 5;
+    cout << "sayi = " << sayi << endl;
+
+    sayi -= 2;
+    cout << "sayi = " << sayi << endl;
+
+    sayi /= 3;
+    cout << "sayi = " << sayi << endl;
+
+    sayi *= 2;
+    cout << "sayi = " << sayi << endl;
+
+    sayi %= 2;
+    cout << "sayi = " << sayi << endl;
+
+    return 0;
+}</code>
+
+Çıktı ise;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/5 Cpp Operatörler.html/1.png" alt="5.1" width="80%">
+        </div>
+    
+        <h2>Yorum Operatörü</h2>
+        <pre id="preh2">Yorum operatörü, kodlarımızı yorum kısımları bırakabildiğimiz operatördür.</pre>
+
+        <pre id="preh2">Peki ya neden yorum bırakıyoruz? Çünkü kodumuzu anlatmak için! Evet kodunuzu siz çok iyi ve ezbere biliyor olabilirsiniz fakat başka bir yazılımcı kodunuza ekleme veya çıkarma yapıcağı sırada hangi kod ne iş için olduğunu bilmezse sistem tamamiyle çökebilir ki bu sizin içinde geçerlidir. Belki yazdığınız koda bir veya iki yılın ardından bir ilham geldi ve geliştirmek istiyorsunuz. Kodlar yorumlu değil. Peki ne yapacaksınız? Başka çağre olmadığı için yazdığınız kodu tekrar inlecemek zorunda kalırsınız. İşte bu gibi durumları engellemek için yazılım dilleri bizlere yorum satırı özelliği vermiştir.</pre>
+
+        <pre id="preh2">Yorum satırları, derliyeci ve yorumlayıcı bu satırları görmez ve koda eklemez fakat kod dosyasında biz yazılımcılar olarak görebilir ve okuyabiliriz ki bu sayfaya kadar hiç yorum satırı kullanmadım. Hep kodların aşağı kısımlarına yorumları ekledim. Bu cidden uğraştırıcı bir iş olduğundan yorumlarımı artık yorum satırları içerisine ekliceğim. Böylece kodlar daha anlaşılır olucaktır.</pre>
+
+        <pre id="preh2">Yorum operatörünü kullanmak için, eğer tek bir yorum satırı istiyorsak çift eğik çizgi(//); çoklu bir yorum satırı açmak için bir eğik çizgi ve yıldız(/*), kapatmak için ise bir yıldız ve eğik çizgi(*/) kullanılır.</pre>
+
+        <pre id="codeh2">Aritmatik atama operatörleri için yazdığımız kodu şimdi gelen yorum satırları ile açıklayalım.
+
+<code class="language-cpp">#include <iostream> // G/Ç kütüphanesi
+
+using namespace std; // Kolay kullanım için std isim alanını dahil ettik
+
+/*
+    <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+
+    Data's Book on C++ dökümantasyonundaki "Operatörler" sayfası için örnek kod
+
+    Hazırlayan: Data Delete
+
+    Tarih: 01.07.26
+
+    <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+*/
+
+int main() // Ana fonksiyonumuz
+{
+    int sayi = 12; // Tüm aritmatik ve atam işlemlerimizin gerçekleşiceği değişken
+
+    cout << "sayi = " << sayi << endl; // İlk halini yazdırıyoz. Çıktı "sayi = 12"
+
+    sayi += 5; // 5 değerini kendisi ile toplayım atama gerçekleştiriyoruz
+    cout << "sayi = " << sayi << endl; // İşlemin ardından yazdırıyoruz. Çıktı "sayi = 17"
+
+    sayi -= 2; // 2 değerini kendisinden çıkartıyoruz ve atama yapıyoruz
+    cout << "sayi = " << sayi << endl; // Çıktı "sayi = 15"
+
+    sayi /= 3; // Kendisini 3'e bölüyoruz ve atıyoruz
+    cout << "sayi = " << sayi << endl; // Çıktı "sayi = 5"
+
+    sayi *= 2; // 2 ile çarpıyoruz
+    cout << "sayi = " << sayi << endl; // "sayi = 10"
+
+    sayi %= 2; // 2 ile bölümünden kalanını, atıyoruz
+    cout << "sayi = " << sayi << endl; // "sayi = 0"
+
+    return 0; // Programın sonucunu 0 sayısı ile bitiyoruz. 0 dönen bir fonksiyon "Hatasız son buldu" demektir
+}</code>
+
+Görüldüğü üzere kod daha açıklayıcı oldu.</pre>
+
+        <h2>Karşılaştırma Operatörleri</h2>
+        <pre id="preh2">Karşılaştırma operatörleri, bir değeri başka bir değer ile karşılaştırarak sonucudan bir Boolean değeri veren operatörlerdir.</pre>
+
+        <h3>Küçüktür</h3>
+        <pre id="preh3">Soldaki değer ile sağdaki değerden küçük olduğunu kontrol eder. Küçük ise bir <code>True</code>, değilse <code>False</code> döndürür. İşareti küçüktür(<) işaretidir.</pre>
+
+        <pre id="codeh3"><code class="language-cpp">int kucukMu = 40 < 43; // 1
+kucukMu = 46 < 43; // 0;</code></pre>
+
+        <h3>Büyüktür</h3>
+        <pre id="preh3">Soldaki değer ile sağdaki değerden büyük olduğunu kontrol eder. Büyük ise <code>True</code>, değilse <code>False</code> sonucu verir. İşareti büyüktür(>) işaretidir.</pre>
+
+        <pre id="codeh3"><code class="language-cpp">int buyukMu = 40 > 43; // 0
+buyukMu = 63 > 46; // 1
+        </code></pre>
+
+        <h3>Eşit ve Küçüktür</h3>
+        <pre id="preh3">Soldaki değer ile sağdaki değerden küçük veya eşit olduğunu kontrol eder. Küçük veya eşit ise <code>True</code>, değilse <code>False</code> sonucu verir. İşareti küçüktür işareti ve eşittir(<=) işaretleridir.</pre>
+
+        <pre id="codeh3"><code class="language-cpp">int kucukVeyaEsitMi = 40 <= 43; // 1
+kucukVeyaEsitMi = 40 <= 40; // 1
+kucukVeyaEsitMi = 63 <= 40; // 0</code></pre>
+
+        <h3>Eşit ve Büyüktür</h3>
+        <pre id="preh3">Soldaki değer ile sağdaki değerden büyük veya eşit olduğunu kontrol eder. Büyük veya eşit ise <code>True</code>, değilse <code>False</code> sonucu verir. İşareti büyüktür işareti ve eşittir(>=) işaretleridir.</pre>
+
+        <pre id="codeh3"><code class="language-cpp">int buyukVeyaEsitMi = 40 >= 43; // 0;
+buyukVeyaEsitMi = 40 >= 40; // 1
+buyukVeyaEsitMi = 63 >= 40; // 1</code></pre>
+
+        <h3>Eşittir</h3>
+        <pre id="preh3">Soldaki değer ile sağdaki değer eşit olduğunu kontrol eder. Eşit ise <code>True</code>, değil ise <code>False</code> sonucu verir. İşareti iki adet eşittir(==) işaretleridir.</pre>
+
+        <pre id="codeh3"><code class="language-cpp">int esitMi = 40 == 43; // 0
+esitMi = 40 == 40; // 1</code></pre>
+
+        <h3>Eşit Değildir</h3>
+        <pre id="preh3">Soldaki değer ile sağdaki değerden eşit olmadığını kontrol eder. Eşit değil ise <code>True</code>,eşit ise <code>False</code> sonucu verir. İşareti ünlem ve eşittir(!=) işaretleridir.</pre>
+
+        <pre id="codeh3"><code class="language-cpp">int esitDegilMi = 40 != 43; // 1
+esitDegilMi = 40 != 40; // 0</code></pre>
+
+        <h2>Mantıksal Operatörler</h2>
+        <pre id="preh2">Mantıksal operatörler bir Boolean değer ile başka bir Boolean değeri karşılaştırarak bir Boolean değeri sonucunu veren operatörlerdir.</pre>
+
+        <h3>Ve</h3>
+        <pre id="preh3">Soldaki Boolean değeri ile sağdaki Boolean değeri <code>True</code> ise sonuç <code>True</code>'dur. Geri kalan durumlar <code>False</code> değerini verir. İşareti iki adet ampersend(&&) işaretleridir.</pre>
+
+        <pre id="preh3">Tablo şeklinde tüm durumlar aşağıda verilmiştir.</pre>
+
+        <table id="tableh3" border="1">
+            <thead>
+                <tr>
+                    <th>Durum</th>
+                    <th>Sonuç</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1 && 1</td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <td>1 && 0</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>0 && 1</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>0 && 0</td>
+                    <td>0</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Veya</h3>
+        <pre id="preh3">Soldaki ve sağdaki değerlerden birinin değer <code>True</code> ise sonuç <code>True</code>'dur. Geri kalan durumlar <code>False</code> sonucu verir. İşareti ise iki adet uzun çizgi(||) işaretleridir.</pre>
+        
+        <pre id="preh3">Tablo şeklinde tüm durumlar aşağıda verilmiştir.</pre>
+
+        <table id="tableh3" border="1">
+            <thead>
+                <tr>
+                    <th>Durum</th>
+                    <th>Sonuç</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1 || 1</td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <td>1 || 0</td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <td>0 || 1</td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <td>0 || 0</td>
+                    <td>0</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Değil</h3>
+        <pre id="preh3">Yanına getirilen Boolean değerinin ters değerinin sonucu verir.</pre>
+
+        <pre id="preh3">Tablo şeklinde tüm durumlar aşağıda verilmiştir.</pre>
+
+        <table id="tableh3" border="1">
+            <thead>
+                <tr>
+                    <th>Durum</th>
+                    <th>Sonuç</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>!1</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>!0</td>
+                    <td>1</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Bitwise Operatörleri</h2>
+        <pre id="preh2">Bitwise operatörleri, sayıların bit karşılıkları üzerinde yapılan işlemleri sağyalan operatörlerdir. En düşük seviyeli operatörledir.</pre>
+
+        <pre id="preh2">Eğer bit hesaplamayı bilmiyor iseniz aşağıda hesaplamanızı kolaylaştırıcak bir resim verilmiştir. Kaynak: <a href="https://data35delete.github.io/Data_s_Book_on_Assembly/tr/Lessons/4%20Assembly%20Temel%20Kavramlar.html">Data's Book on Assembly</a></pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/5 Cpp Operatörler.html/2.svg" alt="5.2" width="80%">
+        </div>
+
+        <h3>Ve</h3>
+        <pre id="preh3">Soldaki değerin bitleriyle sağdaki değerin bitlerini karşılaştırır. Eğer aynı bit sırasına denk gelen bitlerin değerleri bir ise sonuç bir, değilse o bitin sırası sıfır bit verir. İşareti ampersend(&) işaretidir.</pre>
+
+        <pre id="codeh3"><code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main(){
+
+    int veBitwiseIslemi = 7 & 4;
+    /* 7 = 0111
+       4 = 0100
+
+           0111
+       &   0100
+       --------
+           0100 = 4
+    */
+
+    cout << veBitwiseIslemi << endl; // 4
+
+    return 0;
+}</code></pre>
+
+        <h3>Veya</h3>
+        <pre id="codeh3">Soldaki değerin bitleriyle sağdaki değerin bitlerini karşılaştırır. Eğer aynı bit sırasına denk gelen bitlerin değerlerinde biri bir ise sonuç bir, değilse o bitin sırası sıfır bit verir. İşareti uzun çizgi(|) işaretidir.</pre>
+
+        <pre id="codeh3"><code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main(){
+
+    int veyaBitwiseIslemi = 7 | 4;
+    /* 7 = 0111
+       4 = 0100
+
+           0111
+       |   0100
+       --------
+           0111 = 7
+    */
+
+    cout << veyaBitwiseIslemi << endl; // 7
+
+    return 0;
+}</code></pre>
+
+        <h3>Veya Değil</h3>
+        <pre id="preh3">Soldaki değerin bitleriyle sağdaki değerin bitlerini karşılaştırır. Eğer aynı bit sırasına denk gelen bitlerin değerlerinde sadece biri bir ise sonuç bir, değilse o bitin sırası sıfır bit verir. İşareti üssü işareti(^) işaretidir.</pre>
+
+        <pre id="codeh3"><code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main(){
+
+    int veyaDegilBitwiseIslemi = 7 ^ 4;
+    /* 7 = 0111
+       4 = 0100
+
+           0111
+       ^   0100
+       --------
+           0011 = 3
+    */
+
+    cout << veyaDegilBitwiseIslemi << endl; // 3
+
+    return 0;
+}</code></pre>
+
+        <h3>Tersi Alma</h3>
+        <pre id="preh3">Tersi alma, sayısal değerin negatif ise pozitif; pozitif ise negatif durumunu alır. Alırken bir eksiltirek alır. İşaret ise yaklaşık işareti(~) işaretidir.</pre>
+
+        <pre id="codeh3">#include &lt;iostream>
+
+using namespace std;
+
+int main(){
+
+    int tersBitwiseIslemi =  ~4;
+
+    cout << tersBitwiseIslemi + 1 << endl; // -4, 1 artırdık ki eksiklik gelen 1'i yok sayalım.
+
+    return 0;
+}</pre>
+
+        <h3>Sola Kaydırma</h3>
+        <pre id="preh3">Sağdaki değerin bitlerini soldaki değere bitleri kadar sona ekler sıfır ekler. İşareti iki adet küçüktür(<<) işaretidir.</pre>
+
+        <pre id="codeh3"><code class="language-cpp">#include <iostream>
+
+using namespace std;
+
+int main(){
+
+    int solaKaydirmaBitwiseIslemi =  7 << 4;
+    /* 7 = 0111
+       4 = 0100
+
+       0111 << 0100 = 01110000 = 112
+                      ^---^---
+                        7   4
+    */  
+
+    cout << solaKaydirmaBitwiseIslemi << endl; // 112
+
+    return 0;
+}</code></pre>
+
+        <h3>Sağa Kaydırma</h3>
+        <pre id="preh3">Sağdaki değerin bitlerini soldaki değere bitleri kadar başından sonuna doğru sıfır ekler. İşareti iki adet büyüktür(<<) işaretidir.</pre>
+
+        <pre id="codeh3"><code class="language-cpp"></code></pre>
+
+        <h2>Kaynakça</h2>
+        <ul>
+            <li><a href="https://stackoverflow.com/questions/2611764/can-i-use-a-binary-literal-in-c-or-c">https://stackoverflow.com/questions/2611764/can-i-use-a-binary-literal-in-c-or-c</a></li>
+        </ul>
+
+    </div>
+
+    <div style="height: 100px;"></div>
+
+    <footer style="position: fixed; left: 0; bottom: 0; width: 100%; background: transparent; text-align: center; padding: 10px 0; z-index: 100;">
+        <div>
+            <a href="./4 Cpp Değişkenler.html" style="margin-right: 20px; cursor:pointer;">
+                &larr; Önceki
+            </a>
+            <a href="" style="cursor:pointer;">
+                Sonraki &rarr;
+            </a>
+        </div>
+        <div>
+            <p>&copy; 2026 Data's Book</p>
+        </div>
+
+        <div style="position: absolute; right: 20px; bottom: 20px;">
+            <a href="./1 Cpp İçindekiler.html" style="text-decoration: none;">
+                İçindekiler
+            </a>
+        </div>
+    </footer>
+</body>
+</html>
+
+<!-- Muhammet Enes nam-ı diğer Data Delete tarafından sevgi ile yapıldı <3 -->
