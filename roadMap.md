@@ -460,14 +460,6 @@
 - **Catch2**: Kurulum. gtest ile Karşılaştırma. Örnek.
 - **Test Yazma Prensipleri**: AAA (Arrange-Act-Assert). Örnek.
 - **Mock Nesneler**: Tanım. Google Mock. Örnek.
- 
----
-
-### Sonsöz
-- **Bu Dokümantasyonda Ne Öğrendik**
-- **İlerki Projeler**
-- **Diğer Data's Books Dökümantasyonları**
-- **Özel Teşekkürler**
 
 ---
 

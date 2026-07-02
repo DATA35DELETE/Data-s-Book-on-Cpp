@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data's Book on Cpp</title>
+
+    <link rel="icon" type="image/x-icon" href="../Sources/favicon.png">
+
+    <script src="../Sources/JS/setBackgroundMedia.js"></script>
+
+    <link rel="stylesheet" href="../Sources/JS/hljs/vs2015.css">
+    <script src="../Sources/JS/hljs/highlight.min.js"></script>
+    <script>
+        window.onload = function() {
+            hljs.highlightAll();
+        };
+    </script>
+
+    <link rel="stylesheet" href="../Sources/CSS/main.css">
+</head>
+<body>
+    <h1>Karar Yapıları</h1>
+
+    <div style="height: 100px;"></div>
+    
+    <div id="mainDiv">
+        <h2>Karar Yapıları Nedir?</h2>
+        <pre id="preh2">Karar yapıları, programda koşula bağlı olarak akışı değiştiren ve farklı durumlar için farklı işlevler veya kodlar çalıştırabilceğimiz bir yapıdır.</pre>
+
+        <pre id="preh2">Program akışı, bir programın kodları okuma sırasına verilen isimdir. C++, kodları yukarıdan aşağı doğru okumakta ve program akışının başlangıcı Main kısmıdır. Main ilk kodların çalıştığı kısımdır.</pre>
+
+        <pre id="preh2">Peki neden karar yapılarını kullanırız? Çünkü farklı durumlar farklı ihtiyaçlar doğrur! Açıklamak gerekirse, Bir ATM yazılımı yazdığımızı düşünelim. Bu yazılımda kullanıcı kartını kart bölmesine yerleştiricek ve makine şifre istiyecektir. Kullanıcı şifresini girdiğinde makine, şifresinin doğru olup olmadığını kontrol etmesi lazım ki kullanıcının gerçekten o kartı sahibi olduğunu algılasın ve işlemleri başlatsın. İşte tam bu kısımda kontrol yapıları kullanılır. Kontrol yapısı kullanıcının girdiği şifreyle banka şirketinin veritabanlarındaki o karta atanmış şifreyi karşılaştırır. Eğer şifre eşleşiyorsa işlemleri başlatır, eşleşmese ise uyarı mesajı verip işlemi iptal eder. İşte kontrol yapıları sizin paranızdan tutunda oyunlardaki düşman öldürme mekaniğinden yapay zekayı mümkün kılan algoritmalara kadar her alanda vardır.</pre>
+
+        <pre id="preh2">Kontrol yapıları algoritma kurmanın anahtarıdır. Algoritma almadan bir sistemin çalışması iplik kadar zayıf bir ihtimal olduğunu algoritmalar önemli yapılardır. Bu sebeble iyi algoritma kurmak için kontrol yapılarını ismimiz gibi kavramalı ve işlem yapabilme kapasitemizi artırmalıyız.</pre>
+
+        <h2>If-Else If-Else</h2>
+        <pre id="preh2">Bu yapı C++ dilinde bir kontrol yapısıdır.</pre>
+
+        <h3>If</h3>
+        <pre id="preh3">If, parantezlerindeki değer <code>True</code> ise kendi kod bloğundaki kodları çalıştırır.</pre>
+
+        <pre id="codeh3">Şimdi örnek olması açısından bir kullanıcı tarafından akışı değiştirme programı yazalım. Kullanıcı ilk programı çalıştırdığında bir girdi istiyelim. Eğer biri seçerse "Birinci yolu terci ettiniz" diyen bir kod satırları yazalım. Ayrıca programın sonlarına doğruda "Yol bitti" diyen bir kod daha yazalım ki programın bittiğini algılayalım.
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main()
+{
+    cout << "Birinci yoldan gidicek misiniz?" << endl << "-->"; // Kullanıcıdan görsel olarak giriş isteme ve tercih kısmı
+
+    int secim1; // Kullanıcının girdisinin kayıt edilceği değişken
+    cin >> secim1; // Program tarafında kullanıcıdan girdi istemek
+
+    if (secim1 == 1) // Eğer kullanıcının girdiği veri 1 ise
+    { // Bu parantezlerdeki kodu çalıştır
+        cout << endl << "Birinci yolu terci ettiniz..." << endl; // Birinci yolu tercih ettiğini bildirmek
+    }
+
+    cout << endl << "Yol bitti" << endl; // Programın bitiğine dağir mesajı verelim
+
+    return 0;
+}</code>
+
+Çıktısı ise;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/6 Cpp Karar Yapıları.html/1.png" alt="6.1" width="80%">
+        </div>
+
+        <pre id="preh3">Gördüğünüz gibi seçimlere göre programın akışını değiştirdik.</pre>
+
+        <h3>Else If</h3>
+        <pre id="preh3">Else If, If çalışmaz ve kendi parantezlerindeki değer <code>True</code> ise kod bloklarını çalıştırır.</pre>
+
+        <pre id="preh3">Else If, kendi başına kullanılamaz ama bir If'ın altına istenilen miktar kadar yazılabilir.</pre>
+
+        <pre id="codeh3">Şimdi gelin örneğimizi geliştirilem ve ikinci bir yok ekliyelim.
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main()
+{
+    cout << "Yol tercihi programı" << endl;
+    cout << "1: Birinci yoldan gider" << endl; // Yol terci menüsü güncelledik
+    cout << "2: Ikinci yoldon gider" << endl;
+
+    cout << "-->";
+
+    int secim1;
+    cin >> secim1;
+
+    if (secim1 == 1)
+    {
+        cout << endl << "Birinci yolu tercih ettiniz..." << endl;
+    } 
+    else if(secim1 == 2) // Eğer kullanıcının girdiği değer 2 ise
+    { // Bu komut bloğunu çalıştır
+        cout << endl << "Ikinci yolu tercih ettiniz..." << endl; // İkinci yoldan gidildiğini bildir
+    }
+
+    cout << endl << "Yol bitti" << endl;
+
+    return 0;
+}</code>
+
+
+Çıktısı ise;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/6 Cpp Karar Yapıları.html/2.png" alt="6.2" width="80%">
+        </div>
+
+        <h3>Else</h3>
+        <pre id="preh3">Else, If bloğu ve Else If blokları çalışmazsa koşulsuz olarak kendisini çalıştırır.</pre>
+
+        <pre id="codeh3">Programı daha fazla geliştirmek adına birde Else ekliyelim. Else'ın görevi ise kullanıcı seçimler dışı bir girdi girdiğinde uyarı vererek progam akşını etkilesin.
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main()
+{
+    cout << "Yol tercihi programi" << endl;
+    cout << "1: Birinci yoldan gider" << endl;
+    cout << "2: Ikinci yoldon gider" << endl;
+
+    cout << "-->";
+
+    int secim1;
+    cin >> secim1;
+
+    if (secim1 == 1)
+    {
+        cout << endl << "Birinci yolu tercih ettiniz..." << endl;
+    } 
+    else if(secim1 == 2)
+    {
+        cout << endl << "Ikinci yolu tercih ettiniz..." << endl;
+    }
+    else // Eğer If ve Else If'ler çalışmaz ise
+    { // Bu kod bloklarını çalıştır
+        cout << endl << "Hicbir yol tercih edilmedi..." << endl;
+    }
+
+    cout << endl << "Yol bitti" << endl;
+
+    return 0;
+}</code>
+
+
+Çıktı;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/6 Cpp Karar Yapıları.html/3.png" alt="6.3" width="80%">
+        </div>
+
+        <h2>Switch-Case-Default</h2>
+        <pre id="preh2">Switch-Case-Default, C++ yazılım program dilindeki bir başka bir kontrol yapısıdır.</pre>
+
+        <pre id="preh2">Switch, kontrol edilecek olan değişkeni Switch'ın parantezlerine yazılır ve o değişkeni kontrol edicek Case'ler Switch'in kod bloklarına yazılır.</pre>
+
+        <pre id="preh2">Case, Switch'in parantezlerindeki değişkenini kontrol edicek olan yapıdır. Case'in kontrolu sonucu çalışıcak olan tüm kodların satırlarının en son satırına <code>break</code> deyimi yazılmalıdır. Eğer yazılmasza Case'ler beklenemedik davranışlar sergileyebilir. Case'lerin tanımlanna değişkenin değerini kontrol etmek için <code>case degiskeninOlmasıGerekDegeri:</code> şeklinde veri kontrol edilir.</pre>
+
+        <pre id="preh2">Default ise tüm Case'ler çalışmaz ise kendi kod kısmını çalıştıran bu kontrol yapısının son kontrol elemanıdır. Bir nevi If-Else If-Else yapısındaki Else gibi çalışır.</pre>
+
+        <pre id="codeh2">Şimdi ise If-Else If-Else örneğimizi Switch-Case-Default yapısına uyarlayalım.
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main()
+{
+    cout << "Yol tercihi programi" << endl;
+    cout << "1: Birinci yoldan gider" << endl;
+    cout << "2: Ikinci yoldon gider" << endl;
+
+    cout << "-->";
+
+    int secim1;
+    cin >> secim1;
+
+    switch (secim1) // Kontrol edilecek değişkeni parantezlere yazdık
+    {
+        case 1: // Eğer değeri 1 ise
+            cout << endl << "Birinci yolu tercih ettiniz..." << endl; // Bu komutu çalıştır
+            break; // Case1'in sonu
+
+        case 2: // Eğer değeri 2 ise
+            cout << endl << "Ikinci yolu tercih ettiniz..." << endl; // Bu komutu çalıştır
+            break; // Case2'in sonu
+        
+        default: // Eğer Case'lerin hiç biri çalışmaz ise
+            cout << endl << "Hicbir yol tercih edilmedi..." << endl; // Bu komutu çalıştır
+            break; // Case2'in sonu
+    }
+
+    cout << endl << "Yol bitti" << endl;
+
+    return 0;
+}</code>
+
+Çıktı değişmicektir.</pre>
+    </div>
+
+    <div style="height: 100px;"></div>
+
+    <footer style="position: fixed; left: 0; bottom: 0; width: 100%; background: transparent; text-align: center; padding: 10px 0; z-index: 100;">
+        <div>
+            <a href="./5 Cpp Operatörler.html" style="margin-right: 20px; cursor:pointer;">
+                &larr; Önceki
+            </a>
+            <a href="" style="cursor:pointer;">
+                Sonraki &rarr;
+            </a>
+        </div>
+        <div>
+            <p>&copy; 2026 Data's Book</p>
+        </div>
+
+        <div style="position: absolute; right: 20px; bottom: 20px;">
+            <a href="./1 Cpp İçindekiler.html" style="text-decoration: none;">
+                İçindekiler
+            </a>
+        </div>
+    </footer>
+</body>
+</html>
+
+<!-- Muhammet Enes nam-ı diğer Data Delete tarafından sevgi ile yapıldı <3 -->
