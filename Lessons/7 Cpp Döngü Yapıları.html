@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data's Book on Cpp</title>
+
+    <link rel="icon" type="image/x-icon" href="../Sources/favicon.png">
+
+    <script src="../Sources/JS/setBackgroundMedia.js"></script>
+
+    <link rel="stylesheet" href="../Sources/JS/hljs/vs2015.css">
+    <script src="../Sources/JS/hljs/highlight.min.js"></script>
+    <script>
+        window.onload = function() {
+            hljs.highlightAll();
+        };
+    </script>
+
+    <link rel="stylesheet" href="../Sources/CSS/main.css">
+</head>
+<body>
+    <h1>Döngü Yapıları</h1>
+
+    <div style="height: 100px;"></div>
+    
+    <div id="mainDiv">
+        <h2>Döngü Nedir?</h2>
+        <pre id="preh2">Döngü, başdaki noktadan sondaki noktaya varınca tekrar başa dönen kod yapılarıdır.</pre>
+
+        <pre id="preh2">Örnek olarak bir programda kullanıcıya yüz kere "Hoşgeldin" mesajı yazmamız gereken bir durum olduğunu varsayalım. Peki biz kullanıcıya yüz kere "Hoşgeldin" mesajını yazmak istersek ne yaparız? Bu durumda yüz kere yazdırma komutu yazdırabilirsiniz fakat bu yöntem hem pratik değil hemde kod israfı yapmış oluruz.</pre>
+
+        <pre id="preh2">İşte bu gibi durumlarda döngüler devriye girer. Belki yüz belki bin satırlık kodu bizler için üç veya beş satırlık(Programın yapsına bağlı olarak) indirmemizi sağlar. Hem bilgisayarımız hemde programcı olarak bizler yorulmamış oluruz ki enerjilerimizi başka işlemler için kullanabilelim.</pre>
+
+        <h2>While</h2>
+        <pre id="preh2">While, C++ programlama dilindeki bir döngü yapısıdır. Parantezlerindeki değer bir ise sıfır olana kadar kod bloklarının içerisindeki kodları döndürmeye devam eder.</pre>
+
+        <pre id="codeh2">Şimdi sizlere giriş kısmında bahsettiğimiz yüz kere "Hoşgeldin" mesajı uygulamasını yazalım.
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main()
+{
+    short whileSayac = 0; // While'a bir sayaç vermeliyiz ki kısır döngüye girmesin. Çünkü eğer girerse program çökebilir
+
+    while(whileSayac < 100) // whileSayac, 100 değerinde küçük oldukça
+    { // Bu kod bloğundaki kodları döndür
+        cout << "Hosgeldiniz" << endl;
+
+        whileSayac++; // ++, değişkenlere bir değer artırmak için kullanılır. whileSayac'a 1 değer ekledik ki While'daki koşula uygun olsun
+    }
+
+    return 0;
+}</code>
+
+Çıktıda yüz adet "Hosgeldiniz" mesajımızı görebilirsiniz.</pre>
+
+        <pre id="preh2">Fakat dikkat, eğer While'daki koşul kısır döngüye girecek olursa program çökebilir!</pre>
+
+        <h2>For</h2>
+        <pre id="preh2">For, C++ programlama dilindeki bir döngü yapısıdır. While'dan farkı parantezlerindeki belirtilen miktar kadar dönmesidir. Parantezlerinde bir "i" adlı bir sayaç değişkeni belirlenir ve For her kendi bloğunun son satırına geldiğinde o "i" sayaç değişkenini For'da belirtilen miktar kadar artırır. Ayrıca "i"nin hangi değerde For'u durduracağı ise yine For parantezlerinde tanımlanır.</pre>
+
+        <pre id="codeh2">While'da bir değişken ile yaptığım sayaç ile örneğimizi bu sefer For ile yapalım
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main()
+{
+    for (int i = 0; i < 100; i++) // For döngümüz.
+    // int i = 0; Bahsettiğimiz "i" sayaç değişkenini tanımlar. Bu kısımda ismini "i" ve başlangıç değerini 0 olarak belirttik
+    // i < 100; Bu kısımda ise "i"nin koşulunu veriyoruz. "i" yüzden küçük olduğu süreççe dön
+    // i++; Her son paranteze gelinindiğinde "i"i 1 arttır
+    {
+        cout << "Hosgeldin" << endl;
+    }
+
+    return 0;
+}</code>
+
+Çıktımız değişmicektir.</pre>
+
+        <h3>Range Tabanlı For</h3>
+        <pre id="preh3">Range tabanlı For, For döngüsünün bir türüdür ve bir liste veya dizideki elemanları, her bir elemanını For'un her dönüşünde "i"e tanımlayan bir döngüdür.</pre>
+
+        <pre id="preh3">Listeler ve diziler konusunu ilerki sayfalarda daha detaylı değiniceğiz. Fakat şuan Range tabanlı For döngüsünün listelerdeki elemananları sırayla döndürdüğünü bilmemiz yeterlidir. Bu özellikle C++11 standartı ile gelmiştir.</pre>
+
+        <pre id="codeh3">Şimdi sıfırdan dokuza kadar olan rakamların içerdiği bir dizi tanımlayalım ve Range tabanlı For ile sayıları konsol ekranına bastıralım.
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main()
+{
+    int sayilar[] = {0,1,2,3,4,5,6,7,8,9}; // 0'dan 9'a olan rakamlar
+
+    for (int i: sayilar) // Range tabanlı For döngüsü
+    // Parantezlerinde "i" adlı bir Integer veri türüne sahip elemanları kendine tanımlıcak olan bir değişken tanımlıyor. Daha sonraki kısımda girilen dizi ise "i" değişkenine atanacak olan değerleri içerisinde bulunduran dizedir
+    {
+        cout << i << endl; // Teker teker elemanları yazdıralım
+    }
+
+    return 0;
+}</code>
+
+Çıktı ise;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/7 Cpp Döngü Yapıları.html/1.png" alt="7.1" width="80%">
+        </div>
+
+        <h2>Break</h2>
+        <pre id="preh2">Break, C++ döngü yapılarındaki döngüyü kırma aracıdır. Çalıştığı koddaki hangi döngü içerisinde ise o döngüyü kırar ve program akışını döngüden sonraki kısma ilerletir.</pre>
+
+        <pre id="codeh2">Şimdi For örneğimizdeki kısımda diyelim ki döngünün ellinci adımında döngünün durmasını istiyorum. O zaman bir koşul koyarız ve "i"nin değeri elli olduğunda döngüyü kıran bir koşul yazarız. Ayrıca döngünün başladığını, döngünü adımlarını ve döngünün bittiğini bildirmek amacıyla yazdırma komutlarıda ekliyelim.
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main()
+{
+    cout << "Dongu Basladi..." << endl << endl;
+
+    for (int i = 0; i < 100; i++)
+    {
+        cout << "Dongunun " << i << ". adimindaki mesaj; " << "Hosgeldin" << endl;
+
+        if (i == 50) // Döngü 50. adıma vardığında çalışıcak olan koşul
+        {
+            break; // Döngüyü kırıcak olan satır
+        }
+    }
+
+    cout << endl << "Dongu son buldu..." << endl;
+
+    return 0;
+}</code>
+
+Çıktı;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/7 Cpp Döngü Yapıları.html/2.png" alt="7.2" width="80%">
+        </div>
+
+        <h2>Continue</h2>
+        <pre id="preh2">Continue ise döngü yapılarındaki, çalıştırıldığında döngünün mevcut adımını atlar ve bir sonraki adıma deveder.</pre>
+
+        <pre id="codeh2">Şimdi ise Break yerine Continue yazalım ve çıktıda ne gibi değişiklik olduğunu gözlemleyelim.
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main()
+{
+    cout << "Dongu Basladi..." << endl << endl;
+
+    for (int i = 0; i < 100; i++)
+    {
+        if (i == 50) // Döngü 50. adıma vardığında çalışıcak olan koşul
+        {
+            continue; // Döngünün adımını atlıcak olan satır
+        }
+
+        cout << "Dongunun " << i << ". adimindaki mesaj; " << "Hosgeldin" << endl;
+    }
+
+    cout << endl << "Dongu son buldu..." << endl;
+
+    return 0;
+}</code>
+
+Çıktı ise;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/7 Cpp Döngü Yapıları.html/3.png" alt="7.3" width="80%">
+        </div>
+
+        <h2>Kaynakça</h2>
+        <ul>
+            <li><a href="https://www.geeksforgeeks.org/cpp/range-based-loop-c/">https://www.geeksforgeeks.org/cpp/range-based-loop-c/</a></li>
+        </ul>
+    </div>
+
+    <div style="height: 100px;"></div>
+
+    <footer style="position: fixed; left: 0; bottom: 0; width: 100%; background: transparent; text-align: center; padding: 10px 0; z-index: 100;">
+        <div>
+            <a href="./6 Cpp Karar Yapıları.html" style="margin-right: 20px; cursor:pointer;">
+                &larr; Önceki
+            </a>
+            <a href="" style="cursor:pointer;">
+                Sonraki &rarr;
+            </a>
+        </div>
+        <div>
+            <p>&copy; 2026 Data's Book</p>
+        </div>
+
+        <div style="position: absolute; right: 20px; bottom: 20px;">
+            <a href="./1 Cpp İçindekiler.html" style="text-decoration: none;">
+                İçindekiler
+            </a>
+        </div>
+    </footer>
+</body>
+</html>
+
+<!-- Muhammet Enes nam-ı diğer Data Delete tarafından sevgi ile yapıldı <3 -->
