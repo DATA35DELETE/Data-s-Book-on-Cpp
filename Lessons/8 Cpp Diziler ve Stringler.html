@@ -32,7 +32,7 @@
 
         <pre id="preh2">Diziler sabit ve tek tür verileri depolamak için harika yapılardır. Bu sebeble çoğu sistemde verileri birer bütün şeklinde depolamak için diziler kullanılır.</pre>
 
-        <pre id="codeh2">Tanımlamak için üç şekilde yönetem yer almaktadır.
+        <pre id="codeh2">Tanımlamak için iki şekilde yönetem yer almaktadır.
 
 Birinci yöntem
 <code class="language-cpp">int sayilarDizini[5]; // Boyutu önceden tanımlı bir dizi oluşturabiliriz. Dizilerin boyutları köşeli parantezlerin([]) içerisine yazılır. Bu ifadede biz bilgisayardan "5 adet Integer veri türünü depolayabilceğimiz bir değişken" isteğinde bulunmuş olduk.
@@ -40,14 +40,82 @@ Birinci yöntem
 sayilarDizini[0] = 12; // Ayrıca dizilerin içerisindeki verileri erişmek ve değiştirmek içinde köşeli parantezlerde dilediğimiz verinin Index numarasını girerek erişebiliriz. Index bir listeleme sistemidir. İlk elemanı 0 olarak sayar ve sonsuza kadar gider. Bu ifadede 0. yani birinci elemanın değerini 12 yaptık</code>
 
 İkinci yöntem
-</pre>
+<code class="language-cpp">int sayilarDizini[] = {1,4,7,8}; // Boyutu belirtmeden önceden değerlerini atıyabiliriz. C++ bizim için, değerlerin sayısını hesaplar ve dizinin boyutunu ona göre ayarlar
+
+cout << sayilarDizini[2] << endl; // Aynı şekilde Index numarasına görede değerlere erişebiliriz</code></pre>
+
+        <h2>Tek Boyotlu Diziler</h2>
+        <pre id="preh2">Tek boyutlu diziler, tek bir sıra şeklinde değerlerin sıralandığı dizilerdir. Tek bir köşeli parantez([]) ile kullanılır.</pre>
+
+        <pre id="codeh2">Bir üst konuda verdiğimiz örneklerin hepsi bir boyutlu dizilere örnektir. Şimdi on,yirmi,otuz,kırk ve elli sayılarını içeren bir dizi tanımlayalım ve "Döngü Yapıları" sayfamızda değindiğimiz Range tabanlı For ile ekrana yazdıralım.
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main(){
+
+    int sayilar[] = {10,20,30,40,50};
+
+    for (int sayi : sayilar) // Dizideki elemanların veri türü Integer olduğu için int veri türündeki "sayi" değişkenine atadık
+    {
+        cout << sayi << endl; // Range tabanlı For'dan gelen verileri ekrana yazdırıyoruz
+    }
+    
+}</code>
+
+Çıkıt;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/8 Cpp Diziler ve Stringler.html/1.png" alt="8.1" width="80%">
+        </div>
+
+        <h2>Çok Boyutlu Diziler</h2>
+        <pre id="preh2">Çok boyutlu diziler, bir Index içerisinde başka bir Index tanımlayabildiğimiz, sütünlar ve satırlar gibi yapılar kurabildiğimiz dizilerdir. Çok boyutlu dizileri tanımlamak için birden fazla köşeli parantezlerle, bir bütün olarak tutacak olan süsle parantezlerine({}) içerisine ikinci boyutdaki değerli süslü parantezlerine yazarız.</pre>
+
+        <pre id="codeh2">Şimdi ise tek boyutta yaptığımızı bu sefer çok boyutlu şekilde yapalım.
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main(){
+
+    int sayilar[2][5] = {
+                      {10,20,30,40,50}, 
+                      {1 , 2, 3, 4, 5}
+                    }; // Bu şekilde çok boyutlu diziler tanımlanır. Boyutları önceden girilmelidir
+
+    for (int i = 0; i < 2; i++)
+    {
+        for (int j = 0; j < 5; j++)
+        {
+            cout << sayilar[i][j] << "|";
+        }   
+
+        cout << endl;
+    } // Tablo gürünümü elde etmek için bu şekil bir iç içe For yapısı kullandık
+
+    return 0;
+}</code>
+
+Çıktı ise;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/8 Cpp Diziler ve Stringler.html/2.png" alt="8.2" width="80%">
+        </div>
+
+        <h2>Kaynakça</h2>
+        <ul>
+            <li><a href="https://www.geeksforgeeks.org/cpp/cpp-multidimensional-array/">https://www.geeksforgeeks.org/cpp/cpp-multidimensional-array/</a></li>
+        </ul>
     </div>
 
     <div style="height: 100px;"></div>
 
     <footer style="position: fixed; left: 0; bottom: 0; width: 100%; background: transparent; text-align: center; padding: 10px 0; z-index: 100;">
         <div>
-            <a href="" style="margin-right: 20px; cursor:pointer;">
+            <a href="./7 Cpp Döngü Yapıları.html" style="margin-right: 20px; cursor:pointer;">
                 &larr; Önceki
             </a>
             <a href="" style="cursor:pointer;">
