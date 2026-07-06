@@ -109,7 +109,6 @@
   > Temel İşlemler
 - **std::array**: Tanım. C dizisi ile Farkı. Örnek.
 - **String Yapısı**: Tanım. C-string vs `std::string`. Örnek.
-  > string Metodları
 - **std::string Fonksiyonları**: `length`, `substr`, `find`, `replace`, `append`, `compare`. Örnek.
 - **std::string_view**: Tanım. Kullanım Senaryosu. Örnek. (C++17)
  

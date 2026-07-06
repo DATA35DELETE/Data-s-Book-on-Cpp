@@ -105,9 +105,264 @@ int main(){
             <img src="../Bibliography/8 Cpp Diziler ve Stringler.html/2.png" alt="8.2" width="80%">
         </div>
 
+        <h2>C++ Array</h2>
+        <pre id="preh2">C dilinde bulunmayan C++11 standartıyla gelen bir dizi türü olan Array, Array kütüphanesinde yer almaktadır.</pre>
+
+        <pre id="preh2">Peki C tarzıyla oluşturulan dizilerden farkı nedir? Tabi ki OOP'nin nimetlerinden faydalanarak dizileri kullanma imkanıdır. C dili her ne kadar hızlı, performanslı ve fikrimce mükemmel olsada yapısı gereği tüm her işlevleri kendiniz yazmanız gerekir. Örnek olarak bir String ifadesinde belirli bir kısmı String olarak almak istersek biz bu işlemi C'de kendimizi yazarız. Bu durum bazen yorucu veay uğraştırıcı bir hal aldığında işler bir miktar sıkıcı hale gelmektedir. Bu sıkıcılık C++ programcılarında aklına gelecek olucak ki OOP'nin gücü ile hazır metodlar yazmışlardır. İşte C++ Array'de bu ihtiyaç durumunda ortaya çıkmıştır.</pre>
+
+        <pre id="codeh2">Array tanımlamak için yeni görcek olacağımız bir OOP özelliği olan Temple ile tanımlarız. Temple, "&lt;>" karaterlerin arasında parametre veriyormuşuz gibi belirli başlı değerler vermemizi sağlayan bir yapıdır. Şimdi örnek olarak bir Array tanımı yapalım.
+
+<code class="language-cpp">std::array<int, 5> ornekBirArray = {10,20,30,40,50}; // Yazılma şekli olarak C'deki dizilere benzetebeliriz
+// Temple'ın içerisindeki birinci argüman hangi tür için dizi oluşturucağı ifadesini belirler. Biz burada Integer veri türünce tanımladığımız için "int" yazdık
+// Temple'ın içerisindeki ikinci argüman ise dizinin kaç elemanlı olucağını ifade eder. Dizimiz 5 değer içerdiği için "5" ifadesini yazdık</code>
+
+OOP'den bahset ki Array'ın de OOP'den sayesinde var olduğunu da söyledik. Şimdi hazır fonksiyonlarına bir göz atalım;
+
+<code class="language-cpp">#include &lt;iostream>
+#include <array> // Array nesnesini kullanmamız için kütüphanemiz
+
+using namespace std;
+
+int main(){
+
+    std::array&lt;int, 5> ornekBirArray = {10,20,30,40, 50};
+
+    int arraydekiElemanAlma = ornekBirArray.at(2); // Array'den Index ile eleman alma
+    cout << "2. Index'deki elemanin degeri; " << arraydekiElemanAlma << endl << endl;
+
+    cout << "3. Index'deki elemanin degeri; " << ornekBirArray[3] << endl << endl; // C tarzı ile Index'li eleman alma
+
+    int arraydekiIlkElemaniAlma = ornekBirArray.front(); // Array'deki ilk elemanı alır
+    cout << "Array'deki ilk eleman; " << arraydekiIlkElemaniAlma << endl << endl;
+
+    int arraydekiSonElemaniAlma = ornekBirArray.back(); // Array'deki son elemanı alır
+    cout << "Array'deki son eleman; " << arraydekiSonElemaniAlma << endl << endl;
+
+    bool arrayBosMu = ornekBirArray.empty(); // Array'in boş olup olmadını kontrol eder. Boşsa True değilse False döndürür
+    cout << "Array bos mu; " << ((arrayBosMu) ? "evet" : "hayir" ) << endl << endl;
+
+    int arrayBoyutu = ornekBirArray.size(); // Array'in boyutunu alır
+    cout << "Array'in boyutu; " << arrayBoyutu << endl << endl;
+
+    int arrayinMaksBoyutu = ornekBirArray.max_size(); // Array'in maksimum boyutunu alır
+    cout << "Array'in maksimum boyutu; " << arrayinMaksBoyutu << endl << endl;
+
+    ornekBirArray.fill(32); // Array'deki tüm değerleri parantezlerindeki değer ile üzerlerine yazar
+
+    cout << "4. Index'deki elemanin degeri; " << ornekBirArray[4] << endl;
+    cout << "2. Index'deki elemanin degeri; " << ornekBirArray[2] << endl << endl;
+
+    array arrayinBaskaBirIcerigi = {1,2,3,4,5}; // İstersekde Temple'sız da tanımlayabiliriz. C++ bizim yerimize Temple'in içeriğini doldurucaktır
+
+    ornekBirArray.swap(arrayinBaskaBirIcerigi); // Array'in içeriğini başka bir Array'in içeriği ile değiştirir
+
+    cout << "4. Index'deki elemanin degeri; " << ornekBirArray[4] << endl;
+    cout << "2. Index'deki elemanin degeri; " << ornekBirArray[2] << endl;
+
+    return 0;
+}</code>
+
+Çıktı ise;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/8 Cpp Diziler ve Stringler.html/3.png" alt="8.3" width="80%">
+        </div>
+
+        <h2>String Yapısı</h2>
+        <pre id="preh2">String, C dilinde bulunmayan bir değişken türüdür. Fakat zamanında bu ihtiyacı eskiden Char dizisi karşılardı. Programcılar bellekte depolıcakları yazıları Char dizisi olarak saklar ve zamanı geldiğinde kullanırdı. Zaman geçtikçe program karmaşıklaştıkça veri yapılarıda karmaşıklaştı. C dilinde String yapısı hala bulunmamakta fakat onun yerine dolduran ve C standartlarıyla geliştirilen Char dizisi fonksiyonları bulunmakta fakat onlarda günümüzün en azından "Rahat kod yazma" işlevine sahip olmadıkları için C++ dilinde özel bir veri yapısı olarak String çıkarılmıştır. Mantık aynı fakat işleyişi programcılar yerine artık C++ içerisinde çalışıcak olan otomatik kodlar yapmaktadır. Böylece o eski Char dizisi ile işlemleri biz yerine artık makineler kendilerine yazılan kodlar sayesinde yapmaktadır.</pre>
+
+        <pre id="codeh2">Şimdi gelin sizlerle beraber basit bir örnek yapalım. İlk olarak C programlama dili ve C++ programlama dili ile bir String ifadesine ekleme örneği yazalım. Ardından iki kod ile karşılaştırma yapalım.
+
+C Kodu
+<code class="language-c">#include &lt;stdio.h> // C'de G/Ç işlemleri için olan kütüphane
+#include &lt;string.h> // Char dizisi(String) türü için kütüphane
+
+int main(){
+
+    char ornekBirStringIfadesi[38] = "Hello World"; // Tanımlama
+
+    strncat(ornekBirStringIfadesi, " of Low-Level Programming!", 27);
+    // Strncat Char dizisi ifadelere ekleme yapan bir C fonksiyonudur
+    // ornekBirStringIfadesi; Hedef ifade
+    // " of Low-Level Programming!"; Kaynak ifade
+    // 27; Kaynak ifadesinin boyutu, boyut belirtirmelidir yoksa bellek hataları başımızı ağrıtabilir
+
+    printf("%s\n", ornekBirStringIfadesi); // Yazdırma fonksiyonu
+
+    return 0;
+}</code>
+
+C++ kodu
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main(){
+
+    string ornekStringIfadesi = "Hello World"; // String ifadesi tanımlayalım
+
+    ornekStringIfadesi += " of Low-Level Programming!"; // Ekleme işlemini sanki bir sayısal değişkene değer ekliyormuş gibi yapılır
+
+    cout << ornekStringIfadesi << endl; // Yazdırma
+
+    return 0;
+}</code>
+
+Çıktıları her ikisininde aynı olasada yapma şekilleri birbirinden farklıdır. C'de her durum ve işlem programıcının elindedir. Ne yapılcaksa ilk önce hesaplanmalı ve mantık oturturarak yazılmalıdır. C++ programlama dili ise bu tarz "uğraştırıcı" işlemleri bizim yermize yapmaktadır. Böylelikle daha "rahat" kod yazabilmemizi sağlar.</pre>
+
+        <h2>String Fonksiyonları</h2>
+        <pre id="preh2">Gelin String türünün bizlere sunduğu hazır fonksiyonlara göz atalım.</pre>
+
+        <pre id="codeh2"><code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main(){
+
+    string ornekStringIfadesi = "Hello World";
+    cout << ornekStringIfadesi << endl << endl;
+
+    ornekStringIfadesi += " of Low-Level Programming!";
+    cout << ornekStringIfadesi << endl << endl;
+
+    ornekStringIfadesi.append(" And You!"); // String ifadeye parantezlerindeki ifadeyi ekler
+    cout << ornekStringIfadesi << endl << endl;
+
+    ornekStringIfadesi.assign("Selam Dusuk Seviye Programlama! Ve Sanada!"); // Parantezlerindeki belirtilen ifadeyi String'in içeriği ile değiştirir
+    cout << ornekStringIfadesi << endl << endl;
+
+    char stringinBirKarateriniAlma = ornekStringIfadesi.at(4);
+    cout << "String ifadenin 4. Index'deki elemani; " << stringinBirKarateriniAlma << endl << endl;
+
+    char stringinIlkKarakteriniAlma = ornekStringIfadesi.front();
+    cout << "String ifadenin Ilk karateri; " << stringinIlkKarakteriniAlma << endl << endl;
+
+    char stringinSonKarakteriniAlma = ornekStringIfadesi.back();
+    cout << "String ifadenin Ilk karateri; " << stringinSonKarakteriniAlma << endl << endl;
+
+    const char *C_YazimSekliIleCharDizisiAlma = ornekStringIfadesi.c_str(); // C++ String ifadesini C'deki Char dizisine dönüştürme
+    cout << "C'deki Char dizisi ile String" << C_YazimSekliIleCharDizisiAlma << endl << endl;
+
+    int stringinKapasitesi = ornekStringIfadesi.capacity(); // String ifadenin kapasitesini alır
+    cout << "String ifadenin kapasitesi; " << stringinKapasitesi << endl << endl;
+
+    ornekStringIfadesi.clear(); // String ifadenin içeriğini siler
+    cout << "String ifadenin icerigi; '" << ornekStringIfadesi << "'" << endl << endl; 
+
+    string stringIfadeninBaskaBirIcerigi = "Yeni Icerik";
+    ornekStringIfadesi.swap(stringIfadeninBaskaBirIcerigi);
+
+    bool stringIfadelerAyniMi = ornekStringIfadesi.compare("Yeni Icerik"); // String ifadeleri karşılaştırır. Eğer aynı ise False, değil ise True sonucunu verir
+    cout << "Yeni Icerik == " << ornekStringIfadesi << " = " << ((stringIfadelerAyniMi) ? "False" : "True") << endl << endl;
+    
+    char stringIfadeninKopyasi[5]; // Kopya String için bir Char dizisi
+    ornekStringIfadesi.copy(stringIfadeninKopyasi, 4, 0); // String ifadenin Char dizisi şeklinde belirli bir kısmını kopyalayıp Char dizi değişkenine atamamızı sağlar
+    // stringIfadeninKopyasi; Atanacak Char dizisi
+    // 4; Nereye kadar
+    // 0; Nerden kopyalancağı
+    cout << stringIfadeninKopyasi << endl << endl;
+
+    bool stringBosMu = ornekStringIfadesi.empty();
+    cout << "String bos mu; " << ((stringBosMu) ? "evet" : "hayir" ) << endl << endl;
+
+    ornekStringIfadesi.erase(0,5); // String ifadeden belirli kısımları siler
+    // 0; Nerden
+    // 5; Nereye kadar sileceği
+    cout << ornekStringIfadesi << endl << endl;
+
+    int stringIfadenin_i_Nerede = ornekStringIfadesi.find("i"); // Parantezlerindeki karaterin kaçıncı Index'de olduğunu bulur
+    cout << "String icerisindeki 'i' karakterinin Index numarasi; " << stringIfadenin_i_Nerede << endl << endl;
+
+    ornekStringIfadesi.insert(ornekStringIfadesi.begin()+2, 'E'); // String ifadanin karakterlerinin arasına bir Char değerini yazmamızı sağlar
+    // ornekStringIfadesi.begin()+2; Bir nevi String ifadenin başını veren bir metod olan .begin adında bir fonksiyon ile, Bu ifadede String ifadenin başından 2 karakter ilerisine 'E' karakterini yaz dedik
+    cout << ornekStringIfadesi << endl << endl;
+
+    int stringinUzunlugu = ornekStringIfadesi.length();
+    cout << "String ifadenin uzunlugu; " << stringinUzunlugu << endl << endl;
+
+    long long unsigned int stringinMaksBoyutu = ornekStringIfadesi.max_size();
+    cout << "String ifadenini maksimum uzunlugu; " << stringinMaksBoyutu << endl << endl;
+
+    ornekStringIfadesi.pop_back(); // Sondaki karateri siler
+    cout << ornekStringIfadesi << endl << endl;
+
+    ornekStringIfadesi.push_back('k'); // Sona karater ekler
+    cout << ornekStringIfadesi << endl << endl;
+
+    ornekStringIfadesi.replace(ornekStringIfadesi.begin(), ornekStringIfadesi.end(), "Degistirilmis Icerik"); // String ifadenin içeriğini belirli bir yerden başka bir yere değiştirme
+    // ornekStringIfadesi.begin(); Başlangıç Iterator'u
+    // ornekStringIfadesi.end(); Sondaki Iterator'u
+    // "Degistirilmis Icerik"; Değiştirilecek olan içerik
+    cout << ornekStringIfadesi << endl << endl;
+
+    ornekStringIfadesi.reserve(100); // Kapasitesini düzenlememizi sağlar
+    stringinKapasitesi = ornekStringIfadesi.capacity();
+    cout << "String ifadenin kapasitesi; " << stringinKapasitesi << endl << endl;
+
+    int stringinBoyutu = ornekStringIfadesi.size(); // String ifadenini boyutunu alır
+    cout << "String ifadenin boyutu; " << stringinBoyutu << endl << endl;
+
+    ornekStringIfadesi.resize(100); // String ifadenin boyutunu düzenler
+    stringinBoyutu = ornekStringIfadesi.size();
+    cout << "String ifadenin boyutu; " << stringinBoyutu << endl << endl;
+
+    ornekStringIfadesi.shrink_to_fit(); // String ifadenin gerekli alan kadar kapasitesini düzenler
+    stringinKapasitesi = ornekStringIfadesi.capacity();
+    cout << "String ifadenin kapasitesi; " << stringinKapasitesi << endl << endl;
+
+    string ornekStringIfadesininBirKismi = ornekStringIfadesi.substr(0,14); // String bir ifadenin belirli bir kısmını String olarak alma
+    // 0; Nerden
+    // 14; Nereye alınacak olan karakterler
+    cout << "String ifadenin 0 ila 14 arasindaki karakterlerin String ifadeli seklinde degeri; " << ornekStringIfadesininBirKismi << endl;
+
+    return 0;
+}</code>
+
+Çıktı ise;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/8 Cpp Diziler ve Stringler.html/4.png" alt="8.4" width="80%">
+        </div>
+
+        <h2>String_View Türü</h2>
+        <pre id="preh2">String_View, String türünün salt okunur(Sadece okunur, değiştirilemez veya eklenemez) şeklindeki bir varyasnudur. C++17 standartı ile C++ programlama diline katılan, String türünün donanım üzerindeki maaliyetlerinden dolayı ortaya çıkmıştır türdür.</pre>
+
+        <pre id="codeh2">Amaç ise sadece "yazı" olarak kullanılan String ifadelerin daha saf ve değiştirilemez dolayısıyla kaynak tasarufu yapabilceğimiz bir değişken türüdür. Gelin bir örnek yapalım;
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main(){
+
+    string_view saltOkunurStringIfade = "C++ bir Low-Level Programlama dilidir."; // Kullanımı
+
+    //saltOkunurStringIfade += " Hayir degildir";
+    // Bu komut sizlere hata vericektir. Çünkü String_View değiştirileme veya eklenemez
+
+    cout << saltOkunurStringIfade << endl;
+
+    return 0;
+}</code>
+
+Çıktı;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/8 Cpp Diziler ve Stringler.html/5.png" alt="8.5" width="80%">
+        </div>
+
         <h2>Kaynakça</h2>
         <ul>
             <li><a href="https://www.geeksforgeeks.org/cpp/cpp-multidimensional-array/">https://www.geeksforgeeks.org/cpp/cpp-multidimensional-array/</a></li>
+            <li><a href="https://en.cppreference.com/cpp/container/array">https://en.cppreference.com/cpp/container/array</a></li>
+            <li><a href="https://en.cppreference.com/cpp/container/array/fill">https://en.cppreference.com/cpp/container/array/fill</a></li>
+            <li><a href="https://cplusplus.com/reference/string/string/">https://cplusplus.com/reference/string/string/</a></li>
+            <li><a href="https://cplusplus.com/reference/string/string/assign/">https://cplusplus.com/reference/string/string/assign/</a></li>
+            <li><a href="https://cplusplus.com/reference/string/string/compare/">https://cplusplus.com/reference/string/string/compare/</a></li>
+            <li><a href="https://cplusplus.com/reference/string/string/reserve/">https://cplusplus.com/reference/string/string/reserve/</a></li>
+            <li><a href="https://cplusplus.com/reference/string/string/shrink_to_fit/">https://cplusplus.com/reference/string/string/shrink_to_fit/</a></li>
+            <li><a href="https://cplusplus.com/reference/string/string/erase/">https://cplusplus.com/reference/string/string/erase/</a></li>
+            <li><a href="https://www.learncpp.com/cpp-tutorial/introduction-to-stdstring_view/">https://www.learncpp.com/cpp-tutorial/introduction-to-stdstring_view/</a></li>
         </ul>
     </div>
 
