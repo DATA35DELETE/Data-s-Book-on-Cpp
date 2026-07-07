@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data's Book on Cpp</title>
+
+    <link rel="icon" type="image/x-icon" href="../Sources/favicon.png">
+
+    <script src="../Sources/JS/setBackgroundMedia.js"></script>
+
+    <link rel="stylesheet" href="../Sources/JS/hljs/vs2015.css">
+    <script src="../Sources/JS/hljs/highlight.min.js"></script>
+    <script>
+        window.onload = function() {
+            hljs.highlightAll();
+        };
+    </script>
+
+    <link rel="stylesheet" href="../Sources/CSS/main.css">
+</head>
+<body>
+    <h1>Hata Yönetimi</h1>
+
+    <div style="height: 100px;"></div>
+    
+    <div id="mainDiv">
+        <h2>Hata Yönetimi Nedir?</h2>
+        <pre id="preh2">Hata yönetimi, bir programda beklenmeyen bir durum ile karşılaştığındaki programın davranış biçimine hata yönetimi denir.</pre>
+
+        <pre id="preh2">Hata yönetimi esasen çok önemli bir konudur. Çünkü neredeyse tüm hatalar programı çökertecek potansiyele sahiptir ve biz programın çökmesini elbette istemeyiz. İşte bu sebeble hata yönetimini iyi yapmalıyız ki beklenmeyen durumlara hazırlıklı olalım.</pre>
+
+        <h2>Errno</h2>
+        <pre id="preh2">Errno, C'den beri var olan ve hata kodlarını kendine kayıt eden bir değişken görevi görür. Bir nevi eğer beklenmeyen bir durum gerçekleştiğinde haya kodu ilk olarak Errno'ya kayıt edilir.</pre>
+
+        <pre id="codeh2">Gelin beraber bir örnek yapalım. Dosya işlemlerinden olan dosya yazma komutnu kullanalım. "Dosya İşlemleri" sayfasında daha detaylı inceleceğimiz bu işlemde, komut eğer okunacak bir dosya bulamazsa bir hata kodu ile programa devam eder. İşte bu dönen hata kodu Errno'ya kayıt edilir. Gelin bu kodda bu örneği gözlemleyelim.
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main(){
+    
+    FILE* ornekDosya = fopen("okunacakDosya.Uzantisi", "r"); // Dosya okuma işlemidir. Böyle bir dosya bulunmadığı için hata kodu vericektir ve NULL döner
+    if (ornekDosya == NULL) // Birçok standart komut gibi fopen da başarısız olursa NULL döner. Bir başka hata yönetimi tekniğide budur
+    {
+        cout << "Hata kodu; " << errno << endl; // Kodu ilettik
+    }
+    
+    fclose(ornekDosya);
+
+}</code>
+
+Çıktı ise;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/10 Cpp Hata Yönetimi.html/1.png" alt="10.1" width="80%">
+        </div>
+
+        <pre id="preh2">Hata kodları belirli başlı hataların ne anlama geldiğini sayısal olarak ifade etmek için kullanılır. Belirli başlı hataların kodlarını bu tabloda görebilirsiniz;</pre>
+
+        <table id="tableh2" border="1">
+            <thead>
+                <tr>
+                    <th>Hata Kodu</th>
+                    <th>Anlamı</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>0</td>
+                    <td>Hata Yok</td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>İşlemeye İzin Verilmiyor</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Böyle Bir Dizin veya Dosya Yok</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Böyle Bir Süreç Yok</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Kesintiye Uğramış Sistem Çağrısı</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>G/Ç Hatası</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>Böyle Bir Cihaz veya Adres Yok</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>Argüman Listesi Çok Uzun</td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>Yürütme Biçimi Hatası</td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>Geçersiz Dosya Numarası</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>Çocuk Süreçleri Yok</td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td>Tekrar Deneyin</td>
+                </tr>
+                <tr>
+                    <td>12</td>
+                    <td>Hafıza Yetersiz</td>
+                </tr>
+                <tr>
+                    <td>13</td>
+                    <td>İzin Red Edildi</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Perror ve Strerror</h2>
+        <pre id="preh2">Perror ve Strerror, ikiside hata kodlarından hata mesajlarını almak için kullandığımız için fonksiyondur.</pre>
+
+        <pre id="preh2">Perror, mevcut Errno'u alır ve parantezlerinde belirtilen hata ile beraber ekrana yazdırır. Strerror ise girilen hata koduna bağlı olan hata mesajını sonuç olarak verir.</pre>
+
+        <pre id="codeh2">Örnek olması açısından mevcut kodumuza bu iki özelliği ekliyelim
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;string.h> // Strerror için C API'larından string.h'a ihtiyaç duyarız. Evet C'deki kodları istersek C++'da direkt olarak kullanabiliriz
+
+using namespace std;
+
+int main(){
+    
+    FILE* ornekDosya = fopen("okunacakDosya.Uzantisi", "r");
+    if (ornekDosya == NULL)
+    {
+        cout << "Hata kodu; " << errno << endl;
+        perror("Perror ile hata mesaji"); // Perror ile hata mesajını gösterdik
+        cout << "Hata mesaji; " << strerror(errno) << endl; // Strerror ile de hata mesajını aldık
+    }
+    
+    fclose(ornekDosya);
+
+}</code>
+
+Çıktı;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/10 Cpp Hata Yönetimi.html/2.png" alt="10.2" width="80%">
+        </div>
+
+        <h2>Assert</h2>
+        <pre id="preh2">Assert komutu bizlere bir programda hata yönetiminde direkt programı hata mesajı ile kapatmamızı sağlayan özel bir fonksiyondur.</pre>
+
+        <pre id="preh2">Parantezlerindeki değer eğer sıfır ise programı durdurur ve hata mesajını ekrana bastırır.</pre>
+
+        <pre id="codeh2">Gelin bu özelliği programa dahil edelim
+
+<code class="language-cpp">#include <iostream>
+#include <cassert> // Assert fonksiyonu için gerekli kütüphane
+
+using namespace std;
+
+int main(){
+    
+    FILE* ornekDosya = fopen("okunacakDosya.Uzantisi", "r");
+    
+    assert(ornekDosya != NULL); // ornekDosya NULL olduğunu için Assert programı durdurur
+    
+    fclose(ornekDosya);
+
+    return 0;
+}</code>
+
+Çıktı;</pre>
+
+        <div id="divh2Img">
+            <img src="" alt="10.3" width="80%">
+        </div>
+
+        <h2>İstisna Yönetimi</h2>
+        <pre id="preh2">Geldik C'de bulunmayana fakat C++ ile gelen özelliğimize, istisna yönetimi! Bu yöntem C'deki gibi hata yönetimine kıyasla çok daha High-Level ve daha kullanışlı bir yöntemdir.</pre>
+
+        <h3>Try-Catch-Throw</h3>
+        <pre id="preh3">Bu yapı C++ programlama dilinde bizlere istisna yönetimini mümkün kılan yapıdır. Mantığı ise <code>try</code>'ın blokları <code>throw</code> ile çıkartılıcak olan hataları yakalar ve <code>catch</code> gönderir, <code>catch</code>, <code>throw</code> ile çıkartılan hataların mesajlarını parametre olarak atar. <code>Throw</code> ise hata çıkartmamızı sağlar.</pre>
+
+        <pre id="codeh3">Gelin bu yeni özellikle ile kodumuzu geliştirelim;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;string.h>
+
+using namespace std;
+
+int main(){
+    FILE* ornekDosya; // Değişkenini bu kısımda tanımladık çünkü fclose Try içerisine erişemez
+
+    try // Throw ile hata çıkartılıcak olan kısım
+    {
+        ornekDosya = fopen("okunacakDosya.Uzantisi", "r");
+        if (ornekDosya == NULL) // Açma kısmında hata çıkarsa
+        {
+            throw errno; // Hata kodunu gönder
+        }
+    }
+    catch(int e) // Throw ile çıkartılan hataların geldiği kısım
+    {
+        cerr << "Hata mesaji; " << strerror(e) << endl; // Standart Error ile hata şeklinde çıktı çıkartalım
+    }
+    
+    fclose(ornekDosya);
+
+    return 0;
+}</code>
+
+Çıktı ise;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/10 Cpp Hata Yönetimi.html/4.png" alt="10.4" width="80%">
+        </div>
+
+        <pre id="preh3">Throw ile tabi Integer yerine başka veri türleride Catch'e gönderilebilir. Sadece Catch tarafında Throw'un gönderdiği değişken türünü yakalıcak bir kısım olsa yeterlidir.</pre>
+
+        <h2>Kaynakça</h2>
+        <ul>
+            <li><a href="https://data35delete.github.io/Data-s-Book-on-C/Lessons/10%20C%20Hata%20Yönetimi.html">https://data35delete.github.io/Data-s-Book-on-C/Lessons/10%20C%20Hata%20Yönetimi.html</a></li>
+            <li><a href="https://www.softwaretestinghelp.com/assert-in-cpp/">https://www.softwaretestinghelp.com/assert-in-cpp/</a></li>
+            <li><a href="https://www.geeksforgeeks.org/cpp/exception-handling-c/">https://www.geeksforgeeks.org/cpp/exception-handling-c/</a></li>
+        </ul>
+    </div>
+
+    <div style="height: 100px;"></div>
+
+    <footer style="position: fixed; left: 0; bottom: 0; width: 100%; background: transparent; text-align: center; padding: 10px 0; z-index: 100;">
+        <div>
+            <a href="./9 Cpp Pointerlar.html" style="margin-right: 20px; cursor:pointer;">
+                &larr; Önceki
+            </a>
+            <a href="" style="cursor:pointer;">
+                Sonraki &rarr;
+            </a>
+        </div>
+        <div>
+            <p>&copy; 2026 Data's Book</p>
+        </div>
+
+        <div style="position: absolute; right: 20px; bottom: 20px;">
+            <a href="./1 Cpp İçindekiler.html" style="text-decoration: none;">
+                İçindekiler
+            </a>
+        </div>
+    </footer>
+</body>
+</html>
+
+<!-- Muhammet Enes nam-ı diğer Data Delete tarafından sevgi ile yapıldı <3 -->

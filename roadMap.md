@@ -129,13 +129,9 @@
 - **Hata Yönetimi Nedir?**
 - **errno**: Tanım. Örnek.
 - **perror ve strerror**: Tanım. Örnek.
-- **Return Kodları ile Hata Yönetimi**: Tanım. Örnek.
 - **assert**: Tanım. Örnek.
 - **İstisna Yönetimi (Exception Handling)**: Tanım. C ile Farkı.
   - **try / catch / throw**: Sözdizimi. Örnek.
-  - **std::exception**: Tanım. Türetme. Örnek.
-  - **Özel Exception Sınıfı Yazma**: Tanım. Örnek.
-  - **noexcept**: Tanım. Kullanım. Örnek.
  
 ---
  
@@ -143,6 +139,7 @@
 - **Fonksiyon Nedir?**: Tanım. main Fonksiyonu.
 - **void'li Fonksiyonlar**: Tanım. Örnek.
 - **Return'lü Fonksiyonlar**: Tanım. Örnek.
+  - **Return Kodları ile Hata Yönetimi**: Tanım. Örnek.
 - **Parametreli Fonksiyonlar**: Tanım. Örnek.
 - **Varsayılan Parametreler (Default Parameters)**: Tanım. Örnek.
 - **Fonksiyon Aşırı Yükleme (Function Overloading)**: Tanım. Örnek.
@@ -175,6 +172,10 @@
   - **unique_ptr**: Tanım. Kullanım. Örnek.
   - **shared_ptr**: Tanım. Referans Sayımı. Örnek.
   - **weak_ptr**: Tanım. Döngüsel Referans Sorunu. Örnek.
+- **Class'larla Hata Yönetimi**
+  - **Özel Exception Sınıfı Yazma**: Tanım. Örnek.
+  - **std::exception**: Tanım. Türetme. Örnek.
+  - **noexcept**: Tanım. Kullanım. Örnek.
 - **Kapsülleme (Encapsulation)**: Tanım. Getter/Setter. Örnek.
 - **Kalıtım (Inheritance)**:
   - **Tek Kalıtım**: Tanım. Sözdizimi. Örnek.
