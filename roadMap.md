@@ -117,21 +117,11 @@
 ### C++ : Pointerlar ve Referanslar
 - **Pointer Nedir?**: Tanım. Bellek Adresi. Örnek.
 - **Pointer Tanımlama**: \* ve & operatörleri. Örnek.
-- **Referans (&)**: Tanım. Pointer ile Farkı. Örnek.
 - **Pointer Aritmetiği**: Tanım. Örnek.
-  - **Char Dizisinde Pointer Aritmetiği**
 - **Pointer ve Fonksiyonlar**: Call by Reference. Referans ile Karşılaştırma. Örnek.
 - **Çift Pointer (Double Pointer)**: Tanım. Örnek.
 - **NULL ve nullptr**: Tanım. C ile Farkı. Neden `nullptr`? Örnek.
 - **Akıllı Pointerlar (Smart Pointers)**: Tanım. Neden Kullanılır?
-  - **unique_ptr**: Tanım. Kullanım. Örnek.
-  - **shared_ptr**: Tanım. Referans Sayımı. Örnek.
-  - **weak_ptr**: Tanım. Döngüsel Referans Sorunu. Örnek.
-- **Function Pointers**: Tanım. Kullanım Senaryoları.
-  - **Tanımlama ve Kullanma**: Sözdizimi. Örnek.
-  - **std::function**: Tanım. Function Pointer ile Farkı. Örnek.
-  - **Callback Yapısı**: Tanım. Örnek.
-  - **Function Pointer Dizisi**: Tanım. Örnek.
  
 ---
  
@@ -161,6 +151,11 @@
 - **Lambda Fonksiyonlar**: Tanım. Sözdizimi. Capture List. Örnek. (C++11)
 - **Fonksiyon Şablonları (Function Templates)**: Tanım. Örnek.
 - **Fonksiyon Prototipleri**: Tanım. Neden Gerekli? Örnek.
+- **Function Pointers**: Tanım. Kullanım Senaryoları.
+  - **Tanımlama ve Kullanma**: Sözdizimi. Örnek.
+  - **std::function**: Tanım. Function Pointer ile Farkı. Örnek.
+  - **Callback Yapısı**: Tanım. Örnek.
+  - **Function Pointer Dizisi**: Tanım. Örnek.
  
 ---
  
@@ -176,6 +171,10 @@
   - **Copy Constructor**: Tanım. Deep Copy vs Shallow Copy. Örnek.
   - **Move Constructor**: Tanım. C++11. Örnek.
 - **this Pointer**: Tanım. Kullanım. Örnek.
+- **Class'lar ile Akıllı Pointer Kullanımı**
+  - **unique_ptr**: Tanım. Kullanım. Örnek.
+  - **shared_ptr**: Tanım. Referans Sayımı. Örnek.
+  - **weak_ptr**: Tanım. Döngüsel Referans Sorunu. Örnek.
 - **Kapsülleme (Encapsulation)**: Tanım. Getter/Setter. Örnek.
 - **Kalıtım (Inheritance)**:
   - **Tek Kalıtım**: Tanım. Sözdizimi. Örnek.

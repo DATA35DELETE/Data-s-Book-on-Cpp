@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data's Book on Cpp</title>
+
+    <link rel="icon" type="image/x-icon" href="../Sources/favicon.png">
+
+    <script src="../Sources/JS/setBackgroundMedia.js"></script>
+
+    <link rel="stylesheet" href="../Sources/JS/hljs/vs2015.css">
+    <script src="../Sources/JS/hljs/highlight.min.js"></script>
+    <script>
+        window.onload = function() {
+            hljs.highlightAll();
+        };
+    </script>
+
+    <link rel="stylesheet" href="../Sources/CSS/main.css">
+</head>
+<body>
+    <h1>Pointerlar</h1>
+
+    <div style="height: 100px;"></div>
+    
+    <div id="mainDiv">
+        <h2>Pointer Nedir?</h2>
+        <pre id="preh2">Pointer, RAM'deki tutulan değişkenlerin bellek adreslerini tutan ve adresleri üzerinden işlem yapabilceğimiz değişken yapılarıdır.</pre>
+
+        <pre id="preh2">Şimdi geldik belkide giriş seviye yazılımcıdan orta seviyeye geçişin anahtarı olan Pointer konusuna! Aslında Pointer mantığı genel olarak gözlemlediğimde internette karmaşık anlatılıyor. Nasıl anlatıcağımı düşündüğümde belkide en iyi yaptığım şekilde anlatmaya karar verdim, metafor!</pre>
+
+        <pre id="preh2">Pointer'ları bir nevi bir değişkenin ev adresi gibi düşünebilirsiniz. RAM dediğimiz donanım aslında içerisinde milyarlarca küçük odacık barındıran devasa bir apartman gibidir. Biz bir değişken tanımlandığımızda, değişken RAM'den kendisine özel yer ayırtma talebinde bulunur. RAM'de, eğer yer varsa tabi değişkene özel ne kadar alan isteniyorsa ona ayırttır ve verileri o ayırtılan odacıklara yazdırır. RAM dediğimiz gibi milyarlarca odacıktan oluşan devasa bir apartmandır. Şimdi değişken kendine özel yer ayırttı harika. Artık veriler RAM içerisinde belirli bir kısımda tutuluyor. Ama nerede? İşte bu sorunun cevabı Pointer'lardır. Pointer tıpkı bir oteldeki oda numarası gibi değişkenlerin hangi odacıkta barındığının bilgisini tutan birer defter gibidir. Güzel artık değişkenlerin RAM'in hangi kısmında tutulduğunu gözlemleyebiliyoruz. Biliyorsunuz ki otellerde yemek servisleri olur ve bu yemek servisleri oda numaralarına göre yapılır. Aynı mantık ile biz Pointer'lar üzerinden o değişkene direkt olarak erişebiliriz.</pre>
+
+        <pre id="preh2">Peki Pointer'lar neden önemli? Performans ve hız! Pointer dediğimiz kavram RAM'deki veriye ulaşmamız açısından en Low-Level şeklidir. Fakat normal değişkenlerde aynı işlevi görüyor? O kısımda da program dilinin yapısı gereği bazı sorunlardan ortaya çıkar. Bunlardan en çok bilineni ise fonksiyonların parametreleridir. "Fonksiyonlar" sayfasına daha detaylı bu konuyu elecağız fakat bu kısıma kadar fonksiyonların parametreleri olduklarını ve parametrelerinden aktarılan bilginin kendisinin kopyası olduğunu bilmemiz yeterlidir. Bir başka sorun ise Native dosya işlemleridir. Native, içerisinde çalıştırılabilir kodlar bulunduran fakat tek başına çalıştırılabilir olmayan dosya formatlarıdır. Dosya uzantısı Windows'da ".dll" iken Linux'da bu ".so" uzantısıdır. Native dosyalar genellikle kütüphane için kullanılırlar. Native dosya içerisindeki bir fonkisyon çağrıldığında bir değer döndürülcekse, değerin kendisi değilde değeri içeren bir değişkenin Pointer'ı gönderilir. Hem performans sağlanır hemde bellek kontrolu bizim elimizde olur. İşte bu yüzden Pointer'lar önem arz eden yapılardır.</pre>
+
+        <h2>Pointer Tanımlama</h2>
+        <pre id="preh2">Pointer tanımlamak için iki işlem kullanılır. Yapının bellek adresini alan ampersend(&) işareti ve o bellek adresini yani Pointer verisini tutucak olan yıldız(*) işaretleri ile tanımlanır.</pre>
+
+        <pre id="codeh2">Örnek olması açısında, bir değişken tanımlayalım. Değişkeni bir normal birde Pointer üzerinden işlem yapalım ve değişiklikleri gözlemleyelim
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main(){
+
+    int birSayi = 2; // Örnek bir değişken tanımladık
+    int* birSayininAdresi = &birSayi; // birSayi değişkenin bellek adresini aldık ve bir Integer Pointer değişkenine atadık
+    // int*; Bahsettiğimiz bellek adreslerini tuttan değişken türüdür. İstenilen değişken türündeki değişkene, bellek adresi alınırken kendi değişken türü ardından yanına "*" şeklinde tanımlanabilir
+    // &birSayi; Bu işlem ise birSayi değişkeninin bellek adresini alır
+
+    cout << "'" << birSayininAdresi << "' adresindeki degiskenin degeri; " << *birSayininAdresi << endl << endl; // Hem bellek adresini hemde o bellek adresinin içerisindeki değeri bu şekilde alırız
+
+    birSayi += 2; // Değişkene 2 değeri ekledik
+    cout << "'birSayi' ismindeki degiskenin degeri; " << birSayi << endl;
+    cout << "'" << birSayininAdresi << "' adresindeki degiskenin degeri; " << *birSayininAdresi << endl << endl;
+
+    *birSayininAdresi += 2; // Pointerlı şeklinde 2 değeri ekledik
+    cout << "'birSayi' ismindeki degiskenin degeri; " << birSayi << endl;
+    cout << "'" << birSayininAdresi << "' adresindeki degiskenin degeri; " << *birSayininAdresi << endl;
+
+    return 0;
+}</code>
+
+Çıktısı;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/9 Cpp Pointerlar.html/1.png" alt="9.1" width="80%">
+        </div>
+
+        <pre id="preh2">Gördüğünüz gibi bir değişşene hem normal hemde Pointer üzerinden işlem yaptık. Çıktıdaki Hex değeri ise her çalıştırmada değişicektir. Çünkü bu değer değişkenimizin bellek adresidir. Bellek adresleri fazla yer kaplamasın diye Hex formatında gösterilir. Ayrıca değişmesinin sebebi ise her saniye RAM'de milyonlarca değer silinip yerine yenileri yazılan devasa bir sistemdir. Bu yüzden milisaniyeler içerisinde açıp kapatık tekrar açarsanız dahi farklı olucaktır.</pre>
+
+        <h2>Pointer Aritmetiği</h2>
+        <pre id="preh2">Pointer'lardaki bir başka konu ise Pointer aritmetiğidir.</pre>
+
+        <pre id="preh2">Metafor üzerinden gidicek olursak, veriler RAM'de depolandığını ve Pointer'ların bir oda numarası işlevine sahip olduğuu söylemiştik. Bu tek veri depolarken aynen böyledir fakat dizilerde? İşte bu kısımda Pointer aritmetiği devreye girer. Diziler RAM'de bir nevi sıralı odalar şeklinde depolanırlar. Yani sıfırıncı Index'deki atıyorum "0x000000" adresinde ise birinci Index'deki eleman "0x000001" gibi dizideki veriler sırayla RAM'de depolanırlar.</pre>
+
+        <pre id="codeh2">Aslında biz fark etmesekde "Diziler ve Stringler" sayfasında Pointer aritmetiğini sıklıkla kullandık. Bir dizi az önce bahsettiğimiz gibi RAM'de veriler sıra şeklinde depolandıklarını demiştik. Gelin bir örnek üzerinden bu konuyu anlatalım;
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main(){
+
+    int sayilar[] = {43,5,23,7,3}; // Örnek bir dizi oluşturduk
+
+    cout << "sayilar dizindeki 3. Index'deki elemanin degeri; " << sayilar[3] << endl << endl;
+
+    int ucuncuIndexdekiElemaninDegeri = *(sayilar + 3); // Pointer Aritmatiği ile değere erişim
+    // *(sayilar + 3); Bu kısımda kodda şunu diyoruz "sayilar Pointer'ında(Diziler teknik olarak Pointer'dır) kendinden başlıyarak 3 birim öteye git ve oradaki değeri bana ver". Aynı şekilde sayilar[3] işlemine aynı mantık ile gerçekleşir
+    cout << "sayilar dizindeki 3. Index'deki elemanin Pointer ile ulasilmis degeri; " << ucuncuIndexdekiElemaninDegeri << endl << endl;
+
+    return 0;
+}</code>
+
+Çıktısı ise;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/9 Cpp Pointerlar.html/2.png" alt="9.2" width="80%">
+        </div>
+
+        <h2>Pointer'lar ile Fonkiyon Kullanımı</h2>
+        <pre id="preh2">Bu konuyu "Fonksiyonlar" sayfasında daha detaylı işlemekte olacağız fakat Pointer ile fonksiyonlar kullanımı görmemiz gereklidir.</pre>
+
+        <pre id="codeh2">Mantık aslında çok basit. Değişken Pointer'ı tanımlar gibi fonksiyonların Pointer'larını alıp kullanabiliyoruz. Aşağıdaki örneğimizi inceleyelim;
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int birOrnekFonksiyon() // Pointer'ı tanımlanacak olan fonksiyon
+{ // Ve işlevi
+
+    cout << "Merhaba C++!" << endl << endl;
+
+    return 0;
+}
+
+int main(){
+
+    birOrnekFonksiyon(); // Normal bir şekilde fonksiyonumuzu çağralım
+
+    int (*birOrnekFonksiyonPtr)() = &birOrnekFonksiyon; // Bu şekil fonksiyonların Pointer'ları tanımlanır
+
+    birOrnekFonksiyonPtr(); // Pointerlı bir biçimide fonksiyonumuzu çağırdık
+
+    return 0;
+}</code>
+
+Çıktı ise;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/9 Cpp Pointerlar.html/3.png" alt="9.3" width="80%">
+        </div>
+
+        <h2>Çift Pointer'lar</h2>
+        <pre id="preh2">Çift Pointer'lar, Pointer'ın Pointer şeklinde izah edilebilir. Yani bir Pointer tanımlıyoruz ardından o Pointer'ı bellek adresinden işaret edecek şekilde başka bir Pointer tanımlıyoruz. Bu durum genellikle birden fazla boyutlu dizi tanımlarken kullandığımız bir yöntemdir.</pre>
+
+        <pre id="codeh2">Şimdi örnek olması şu kodu gözlemleyelim;
+
+<code class="language-cpp">#include <iostream>
+
+using namespace std;
+
+int main(){
+    int sayi = 12; // Bir sayı değişkeni tanımladık
+    int *sayiPtr = &sayi; // O sayı değişkenini işaret eden bir Pointer değişkeni
+    int **sayilarPtrPtr = &sayiPtr; // Pointer değişkenini işaret eden bir Pointer değişkeni
+    
+    cout << sayi << endl << endl;
+
+    *(sayiPtr) = 10; // Birinci Pointer üzerinden işlem yapalım
+
+    cout << sayi << endl << endl;
+
+    **(sayilarPtrPtr) = 123; // İkinci Pointer üzerinden işlem yapalım
+
+    cout << sayi << endl;
+
+    return 0;
+}</code>
+
+Çıktısı ise;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/9 Cpp Pointerlar.html/4.png" alt="9.4" width="80%">
+        </div>
+
+        <h2>NULL ve Nullptr</h2>
+        <pre id="preh2">Bu iki kavram asesan "Hiçliği" temsil etmektedir. Fakat belirtme şekilleri birbirinden farklıdır.</pre>
+
+        <pre id="preh2">NULL, C programlama dilinden beri var olan direkt sıfır değeri temsil eden bir makrodur. Mantığı ise "sıfır ise NULL'dur" gibi basit bir mantıkdır. Yeterli gibi görünsede tam sayılarla işlem yaparken NULL sıfır olarak algılanır ve program beklenmeyen davranışlar sergileyebilir.</pre>
+
+        <pre id="preh2">Nullptr ise NULL'a nazaran direkt sıfır değeri yerine tamamiyle "hiçlik" kavramına en uygun türdür. C++11 standartı ile gelen bu kavram, integral olarak tek geçişli bir değer gibi çalışır. Bu sebeble Nullptr NULL gibi sıfır değeri olarak algılanmaz. Onunla karşılaştırma dışında işlemlem yapmak tehlikelidir ve program beklenmeyen davranışlar sergileyebilir.</pre>
+
+        <pre id="codeh2"><code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main(){
+    
+    int deger1 = NULL; // NULL bir değişkene tanımlanabilir
+    //int deger2 = nullptr; // Nullptr hiçlik olduğu için herhangi bir değişkene atanamaz
+
+    cout << deger1 + 1 << endl; // NULL ile toplama işlemi yapılabilir
+    //cout << nullptr + 1 << endl; // Hiçliğe herhangi bir değer eklenemez olduğu için hata verir
+
+    return 0;
+}</code>
+
+Çıktı;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/9 Cpp Pointerlar.html/5.png" alt="9.5" width="80%">
+        </div>
+
+        <h2>Akıllı Pointer'lar</h2>
+        <pre id="preh2">Akıllı Pointer'lar, Pointer kontrolünü elimize veren ve istediğimiz zaman oluşturup daha sonra istediğimiz yerde(O kod blokları içerisinde, yoksa yaşam döngüsü yüzünden biz silmeden yazılım dili siler) silebildiğimiz bir Pointer türüdür.</pre>
+
+        <pre id="preh2">Mantık ise Pointer'ı tanımladığımız kod bloğunda istediğimiz yerde o Pointer'ın kapladığı RAM'deki alanı kendi istediğimizde boşaltarak bellek tasarufu yapmaktır.</pre>
+
+        <pre id="codeh2">Örnek olması açısından bu kodları gözlemleyelim;
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main(){
+    
+    float *akilliPtr = new float; // Akıllı Pointer için "new" kelimesini kullanırız. Ardından tanımlamak istediğimiz Pointer'in değişken türünü yanıya yazarız
+
+    *(akilliPtr) = 109.43f; // Bir değer atıyalım
+
+    cout << *(akilliPtr) << endl << endl; // Bu değeri yazdıralım
+
+    delete(akilliPtr); // İşlemlerimiz bittiğinde akıllı Pointer'ı bellekten silelim
+
+    //cout << *(akilliPtr) << endl << endl; // Eğer tekrardan erişilmeyi çalışırsa rastgele bir değer vericektir
+
+    return 0;
+}</code>
+
+
+Çıktısı ise;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/9 Cpp Pointerlar.html/6.png" alt="9.6" width="80%">
+        </div>
+
+        <pre id="preh2">Akıllı Pointer'lar sadece bunlarsa sınırlı değildir. Akıllı Pointer'larında bazı türleri vardır. Fakat "Sınıflar" sayfasında daha detaylı anlatacağız</pre>
+
+        <h2></h2>
+
+        <h2>Kaynakça</h2>
+        <ul>
+            <li><a href="https://data35delete.github.io/Data-s-Book-on-C/Lessons/9%20C%20Pointerlar.html">https://data35delete.github.io/Data-s-Book-on-C/Lessons/9%20C%20Pointerlar.html</a></li>
+            <li><a href="https://stackoverflow.com/questions/1282295/what-is-the-nullptr-keyword-and-why-is-it-better-than-null">https://stackoverflow.com/questions/1282295/what-is-the-nullptr-keyword-and-why-is-it-better-than-null</a></li>
+            <li><a href="https://yapbenzet.org.tr/cpp-gostericiler-pointerlar/">https://yapbenzet.org.tr/cpp-gostericiler-pointerlar/</a></li>
+        </ul>
+    </div>
+
+    <div style="height: 100px;"></div>
+
+    <footer style="position: fixed; left: 0; bottom: 0; width: 100%; background: transparent; text-align: center; padding: 10px 0; z-index: 100;">
+        <div>
+            <a href="./8 Cpp Diziler ve Stringler.html" style="margin-right: 20px; cursor:pointer;">
+                &larr; Önceki
+            </a>
+            <a href="" style="cursor:pointer;">
+                Sonraki &rarr;
+            </a>
+        </div>
+        <div>
+            <p>&copy; 2026 Data's Book</p>
+        </div>
+
+        <div style="position: absolute; right: 20px; bottom: 20px;">
+            <a href="./1 Cpp İçindekiler.html" style="text-decoration: none;">
+                İçindekiler
+            </a>
+        </div>
+    </footer>
+</body>
+</html>
+
+<!-- Muhammet Enes nam-ı diğer Data Delete tarafından sevgi ile yapıldı <3 -->
