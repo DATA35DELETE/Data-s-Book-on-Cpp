@@ -141,11 +141,11 @@
 - **Return'lü Fonksiyonlar**: Tanım. Örnek.
   - **Return Kodları ile Hata Yönetimi**: Tanım. Örnek.
 - **Parametreli Fonksiyonlar**: Tanım. Örnek.
-- **Varsayılan Parametreler (Default Parameters)**: Tanım. Örnek.
+  - **Varsayılan Parametreler (Default Parameters)**: Tanım. Örnek.
 - **Fonksiyon Aşırı Yükleme (Function Overloading)**: Tanım. Örnek.
 - **Özyinelemeli Fonksiyonlar (Recursion)**: Tanım. Örnek.
 - **Inline Fonksiyonlar**: Tanım. Makro ile Farkı. Örnek.
-- **Lambda Fonksiyonlar**: Tanım. Sözdizimi. Capture List. Örnek. (C++11)
+- **Lambda Fonksiyonlar**: Tanım. Örnek. (C++11)
 - **Fonksiyon Şablonları (Function Templates)**: Tanım. Örnek.
 - **Fonksiyon Prototipleri**: Tanım. Neden Gerekli? Örnek.
 - **Function Pointers**: Tanım. Kullanım Senaryoları.

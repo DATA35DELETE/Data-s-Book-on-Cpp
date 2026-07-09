@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data's Book on Cpp</title>
+
+    <link rel="icon" type="image/x-icon" href="../Sources/favicon.png">
+
+    <script src="../Sources/JS/setBackgroundMedia.js"></script>
+
+    <link rel="stylesheet" href="../Sources/JS/hljs/vs2015.css">
+    <script src="../Sources/JS/hljs/highlight.min.js"></script>
+    <script>
+        window.onload = function() {
+            hljs.highlightAll();
+        };
+    </script>
+
+    <link rel="stylesheet" href="../Sources/CSS/main.css">
+</head>
+<body>
+    <h1>Fonksiyonlar</h1>
+
+    <div style="height: 100px;"></div>
+    
+    <div id="mainDiv">
+        <h2>Fonksiyonlar Nedir?</h2>
+        <pre id="preh2">Fonksiyonlar, belirli bir amacı yerine getirmek için yazılmış kodların bütün haline getirilmesiyle oluşan yapıdır.</pre>
+
+        <pre id="preh2">Fonksiyonlar aslında bizim için çok önemli yapıladır. Çünkü bir kod parçasını sürekli çalıştırmamız gereken durumlar olucaktır. Bu gibi durumlarda o kod parçasını sürekli yazıcak mıyız? Tabiki hayır! O kod parçasına göre bir fonksiyon yazacağız ve ihtiyacımız olduğunda çağrıcaz. Böylelikle kod tasarufu hemde alan tasarufu etmemizi sağlar. Ayrıca program akışını etkileyebilirler. Ana akış fonksiyon bitene kadar fonksiyondaki akışı bekler.</pre>
+
+        <pre id="preh2">Dökümantasyonun başında Main fonksiyonun programın ilk başlıyan kısmı olduğunu söylemiştik. İşte Main fonksiyonu bu sebeble en önemli fonksiyondur.s Tüm programlar ve yazılım dilleri istisnasız Main fonksiyonuyla başlar. Eğer biz Main fonksiyonunu tanımlamazsak derliyici bizlere hata vericektir.</pre>
+
+        <h2>Void Fonksiyonlar</h2>
+        <pre id="preh2">Void fonksiyonlar, gerisin geriye bir sonuç vermeyen sadece program akşını etkileyen fonksiyonlardır.</pre>
+
+        <pre id="codeh2">Şimdi gelin beraber "Hello World" programı yazalım. Fakat yazdırma komutunu başka bir fonksiyona yazalım ve o fonksiyonu çağrınca çıktı olarak "Hello World" yazdırsın;
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+// Fonksiyonumuz
+void helloWorldYazdir()
+{ // Fonksiyonumuzun içeriği
+    cout << "Hello World" << endl;
+}
+
+int main(){
+    helloWorldYazdir(); // Fonksiyonumuzu çağrıyoruz
+
+    return 0;
+}</code>
+
+Çıktı;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/11 Cpp Fonksiyonlar.html/1.png" alt="11.1" width="80%">
+        </div>
+
+        <h2>Return'lu Fonksiyonlar</h2>
+    <pre id="preh2">Return'lu fonksiyonlar, çağrıldıklarında değer olarak bir sonuç veren ve Void'li fonksiyonlar gibi program akşını etkiliyen fonksiyon türüdür. Fonksiyon içerisinde "<code>return</code>" ifadesi ile değer dödürülür. Ayrıca <code>return</code> ifadesinden sonra fonksiyon biter. Dolayısıyla <code>return</code> komutundaki sonraki satırlara fonksiyon için kod yazılmaz. Return'lu yazmak için fonksiyon isminin bir önceki kısmına, döndüreceğimiz değerin türü girilir.</pre>
+
+    <pre id="preh2">Şimdi öğrendiğimiz bu yeni bilgi ile programızı güncelleyelim;
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+// Döndürüceğimiz değerin türü String olduğunu için "string" yazdık
+string helloWorldStringiniAl()
+{
+    return "Hello World"; // Değerimizi bu satır ile döndürdük
+}
+
+int main(){
+    cout << helloWorldStringiniAl() << endl; // Fonksiyonumuzu çağırdık
+
+    return 0;
+}</code>
+
+Çıktı değişmicektir fakat yöntemizin değiştiğini gözlemleyebilirsiniz.</pre>
+
+        <h3>Return Kodları ile Hata Yönetimi</h3>
+        <pre id="preh3">Programcılar bilir ki her zaman hazır kütüphaneler ile kod yazılmaz. Yeri geldi mi kendisine özel kütüphane yazacak kadar bilgiye sahip olmalıdır. Kütüphane yazarken de hata yönetimi yapılır. "Hata Yönetimi" sayfasında gördüğümüz gibi hata yönetimi yapmazsak program beklenmeyen şekilde davranabilir. İşte bu sebeble <code>return</code> ile hata kodlarını bilmemiz gerekir.</pre>
+
+        <pre id="codeh2">Genel olarak C ve C++ kütüphanelerinde hatasız durumlar için sıfır, hatalı durumlar içinde sıfırdan farklı değerler kullanılır. Bizde iki adet fonksiyon tanımlayım. Biri hatasız fonksiyon olsun ve dönüş değeri sıfır olsun. Diğeri ise hatalı kod içeriyormuş gibi bir değerini döndürsün. Ardından karar yapıları ile bu durumlara özel mesaj yazdıralım.
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int dogruFonk(){
+
+    // Kodlar
+
+    return 0;
+}
+
+int yanlisFonk(){
+
+    // Kodlar
+
+    return 1;
+}
+
+int main(){
+
+    int birinciDurum = dogruFonk();
+
+    if (birinciDurum == 0)
+    {
+        cout << "Fonksiyon hatasiz calisti" << endl << endl;
+    }
+    else
+    {
+        cout << "Fonksiyon hata kodu; " << birinciDurum << endl << endl;
+    }
+
+    int IkinciDurum = yanlisFonk();
+
+    if (IkinciDurum == 0)
+    {
+        cout << "Fonksiyon hatasiz calisti" << endl << endl;
+    }
+    else
+    {
+        cout << "Fonksiyon hata kodu; " << IkinciDurum << endl << endl;
+    }
+}</code>
+
+Çıktı ise;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/11 Cpp Fonksiyonlar.html/2.png" alt="11.2" width="80%">
+        </div>
+
+        <pre id="preh3">Aynı sebebten ötürü Main fonksiyonunda da Return kodu ile hata yönetimi yapılır. Eğer program sıfır dönerse sorunsuz, farklı bir sayı dönerse ise sorunlu çalışıp sona erdiğini anlayabiliriz.</pre>
+
+        <h2>Parametreli Fonksiyonlar</h2>
+        <pre id="preh2">Parametreli fonksiyonlar, parantezlerine tanımlanmış değerlere göre fonksiyona değerler gönderebildiğimiz bir fonksiyon kullanımıdır. Hem Void hemde Return fonksiyonlarda kullanılabilirdir.</pre>
+
+        <pre id="codeh2">Şimdi hem Void hemde Return fonksiyonlarında bu bilgiyi kullanalım. Parametresine tanımlanmış bir String değeri ekrana yazdıran, parametresine girilen iki Integer sayıyı toplayıp sonucu döndüren iki adet fonksiyon yazalım.
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+void yazdir(string yazi)
+{
+    cout << yazi << endl << endl;
+}
+
+int topla(int a, int b)
+{
+    return a + b;
+}
+
+int main(){
+    yazdir("2 + 2 =");
+
+    cout << topla(2, 2) << endl;
+
+    return 0;
+}</code>
+
+Çıktı;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/11 Cpp Fonksiyonlar.html/3.png" alt="11.3" width="80%">
+        </div>
+
+        <h3>Varsayılan Parametreler</h3>
+        <pre id="preh3">Varsayılan parametreler, parametreli fonksiyonlarda çağrıldıklarında parantezlerindeki tanımlanmış parametrelere herhangi bir değer gönderilmemişse programcı tarafından seçilen değer ile parametreye atanan parametrelerdir.</pre>
+
+        <pre id="codeh3">Örnek olarak "topla" fonksiyonumuzdaki parameterli varsayılan değerlerini iki değeri olarak belirleyelim. Böylelikle eğer fonksiyon çağrıldığında parametrelerine değer gönderilmemişse iki olarak atansın
+
+<code class="language-cpp">#include <iostream>
+
+using namespace std;
+
+int topla(int a = 2, int b = 2)
+{
+    return a + b;
+}
+
+int main(){
+    cout << topla(5) << endl; // Gördüğünüz gibi ilk parametresine 5 değerine verdik fakat ikinci parametreyi boş bıraktık. Fonksiyon bu durumu fark edecek ve ikinci parametreyi varsayılan değer olan 2 ile işlem yapıcak
+
+    return 0;
+}</code>
+
+Çıktı ise;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/11 Cpp Fonksiyonlar.html/4.png" alt="11.4" width="80%">
+        </div>
+
+        <h2>Fonksiyonu Aşırı Yükleme</h2>
+        <pre id="preh2">Fonksiyonu aşırı yükleme, parametreliri farklı fakat isimleri aynı olan fonksiyonlara denir. Amaç ise organizasyon ya da farklı veri türleri için farklı isimli fonksiyon oluşurturmamaktır. Yani kullanım kolaylığı sağlar.</pre>
+
+        <pre id="preh2">Parametreli fonksiyonlardaki örneğimizi bu bilgi ile yeniden yazalım.
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+void toplaVeyaYazdir(string yazi) // Aşırı yüklenmiş fonksiyon
+{
+    cout << yazi << endl << endl;
+}
+
+int toplaVeyaYazdir(int a, int b) // Aşırı yüklenmiş fonksiyon
+{
+    return a + b;
+}
+
+int main(){
+    toplaVeyaYazdir("2 + 2 =");
+
+    cout << toplaVeyaYazdir(2, 2) << endl;
+
+    // Aynı isimli fonksiyonlar çağrılsada parametreleri sayesinde farklı işlemler yapılabilir
+
+    return 0;
+}</code>
+
+Çıktı değişmicektir fakat uygulayış biçimiz değiştirmiş bulunmaktayız.</pre>
+
+        <h2>Özyenilemeli Fonksiyonlar</h2>
+        <pre id="preh2">Özyenilemeli fonksiyonlar, fonksiyon kendi içinde kendini tekrar çağırma durumudur. Bir nevi döngü gibidir.</pre>
+
+        <pre id="codeh2">Şimdi ise özyenilemeli fonksiyon kullanarak bir sayaç yapalım.
+
+<code class="language-cpp">#include <iostream>
+
+using namespace std;
+
+int sayac; // Sayaç için değişkenimiz
+void sayacFonk(int syc = 10) // Sayaç olucak özyenilemeli fonksiyonumuz. Ayrıca herhangi bir değer girilmezse otomatik olarak 10 değerinde başlıcak şekilde ayarladık 
+{
+    sayac = syc; // Girilen veya varsayılan değeri değişkene atama
+
+    cout << sayac << ". adim" << endl; // Sayaç adımını bildirme
+
+    if (sayac == 0) // Sayaç bitti ise
+    { // Çalıştır
+        return; // Fonksiyonu bitir. Void'li fonksiyonlarda Return kullanılabilir fakat herhangi bir değer döndürülemez
+    }
+    else // Bitmedi ise
+        sayac--; // Sayacı 1 eksilt. -- operatörü değerleri 1 azaltmamızı sağlar. Ayrıca karar yapsının çalıştırıcağı kod bir satırlık ise kod blokları istersek açmaya biliriz. Karar yapısı sadece bir altadaki kodu çalıştırır onun dışında diğer kodlar karışamaz
+
+    sayacFonk(sayac); // Fonksiyonun içerisinde kendi çağıran kısım burasıdır. Parametre olarak mevcut sayac'ın değerini yolladık çünkü boş bırakırsak sayaç döngüye girerdi
+}
+
+int main(){
+    cout << "Sayac basladi..." << endl << endl;
+
+    sayacFonk(20); // 20 değerin gönderdik
+
+    cout << endl << "Sayac bitti..." << endl;
+
+    return 0;
+}</code>
+
+Çıktısı;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/11 Cpp Fonksiyonlar.html/5.png" alt="11.5" width="80%">
+        </div>
+
+        <h2>Satır İçi Fonksiyonlar</h2>
+        <pre id="preh2">Satır içi fonksiyonlar veya Inline fonksiyonlar, çağrıldıkları kısımda fonksiyon içeriğini çağrıldıkları kısıma yapıştıran ve Compiler edildiğin o şekilde derlenen fonksiyonlardır. Inline fonksiyon yazmak için fonksiyon başına <code>inline</code> ifadesi konulur.</pre>
+
+        <pre id="preh2">Peki farkı nedir? Bu durum şunu benzetebilirisiniz; Sabah kalktınız ve evde ekmek olmadığını fark ettiniz. Her insanın yapacağı üzere kendinizde "firinaGit" fonksiyonunu çalıştırdığınız ve fırına gittiniz. İşte normal fonksiyonlar bu şekilde çalışır. Çalıştıklarında ana fonksiyondan çıkıp yani sizin evden çıkmanız gibi kendi alanlarına giderler ve işlerini halledip tekrar Main fonksiyona geri dönmeleri gibi... Tıpkı sizinde ekmek alıp eve gelmeniz gibi... Fakat Inline fonksiyonlar ise fırına gitmek yerine fırının size geldiğini hayal edin. Kodda ise bu durum fonksiyon Main'den alıp kendi alanına götürmek yerine fonksiyonun kendi alanını Main fonksiyonuna taşımaktadır. İşte Inline fonkisyonlar bu şekilde çalışır.</pre>
+
+        <pre id="preh2">Inline fonksiyonlar genel olarak Compiler'a kolaylık sağlarlar. Compiler iki program akışını birbirne bağlamak yerine fonksiyondaki akışı Main program akışının içine koyar. Bu durumu bir görsel ile gösterelim;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/11 Cpp Fonksiyonlar.html/6.svg" alt="11.6" width="80%">
+        </div>
+
+        <h3>Makro ile Satır İçi Fonksiyonlar</h3>
+        <pre id="preh3">Makro ile satır içi fonksiyonlar, satır içi fonksiyonlar ile aynı işleve sahip sadece akışı ana akışın içine yerleştirme kısmında kodların derlenme sürecindeki önişlemciler kısmında yapılması farkı ile başka bir satır içi fonksiyondur. Fakat <code>inline</code> kadar güvenli değildir. <code>return</code> etmek için kelime kullanılmaz ve fonksiyon içeriğini direkt geçirir.</pre>
+
+        <pre id="codeh2">Inline fonksiyonlardaki örneğimizin makro şekilde yeniden yazalım.
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+#define topla(x,y) x + y
+// Şeklinde tanımlanır
+int main()
+{
+    cout << topla(2,2) << endl << endl; // Ve kullanılır
+
+    return 0;
+}</code>
+        
+Çıktı ise;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/11 Cpp Fonksiyonlar.html/7.png" alt="11.7" width="80%">
+        </div>
+
+        <h2>Lambda Fonksiyonlar</h2>
+        <pre id="preh2">Lambda fonksiyonlar, akış içerisinde isimsiz fonksiyon oluşturabildiğimiz fonksiyon türüdür. Geneillikle kısa ve öz kullanım için uygundur. Ayrıca C++11 standartı ile C++'a eklenmiştir.</pre>
+
+        <pre id="codeh2"><code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main()
+{
+    auto topla = [](int a, int b){
+        cout << a + b;
+    }; // Fonksiyonu tanımladık
+
+    topla(1,2); // Fonksiyonu çağırdık
+
+    return 0;
+}</code>
+
+Çıktısı;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/11 Cpp Fonksiyonlar.html/8.png" alt="11.8" width="80%">
+        </div>
+
+        <h2>Fonksiyon Şablonları</h2>
+        <pre id="preh2">Fonksiyon şablonları, tür bağımsız şekilde fonksiyon yazmamızı sağlayan fonksiyonlardır. Kullanımı ise <code>temple&lt;typename girilenTur></code> şeklinde kullanılır.</pre>
+
+        <pre id="preh2">Bu yapı size Array konusundan tanıdık gelebilir. Aynen öyle Array gibi yapılar Temple mantığı ile yazılır. Şimdi ise yazacağımız fonksiyon ise hem Integer hemde Float veri türleri için toplama sağlayan bir fonksiyon olucak.
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+// Şablon ile fonksiyon bu şekilde tanımlanır
+template&lt;typename girilenTur> girilenTur topla(girilenTur a, girilenTur b) // Şablonların içerisine yazılan veri türünün aynı bir değişken gibi "girilenTur" adlı bir tür değişkenine atadık. Ardından tür bağımsız olucak olan kısımlara uygun olacak şekilde yerleştirdik
+{
+    return a + b;
+}
+
+int main()
+{
+    cout << "2 + 3 = " << topla<int>(2,3) << endl << endl; // Integer türü ile çağırdık
+
+    cout << "2.43 + 3.321 = " << topla<double>(2.43,3.321) << endl; // Double türü ile çağırdık
+
+    return 0;
+}</code>
+
+Çıktısı ise;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/11 Cpp Fonksiyonlar.html/9.png" alt="11.9" width="80%">
+        </div>
+
+        <h2>Fonksiyon Prototipleri</h2>
+        <pre id="preh2">Fonksiyon prototipleri, önceden dönüş türü, ismi ve parametreli tanımlanmış bir fonksiyonun daha sonra içini doldurulmuş fonksiyon araçlarına denir.</pre>
+
+        <pre id="preh2">C++ yukarıdan aşağı kodları çalıştıran bir yazılım dilidir. Dolayısıyla yukarıda tanımlanan fonksiyonlar aşağıda çalıştırabilirdir. Fakat eğer fonksiyon aşağıda tanımlanıp yukarıda çalıştırılmak isternirse? İşte o zaman derliyici hata vermektedir. Bu sebeble fonksiyon prototipleri veya imzaları vardır. Fonksiyonun baş(Header) kısmını içeriğini(dönüş tipini, ismini ve parametrelerini) yazılıp ardından istenilen yerde içeriğini(Body) doldurulmasını sağlar.</pre>
+
+        <pre id="codeh2">Şimdi gelin bir önceki konudaki örneğinin fonksiyon prototipli versiyonunu yazalım;
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+template&lt;typename girilenTur> girilenTur topla(girilenTur a, girilenTur b); // Fonksiyonumuzun imzası
+
+int main()
+{
+    cout << "2 + 3 = " << topla<int>(2,3) << endl << endl;
+
+    cout << "2.43 + 3.321 = " << topla<double>(2.43,3.321) << endl;
+
+    return 0;
+}
+
+template&lt;typename girilenTur> girilenTur topla(girilenTur a, girilenTur b)
+{
+    return a + b;
+}</code>
+
+Çıktı değişmicektir fakat uygulayış biçimi farklılık göstermektedir.</pre>
+
+        <h2>Fonksiyon Pointer'ları</h2>
+        <pre id="preh2">"Pointerlar" sayfasında da anlattığımız üzere Pointer'lar yapıların bellek adreslerini temsil eden ve onların üzerinden verilere erişebildiğimiz araçlardır. Şimdi bu konunun fonksiyon tarafını inceleyelim.</pre>
+
+        <h3>Tanımlama ve Kullanımı</h3>
+        <pre id="codeh3">Tanımlama ve kullanımı aynı değişkenlerin Pointer işlemleri gibi yapılır.
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int topla(int a, int b)
+{
+    return a + b;
+}
+
+int main()
+{
+    int (*toplaPtr)(int a,int b) = topla; // Pointer tanımlama bu şekilde yapılır. Bellek adresini aLma operatörü olan ampersend(&) kullanılmaz. Çünkü fonksiyonlar zaten bellek adresleri gibi çalışırlar
+
+    cout << toplaPtr(2,2) << endl; // Bu şekilde de kullanılır
+}</code>
+
+Çıktısı ise;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/11 Cpp Fonksiyonlar.html/10.png" alt="11.10" width="80%">
+        </div>
+
+        <h3>std::function Kullanımı</h3>
+        <pre id="preh3">std::function, functional kütüphanesiyle beraber gelen ve C++11 standartı ile C++'a eklenen bir fonksiyon değişken türüdür. Yanında getirdiği özelliklerle beraber bir nevi fonksiyon Pointer'ların yerine kullanılır.</pre>
+
+        <pre id="codeh3">Bir önceki örneği bu sefer std::function ile yeniden yazalım.
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;functional> // Kütüphanemiz
+
+using namespace std;
+
+int topla(int a, int b)
+{
+    return a + b;
+}
+
+int main()
+{
+    std::function&lt;int(int, int)> toplaPtr = topla; // Bu şekilde kullanılır
+    // std::function, Temple şeklinde ayarlanır."int(int, int)" ifadesindeki dış int dönüş tipidir, parantezin içerisindeki türler ise parametrelerin sırayla türleri yazılır
+
+    cout << toplaPtr(2,2) << endl;
+}</code>
+
+Çıktı değişmicektir fakat yapılış biçimi farklıdır.</pre>
+
+        <h3>Callback</h3>
+        <pre id="preh3">Callback, bir fonksiyon parametresinde başka bir fonksiyonu gönderip, fonksiyonun içerisine parametredeki fonksiyonu çağırma yapısına denir.</pre>
+
+        <pre id="codeh3">Örnek olarak ise iki adet fonksiyon yazalım. Biri toplama diğeri ise çıkarma işlemlerini içersin. Ardından iki fonksiyonuda yönetebildiğimiz ana fonksiyon olsun ve o fonksiyon üzerinden diğer işlemlere erişelim.
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int topla(int a, int b) // Toplama
+{
+    return a + b;
+}
+
+int cikarma(int a, int b) // Çıkarma
+{
+    return a - b;
+}
+
+int anaFonk(int (*callback)(int, int), int a, int b) // Callback'li fonksiyonumuz
+{
+    return callback(a,b); // Callback fonksiyonuna tanımlanan fonksiyonu çağırma
+}
+
+int main()
+{
+    cout << "10 + 2 = " << anaFonk(topla, 10, 2) << endl << endl; // anaFonk üzerinden toplama işlemi
+
+    cout << "10 - 2 = " << anaFonk(cikarma, 10, 2) << endl; // anaFonk üzerinden çıkarma işlemi
+}</code>
+
+Çıktı ise;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/11 Cpp Fonksiyonlar.html/11.png" alt="11.11" width="80%">
+        </div>
+
+        <h3>Fonksiyon Dizisi</h3>
+        <pre id="preh3">Aynı veri türleri gibi fonksiyonlarında dizisi olabilir. Aynı mantık ile tanımlanır ve kullanılır.</pre>
+
+        <pre id="codeh3">Fonksiyon Pointer ile bir önceki örneğimizi anaFonk'suz bir şekilde yeniden yazalım.
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int topla(int a, int b) // Toplama
+{
+    return a + b;
+}
+
+int cikarma(int a, int b) // Çıkarma
+{
+    return a - b;
+}
+
+int main()
+{
+    int (*fonksiyonlar[])(int, int) = {topla, cikarma};
+
+    cout << "10 + 2 = " << fonksiyonlar[0](10, 2) << endl << endl; // Fonkisyon dizisi üzerinden 0. Index'deki toplama işlemi
+
+    cout << "10 - 2 = " << fonksiyonlar[1](10, 2) << endl; // Fonkisyon dizisi üzerinden 1. Index'deki çıkarma işlemi
+}</code>
+
+Çıktı değişmicektir.
+
+Aynı şekilde std::function ile yeniden yazalım.
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;functional>
+
+using namespace std;
+
+int topla(int a, int b) // Toplama
+{
+    return a + b;
+}
+
+int cikarma(int a, int b) // Çıkarma
+{
+    return a - b;
+}
+
+int main()
+{
+    std::function&lt;int(int, int)> fonksiyonlar[] = {topla, cikarma};
+
+    cout << "10 + 2 = " << fonksiyonlar[0](10, 2) << endl << endl; // std::function fonkisyon dizisi üzerinden 0. Index'deki toplama işlemi
+
+    cout << "10 - 2 = " << fonksiyonlar[1](10, 2) << endl; // std::function fonkisyon dizisi üzerinden 1. Index'deki çıkarma işlemi
+}</code></pre>
+
+        <h2>Kaynakça</h2>
+        <ul>
+            <li><a href="https://www.geeksforgeeks.org/cpp/inline-functions-cpp/">https://www.geeksforgeeks.org/cpp/inline-functions-cpp/</a></li>
+            <li><a href="https://icarus.cs.weber.edu/~dab/cs1410/textbook/6.Functions/inline.html">https://icarus.cs.weber.edu/~dab/cs1410/textbook/6.Functions/inline.html</a></li>
+            <li><a href="https://www.geeksforgeeks.org/cpp/lambda-expression-in-c/">https://www.geeksforgeeks.org/cpp/lambda-expression-in-c/</a></li>
+            <li><a href="https://www.w3schools.com/cpp/cpp_functions_lambda.asp">https://www.w3schools.com/cpp/cpp_functions_lambda.asp</a></li>
+            <li><a href="https://www.urhoba.net/2025/10/c-lambda-fonksiyonlar-ve-modern-soz.html">https://www.urhoba.net/2025/10/c-lambda-fonksiyonlar-ve-modern-soz.html</a></li>
+            <li><a href="https://www.geeksforgeeks.org/cpp/templates-cpp/">https://www.geeksforgeeks.org/cpp/templates-cpp/</a></li>
+            <li><a href="https://www.geeksforgeeks.org/cpp/function-prototypes-in-cpp/">https://www.geeksforgeeks.org/cpp/function-prototypes-in-cpp/</a></li>
+            <li><a href="https://en.cppreference.com/cpp/utility/functional/function">https://en.cppreference.com/cpp/utility/functional/function</a></li>
+            <li><a href="https://stackoverflow.com/questions/252748/how-can-i-use-an-array-of-function-pointers">https://stackoverflow.com/questions/252748/how-can-i-use-an-array-of-function-pointers</a></li>
+        </ul>
+    </div>
+
+    <div style="height: 100px;"></div>
+
+    <footer style="position: fixed; left: 0; bottom: 0; width: 100%; background: transparent; text-align: center; padding: 10px 0; z-index: 100;">
+        <div>
+            <a href="./10 Cpp Hata Yönetimi.html" style="margin-right: 20px; cursor:pointer;">
+                &larr; Önceki
+            </a>
+            <a href="" style="cursor:pointer;">
+                Sonraki &rarr;
+            </a>
+        </div>
+        <div>
+            <p>&copy; 2026 Data's Book</p>
+        </div>
+
+        <div style="position: absolute; right: 20px; bottom: 20px;">
+            <a href="./1 Cpp İçindekiler.html" style="text-decoration: none;">
+                İçindekiler
+            </a>
+        </div>
+    </footer>
+</body>
+</html>
+
+<!-- Muhammet Enes nam-ı diğer Data Delete tarafından sevgi ile yapıldı <3 -->
