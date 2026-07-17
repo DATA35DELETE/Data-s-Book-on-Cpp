@@ -174,7 +174,6 @@
   - **weak_ptr**: Tanım. Döngüsel Referans Sorunu. Örnek.
 - **Class'larla Hata Yönetimi**
   - **Özel Exception Sınıfı Yazma**: Tanım. Örnek.
-  - **std::exception**: Tanım. Türetme. Örnek.
   - **noexcept**: Tanım. Kullanım. Örnek.
 - **Kapsülleme (Encapsulation)**: Tanım. Getter/Setter. Örnek.
 - **Kalıtım (Inheritance)**:

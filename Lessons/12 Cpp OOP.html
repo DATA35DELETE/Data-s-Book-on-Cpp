@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data's Book on Cpp</title>
+
+    <link rel="icon" type="image/x-icon" href="../Sources/favicon.png">
+
+    <script src="../Sources/JS/setBackgroundMedia.js"></script>
+
+    <link rel="stylesheet" href="../Sources/JS/hljs/vs2015.css">
+    <script src="../Sources/JS/hljs/highlight.min.js"></script>
+    <script>
+        window.onload = function() {
+            hljs.highlightAll();
+        };
+    </script>
+
+    <link rel="stylesheet" href="../Sources/CSS/main.css">
+</head>
+<body>
+    <h1>OOP</h1>
+
+    <div style="height: 100px;"></div>
+    
+    <div id="mainDiv">
+        <h2>OOP</h2>
+        <pre id="preh2">OOP, açılımıyla Object Oriented Programming(Nesne Yönelimli Programlama) bir dil yeteneğidir. OOP yeteneğine sahip programlama dillerinde; Class'lar kullanılabilir, nesneler oluşturabilir ve kalıtım gibi işlemler yapılabilir.</pre>
+
+        <pre id="preh2">Eski zamanlarda daha C++ programlama dili ortaya çıkmamışken C programlama dili vardı biliyorsunuz. C programcıları zaman geçtikçe zorlanmaya ve daha fazla kod yazmaya başladılar. Sorun ise yapıların yani C programlama dilindeki ilkel Class diyebilceğimiz yapılar yüzündendi. Yapılar, tıpkı bir değişken türü gibi işlev gören ve kendimiz oluşturabildiğimiz ve kullanabildiğimiz yapılardır. Yapılar ilk başta cidden çok iş görmüşlerdir. Lakin zaman geçtikçe programlar karmaşıklaşmış ve programlar karmaşıklaştıkça kodlarda aynı şekilde etkilenmiş. İşte tam bu zamanlarda OOP ortaya çıkmıştır. OOP sayesinden programcılar yapıların eksiklerini kapatan ve oluşturması daha kolay olan Class'lara geçmişlerdir. Class'ların bir çok özelliği bulunmasından mütevellit daha kısa kodlar yazılmaya başlanmıştır. Ardından Bell Labs'de çalışan Bjame adlı bir bilgisayar bilimci ilk olarak "C with Classes" adlı projesiyle ortaya çıkmış ardından projenin ismi C++ olarak dünyaca ünlü ve neredeyse her sistemin temelinde olan dil haline gelmiştir. Uzun lafın kısası OOP, bir ihtiyaç halinde geliştirilmiş bir yetenektir. Tıpkı bir canlının seçilim baskısından dolayı evrim geçirip ortama ayak uydurması gibi...</pre>
+
+        <pre id="preh2">Peki neden OOP? Ortaya çıkış hikayesinden anlaşılcağı üzere yapıların yani Struct'ların yetersizliği sonucu ortaya çıkmış bir yetenektir. OOP bizlere daha az kod yazma, daha efektif ve performanslı yapıları kurmamızı sağlar. İçerisindeki kalıtım, çokbiçimlilik, soyutlama ve kapsülleme gibi yetenekler sayesinde kod tasarufu yapmamızı sağlar. Bu sebeble bir çok dilde OOP desteklenir. Fakat güncel olarak çıkmış dilerde OOP pek fazla desteklenmemektedir. Başta Rust olmak üzere OOP'nin bellek ve güvenlik açıklarına yol açtığı ilere sürülmüş, sonucunda Rust OOP desteğini kaldırmışlardır. Ama konumuz şuan C++ ve C'den ayıran en önemli özelliği olan OOP konusudur. Bu sebeble programlama dünyasında bir devrime imza atmış C++ ve OOP konusunu anlatalım.</pre>
+
+        <pre id="preh2">Değindiğimiz gibi C++ programlama dilinin C'den ayıran en önemli özelliği olan OOP'i pek tabi C'nin yapısı gereği yapılamazdı. C'de Class'lara en yakın olan sistem yapılardır ve yapılar OOP yeteneği için pekde uygun değildir. C, yapısı gereği sizlere hazır neredeyse hiç bir fonksiyon sağlamaz bu sebeble OOP'i de desteklememektedir. Fakat C++'da OOP'i desteklendiği için C'de belkide binlerce satır kod sürecek bir işin C++'da yüzlerce satır koda indirebilmemizi sağlayan çok performanslı bir yetenektir.</pre>
+
+        <h2>Class(Sınıf)'lar ve Object(Nesne) Kavramları</h2>
+        <pre id="preh2">Class'lar türkçesiyle sınıflar, değikenleri ve fonksiyonları bir arada barındabilen ve kullanabilen yapılardır. Object türkçesiyle nesne, sınıfların bir değişkene değer olarak atanan değişkenlere denir.</pre>
+
+        <h3>Sınıf Tanımlama</h3>
+        <pre id="preh3">Sürekli bahsettiğim Class diyerek aklınızı karıştırdığım ama aslında sınıflar olan yapıyı tanımlayalım.</pre>
+
+        <pre id="codeh3"><code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+// Class tanımlama
+class ornekClassTanimlama // class + classIsmi
+{
+    public: // Class'ın herkese açık olan kısmı
+        string degisken1; // Örnek String değişkeni tanımlama
+        int degisken2 = 42; // Örnek Integer değişkeni
+
+        void ornekClassIcerisindeOrnekFunc() // Örnek fonksiyon tanımlama
+        {
+            cout << "Ornek cikti" << endl; // Örnek fonksiyon içeriği
+        }
+};
+
+int main()
+{
+    ornekClassTanimlama ornekNesne1; // Örnek nesne tanımlama. Bahsettiğimiz gibi oluşturduğumuz sınıf bir nevi değişken türü görevi görmektedir.
+
+    ornekNesne1.degisken1 = "Merhaba"; // Örnek nesnenin içerisindeki bir değişkene atama işlemi
+    ornekNesne1.degisken2 = 443;
+
+    ornekNesne1.ornekClassIcerisindeOrnekFunc(); // Örnek nesnenin içerisindeki fonksiyonu çağırma
+
+    ornekClassTanimlama ornekNesne2; // Sınıfları çok kez nesne olarak tanımlayabilir
+
+    // Diğer işlemler
+
+    return 0;
+}</code>
+
+Çıktısı; "Ornek cikti" olucaktır.</pre>
+
+        <pre id="preh3">Eğer kafanıza pek yerleşmeşdiyse sınıfları bir nevi fabrika, nesneleri ise o fabrikanın ürünleri gibi düşünebilirsiniz. Fabrikanın üreteceği ürünün içeriğini tanımlarken belirliyoruz. Ardından nesne tanımlarken de fabrikadan içeriğini belirlediğimiz ürünü üretilmesini ve bize verilmesini istiyoruz. İyi anlamasınız çünkü sınıflar OOP'nin temelidir.</pre>
+
+        <h3>Erişim Belirteçleri</h3>
+        <pre id="preh3">Erişim belirteçleri, sınıflar içerisindeki bir değeri veya fonksiyonun sınıflarca veya fonksiyolarca erişibilirtesini belirteçlerdir. C++ programlama dilinde üç adet erişim belirteçleri bulunur. Tablo şeklinde açıklayalım.</pre>
+
+        <table id="tableh3" border="1">
+            <thead>
+                <tr>
+                    <th>İsmi</th>
+                    <th>Açıklaması</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Public</td>
+                    <td>Tanımlanan değişenkenleri ve fonksiyonları nereden olursa olun erişmeyi ve kalıtımına izin verir.</td>
+                </tr>
+                <tr>
+                    <td>Protected</td>
+                    <td>Public'ten farklı olarak tanımlanan değişkenleri ve fonksiyonları sadece o sınıfta ve o sınıftan türetilmiş sınıflara erişimi izin veren bir belirteçtir. Ayrıca dışarıdaki fonksiyonlara kapalıdır.</td>
+                </tr>
+                <tr>
+                    <td>Private</td>
+                    <td>Tanımlanan değişkenleri ve fonksiyonları sadece sınıf içerisinde erişimi izin verir.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <pre id="codeh3">Örnek olarak bir hesap sistemi yazalım. Sadece bu sayfa göreceğimiz kalıtım konusu ufaktan göreceğiz. Çünkü erişim belirteçleri neredeyse direkt kalıtım üzerinden işlenirler. Kalıtım kısaca bir sınıfın özellikelerini direkt olarak alarak kendi içene katar ve dilenirse kendi özelliklerine ekliyebilir. Şimdi örneğimize geçelim.
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+class hesap // Hesap sınıfımız
+{
+    public: // Herkese açık olan kısım. Hesabın sadece bu kısımda bilgilerini alabiliyoruz
+        string hesapIsminiAl() { return hesapIsmi; };
+        string hesapSifresiAl() { return  hesapSifresi; };
+
+    protected: // Korunan kısım. Sadece sınıfın içi ve türelen sınıflarda erişim bölgesidir
+        void hesapIsminiDegistir(string isim, bool erisimIzni) // Erişim izinli bir sistem yaptık ki güvenlik katmanı oluşsun
+        { 
+            if (erisimIzni) // Eğer erişim izinin varsa
+            { // Uygula
+                hesapIsmi = isim; // Gelen ismi özel bölgedeki hesap ismine ata
+
+                cout << "Basaliyla hesap ismi degistirildi!" << endl << endl; // Bildir
+            }
+            else // Yoksa
+            {
+                cout << "Islem basarisiz, erisim yetkiniz yok!" << endl << endl; // Bildir
+            }
+        };
+
+        void hesapSifresiDegistir(string sifre, bool erisimIzni) // Aynı işlemler şifre için uygula
+        { 
+            if (erisimIzni)
+            {
+                hesapSifresi = sifre;
+
+                cout << "Basaliyla sifre degistirildi!" << endl << endl;
+            }
+            else
+            {
+                cout << "Islem basarisiz, erisim yetkiniz yok!" << endl << endl;
+            }
+        };
+
+    private: // Sınıfın kendisine özel kısmıdır
+        string hesapIsmi; // Direkt erişime izin vermemek için bu bilgiler bu erişim belirtecinde
+        string hesapSifresi;
+};
+
+class onGuvenlikliHesap : hesap // Bir sınıfı kalıttık. hesap sınıfındaki bilgileri(public ve protected kısımlardaki) direkt olarak onGuvenlikliHesap sınıfına aktardık
+{
+    public:
+        bool guvenlikErisimi = false; // Erişim yetkisi ilk olarak kapalı gelir
+
+        void guvenliHesapIsminiDegistir(string guvenliIsim){ hesapIsminiDegistir(guvenliIsim, guvenlikErisimi); }; // Kalıtım sayesinde protected kısımda yer alan fonksiyonlarda aktarılmıştır
+        void guvenliHesapSifreniDegistir(string guvenliSifre) { hesapSifresiDegistir(guvenliSifre, guvenlikErisimi); };
+
+        string guvenliHesapIsminiAl() { return hesapIsminiAl(); }; // Her ne kadar hesap sınıfının fonksiyonu olsada kalıtım sayesinde bu sınıfa da aktarılmıştır
+        string guvenliHesapSifresiAl() { return hesapSifresiAl(); };
+};
+
+int main()
+{
+    onGuvenlikliHesap hesap1; // İlk olarak nesnemizi oluşturalım
+
+    cout << "hesap1'in ismi; '" << hesap1.guvenliHesapIsminiAl() << "'" << endl << endl; // Hesap ismini alma. Erişim yetkisi istemez
+    cout << "hesap1'in sifresi; '" << hesap1.guvenliHesapSifresiAl() << "'" << endl << endl; // Hesap sifresi alma
+
+    hesap1.guvenliHesapIsminiDegistir("Data"); // İsmi değiştirmeyi çalışalım. Lakin başarısız olucaktır çünkü biz erişim izni vermedik
+
+    hesap1.guvenlikErisimi = true; // Yetki verelim
+
+    hesap1.guvenliHesapIsminiDegistir("Delete"); // Şimdi değiştirelim
+    hesap1.guvenliHesapSifreniDegistir("123");
+
+    cout << "hesap1'in ismi; '" << hesap1.guvenliHesapIsminiAl() << "'" << endl << endl; // Hesap ismini tekrardan alma
+    cout << "hesap1'in sifresi; '" << hesap1.guvenliHesapSifresiAl() << "'" << endl << endl; // Hesap sifresi tekrardan alma
+
+    return 0;
+}</code>
+
+Çıktı ise;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/12 Cpp OOP.html/1.png" alt="12.1" width="80%">
+        </div>
+
+        <h2>Constructor ve Destructor</h2>
+        <pre id="preh2">Constructor yani yapıcı, bir sınıfın nesnesi oluşturulduğunda kendini çağıran bir fonksiyondur. Destructor yani yıkıcı, bir sınıfın nesnesi silindiğinde kendisi çağıran bir fonksiyondur.</pre>
+        
+        <pre id="preh2">Yapıcı ve yıkıcı, fonksiyonlarını amacı ise nesne oluşturulduğu veya yol edildiğinde sınıfın başlatılması veya bellektede ayrılan kısımaları serbest bırakmak gibi işlemler için kullanılır.</pre>
+
+        <pre id="codeh2">Örnek olarak bir kediyi simüle edicek bir sınıf oluşturalım. Kedi sınıfında nesne ilk oluştuğunda kedinin yaşını sıfır olarak belirlesin. Ardından fonksiyonlar bir kedinin yaptığı aktiviteleri fonksiyon olarak kuralım. Yıkıcı olarak kedinin hayatını kaybettiğini yaşıyla ve yaptığı aktivilerin sayısıyla beraber bildirsin.
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+class kedi // Kedimizin sınıfı
+{
+    public:
+        int kediYas; // Kedinin yaşının tutulacağı değişken
+
+        // Aktivitelerin sayısılarını tutacak değişkenler
+        int kediMiyavlamaSayisi = 0;
+        int kediYemekYemeSayisi = 0;
+        int kediOyunOynamaSayisi = 0;
+        
+        float kedininAldigiYol = 0;
+
+        kedi() // Sınıfın yapıcı fonksiyodur. Yapıcı fonksiyonlar, sınıflar aynı isme sahip almalıdır
+        {
+            kediYas = 0; // Kedi doğdunda yaşını direkt 0 değerine atadık
+
+            cout << "Bir kedi dogdu!" << endl << endl; // Bildirme
+        }
+
+        // Kedinin aktiviteleri için işlemler ve bildirme
+        void kediMiyavla()
+        {
+            kediMiyavlamaSayisi++;
+
+            cout << "Kedi miyavladi" << endl << endl;
+        }
+        void kediYemekYe()
+        {
+            kediYemekYemeSayisi++;
+
+            cout << "Kedi yemek yedi" << endl << endl;
+        }
+        void kediOyunOyna()
+        {
+            kediOyunOynamaSayisi++;
+
+            cout << "Kedi oyun oynadi" << endl << endl;
+        }
+        void kediYolAl(float aldigiYol)
+        {
+            kedininAldigiYol += aldigiYol;
+
+            cout << "Kedi " << aldigiYol << "cm yol aldi" << endl << endl;
+        }
+
+        ~kedi() // Yıkıcı fonksiyonlar. Yıkıcı, sınıfın isminin başına yaklaşık işareti(~) ile tanımlanır
+        { 
+            // Kedinin hayatını kaybetme bildirimleri
+
+            cout << "Kedi " << kediYas << " yasinda hayatini kaybetti..." << endl << endl;
+            cout << "Hayati boyunca yaptikleri;" << endl;
+            cout << "Kedi'nin miyavlama miktari " << kediMiyavlamaSayisi << endl;
+            cout << "Kedi'nin yemek yedigi miktari " << kediYemekYemeSayisi << endl;
+            cout << "Kedi'nin oyun oynama miktari " << kediOyunOynamaSayisi << endl;
+            cout << "Kedi'nin aldigi yol miktari " << kedininAldigiYol << "cm" << endl << endl;
+        }
+};
+
+int main()
+{
+    kedi boncuk; // Kedimiz doğdu
+
+    for (int i = 0; i < 12; i++) // Kedimiz 12 kere miyavlasın
+    {
+        boncuk.kediMiyavla();
+    }
+
+    for (int i = 0; i < 32; i++) // Kedimiz 32 kere yemek yesin
+    {
+        boncuk.kediYemekYe();
+    }
+    
+    for (int i = 0; i < 23; i++) // Kedimiz 23 kere oyun oynasın
+    {
+        boncuk.kediOyunOyna();
+    }
+
+    boncuk.kediYolAl(132.212f); // Kedimiz 132.212 santım yol alsın
+
+    boncuk.kediYas = 1; // Kedimiz 1 yaşında oldu
+
+    return 0; // Program bu kısımda bittiğinden mütevellit boncuk nesnesin yıkıcı fonksiyonu çalışır. Kedimiz hayatını kaybetti o7
+}</code>
+
+Çıktı;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/12 Cpp OOP.html/2.png" alt="12.2" width="80%">
+        </div>
+
+        <h3>Copy Constructor</h3>
+        <pre id="preh3">Copy Constructor türkçesiyle yapıcı kopyalama, tüm sınıflarda varsayılan olarak mevcut olan bir özelliktir. Amacı ise mevcut olan bir yapıcıyı kopyalarak başka bir yapıcıya aktarmaktır. İki türü vardır.</pre>
+
+        <pre id="codeh3">Shallow Copy yani üstünkörü kopyalama, kopyalama yönetemi ise aslında birebir kopyadan ziyade iki nesneyi aynı bellek adresine yönlendirme yöntemi ile kopyalar. Aynı orjinal ile kopyadaki değişiklikler birbirleri direkt olarak etkiler. Bir örnek yazalım;
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+class ornekClass
+{
+    public:
+        int x = 43; // Örnek olması açısından bir değişken tanımladık
+};
+
+int main()
+{
+    ornekClass nesne1; // Birinci nesnemiz
+    ornekClass nesne2(nesne1); // İkinci nesnemiz, içerisindeki bahsedilen yapıcı ile çağırdık
+
+    cout << "nesne1'deki X'in degeri; " << nesne1.x << endl;
+    cout << "nesne2'deki X'in degeri; " << nesne2.x << endl << endl;
+
+    cout << "nesne1'deki X'in Pointer degeri; " << &nesne1.x << endl;
+    cout << "nesne2'deki X'in Pointer degeri; " << &nesne2.x << endl << endl;
+
+    nesne1.x += 7; // Birinci nesnedeki x'e 7 değerini ekledik. Bellek adresleri aynı olduğu için hem nesne1 hemde nesne2'deki x'e etki etmiş oldu
+
+    cout << "nesne1'deki X'in degeri; " << nesne1.x << endl;
+    cout << "nesne2'deki X'in degeri; " << nesne2.x << endl << endl;
+
+    nesne2.x += 10; // İkinci nesnenin x'ine 10 değerini ekledik
+
+    cout << "nesne1'deki X'in degeri; " << nesne1.x << endl;
+    cout << "nesne2'deki X'in degeri; " << nesne2.x << endl << endl;
+    
+    return 0;
+}</code>
+        
+Çıktı;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/12 Cpp OOP.html/3.png" alt="12.3" width="80%">
+        </div>
+
+        <pre id="codeh3">Deep Copy yani derin kopyalama, bu işlem ise kopyalama yapıcı fonksiyonu düzenliyerek Pointer'ların farklı olarak kopyalanmasını sağlar. Yani orjinal ile kopya birbirlerini etkilemezler. Az önceki örneği bu yöntem ile yeniden düzenleyelim;
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+class ornekClass
+{
+    public:
+        int *x; // Farklı Pointer'lar için Integer Pointer'ı
+
+        ornekClass(const int newX) // Değiştirilmiş yapıcı kopyalama fonksiyonu
+        {
+            x = new int; // Yeni Pointer oluşturduk
+            *x = newX; // Parametre olarak girilen değeri girdik
+        };
+
+        ~ornekClass() // Yıkıcı fonksiyonumuz
+        {
+            delete x; // Yeni Pointer oluşturdurduğumuzdan dolayı sildik
+        };
+};
+
+int main()
+{
+    ornekClass nesne1(43); // Birinci nesnemiz
+    ornekClass nesne2(43); // İkinci nesnemiz
+
+    cout << "nesne1'deki X'in degeri; " << *nesne1.x << endl;
+    cout << "nesne2'deki X'in degeri; " << *nesne2.x << endl << endl;
+
+    cout << "nesne1'deki X'in Pointer degeri; " << nesne1.x << endl;
+    cout << "nesne2'deki X'in Pointer degeri; " << nesne2.x << endl << endl;
+
+    *nesne1.x += 7; // Birinci nesnedeki x'e 7 değerini ekledik. Bellek adresleri farklı olduğu için hem nesne1 hemde nesne2'deki x'e etki etmemiş oldu
+
+    cout << "nesne1'deki X'in degeri; " << *nesne1.x << endl;
+    cout << "nesne2'deki X'in degeri; " << *nesne2.x << endl << endl;
+
+    *nesne2.x += 10; // İkinci nesnenin x'ine 10 değerini ekledik
+
+    cout << "nesne1'deki X'in degeri; " << *nesne1.x << endl;
+    cout << "nesne2'deki X'in degeri; " << *nesne2.x << endl << endl;
+    
+    return 0;
+}</code>
+
+Çıktısı;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/12 Cpp OOP.html/4.png" alt="12.4" width="80%">
+        </div>
+
+        <pre id="preh3">Gördüğünüz gibi Pointer'lar farklı olduğu için değerlerde farklı etkilendi.</pre>
+
+        <h3>Move Constructor</h3>
+        <pre id="preh3">Move Constructor yani yapıcı taşıma, std kütüphanesinde yer alan ve nesnelerin içeriğini belirtilen nesye direkt olarak aktaran bir yapıcı türüdür.</pre>
+
+        <pre id="codeh3">Örnek olarak bu özelliğe sahip bir sınıf yazalım;
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+class ornekClass
+{
+    public:
+        int *x;
+
+        ornekClass()
+        {
+            x = new int;
+            *x = 12;
+        };
+        ornekClass(ornekClass&& clss) // std::move'un çağracağı yapıcı
+        {
+            x = clss.x; // Eski nesneden gelen Pointer'ı yeni nesneye aktarma
+            clss.x = nullptr; // Eski nesnedeki Pointer'ı boşaltma
+        };
+
+        ~ornekClass()
+        {
+            delete x;
+        }
+
+        void yazdir() // Yazdırma fonksiyonu
+        {
+            if (x) // x Pointer'ı nullptr değil ise
+            {
+                cout << "X; " << *x << endl << endl;
+            }
+            else // nullptr ise
+            {
+                cout << "HATA" << endl << endl;
+            }  
+        };
+};
+
+int main()
+{
+    ornekClass nesne1; // Birinci nesnemiz
+    ornekClass nesne2 = std::move(nesne1); // Birinci nesnemizi taşıdık
+
+    nesne1.yazdir();
+    nesne2.yazdir();
+
+    return 0;
+}</code>
+    
+Çıktı ise;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/12 Cpp OOP.html/5.png" alt="12.5" width="80%">
+        </div>
+
+        <h2>This Pointer'ı</h2>
+        <pre id="preh2">This, mevcut sınıfı Pointer şeklinde kullanmak için kullanılan bir anahtar kelimedir.</pre>
+
+        <pre id="codeh2">Örnek olması için bir hesap makinesi yapalım;
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+class hesapMakinesi // Hesap makinesi sınıfı
+{
+    public:
+        int *sayi; // Hesap makinesinde kullanılıcak olan değişkenin kayıt edilceği Pointer
+
+        hesapMakinesi(int *s) // Yapıcı fonksiyonunda hangi değişkene işlemlerin uygulanacağı
+        {
+            sayi = new int;
+
+            sayi = s;
+        }
+        ~hesapMakinesi() // Yıkıcı ile Pointer'ı sildik
+        {
+            delete sayi;
+        }
+
+        // Basit matematiksel işlemlerin fonksiyonları. Her fonksiyonun sonucunda 'this' ile mevcut sınıfın Pointer'ını döndürür. Böylelikle topla()->cikar() gibi yapılar oluşturulabilir
+        hesapMakinesi* topla(int s)
+        {
+            *sayi += s;
+
+            return this;
+        }
+        hesapMakinesi* cikar(int s)
+        {
+            *sayi -= s;
+
+            return this;
+        }
+        hesapMakinesi* bol(int s)
+        {
+            *sayi /= s;
+
+            return this;
+        }
+        hesapMakinesi* carpma(int s)
+        {
+            *sayi *= s;
+
+            return this;
+        }
+};
+
+int main()
+{
+    int sayi1 = 100; // Mevzu bahis değişkenimiz
+
+    hesapMakinesi hM(&sayi1); // Yapıcıya gönderdik
+
+    hM.topla(10)->cikar(20)->carpma(2)->bol(10); // This ile yapımız
+    // ((100 + 10 - 20) * 2) / 10 = Matematiksel gösterim karşılığıdır
+
+    cout << "sayi1 degeri; " << sayi1 << endl; // Yazdırıyoruz
+}</code>
+
+Çıktı ise;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/12 Cpp OOP.html/6.png" alt="12.6" width="80%">
+        </div>
+
+        <h2>Sınıflarda Akıllı Pointer'lar Kullanımı</h2>
+        <pre id="preh2">"Pointerlar" sayfasında kısaca değindiğimiz akıllı Pointer'ların devamını inceleyelim. Üç adet türü vardır. "Memory" kütüphanesinde yer alırlar.</pre>
+
+        <h3>Unique_ptr</h3>
+        <pre id="preh3">Unique_ptr, yalnızca tek bir Pointer saklayan ve kopylama izin vermeyen bir akıllı Pointer'dır. Sadece Move fonksiyonu ile taşınabilir.</pre>
+
+        <pre id="codeh3">Örnek kullanımı;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;memory> // Kütüphanemiz
+
+using namespace std;
+
+class ornekClass
+{
+    public:
+        int *s;
+
+        ornekClass()
+        {
+            s = new int;
+        }
+        ~ornekClass()
+        {
+            delete s;
+        }
+};
+
+int main()
+{
+    unique_ptr&lt;ornekClass> sayi1 = make_unique&lt;ornekClass>();
+    *sayi1->s = 123; // Değer atadık
+
+    cout << "sayi1'deki s'in degeri; " << *sayi1->s << endl << endl;
+
+    //ornekClass* sayi2 = sayi1; Bu tarz bir kullanıma izin vermez
+    unique_ptr&lt;ornekClass> sayi2 = move(sayi1); // Taşıma ile verileri aktardık
+    cout << "sayi2'deki s'in degeri; " << *sayi2->s << endl << endl;
+
+    return 0;
+}</code>
+
+Çıktı;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/12 Cpp OOP.html/7.png" alt="12.7" width="80%">
+        </div>
+
+        <h3>Shared_ptr</h3>
+        <pre id="preh3">Shared_ptr, birden fazla nesnenin aynı Pointer'ı referans göstersini sağlar.</pre>
+
+        <pre id="codeh3">Örneğimizi Shared_ptr ile yeniden yazalım;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;memory>
+
+using namespace std;
+
+class ornekClass
+{
+    public:
+        int *s;
+
+        ornekClass()
+        {
+            s = new int;
+        }
+        ~ornekClass()
+        {
+            delete s;
+        }
+};
+
+int main()
+{
+    shared_ptr&lt;ornekClass> sayi1 = make_shared&lt;ornekClass>(); // Shared_ptr'i oluşturduk sınıfımızın üzerine
+    *sayi1->s = 123; // Değer atadık
+
+    cout << "sayi1'deki s'in degeri; " << *sayi1->s << endl << endl;
+
+    shared_ptrornekClass> sayi2 = sayi1; // Referans oluşturduk
+    cout << "sayi1'deki s'in degeri; " << *sayi1->s << endl;
+    cout << "sayi2'deki s'in degeri; " << *sayi2->s << endl << endl;
+
+    shared_ptr&lt;ornekClass> sayi3 = sayi1; // Referans oluşturduk
+    cout << "sayi1'deki s'in degeri; " << *sayi1->s << endl;
+    cout << "sayi2'deki s'in degeri; " << *sayi2->s << endl;
+    cout << "sayi3'deki s'in degeri; " << *sayi3->s << endl << endl;
+
+    cout << "Ayni Pointer'a referans olanlarin miktari; " << sayi1.use_count() << endl;
+
+    return 0;
+}</code>
+
+Çıktı ise;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/12 Cpp OOP.html/8.png" alt="12.9" width="80%">
+        </div>
+
+        <h3>Weak_ptr</h3>
+        <pre id="codeh3">Weak_ptr, Shared_ptr ile beraber kullanılır. Amacı ise Shared_ptr için gözcülük etmektir. Pointer'a herhangi bir referans sağlamaz fakat kaç tane Shared_ptr'nin aynı Pointer'a referans gösterdiği miktarı algılayabilir.</pre>
+
+        <pre id="codeh3">Kodumuzu Weak_ptr ile güncelleyelim;
+            
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;memory>
+
+using namespace std;
+
+class ornekClass
+{
+    public:
+        int *s;
+
+        ornekClass()
+        {
+            s = new int;
+        }
+        ~ornekClass()
+        {
+            delete s;
+        }
+};
+
+int main()
+{
+    shared_ptr&lt;ornekClass> sayi1 = make_shared&lt;ornekClass>();
+    *sayi1->s = 123;
+
+    cout << "sayi1'deki s'in degeri; " << *sayi1->s << endl << endl;
+
+    weak_ptr&lt;ornekClass> sayi1_weak(sayi1);
+
+    shared_ptr&lt;ornekClass> sayi2 = sayi1;
+    cout << "sayi1'deki s'in degeri; " << *sayi1->s << endl;
+    cout << "sayi2'deki s'in degeri; " << *sayi2->s << endl << endl;
+
+    cout << "Ayni Pointer'a referans olanlarin miktari; " << sayi1_weak.use_count() << endl;
+
+    return 0;
+}</code>
+
+Çıktı;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/12 Cpp OOP.html/9.png" alt="12.9" width="80%">
+        </div>
+
+        <h2>Sınıflarla Hata Yönetimi</h2>
+        <pre id="preh2">"Hata Yönetimi" sayfasında gördüğümüz konunun sınıflarla ile daha detaylı işleyelim.</pre>
+
+        <h3>Özel Hata Sınıfı Yazma</h3>
+        <pre id="codeh3">Kendi özel hata sınıfımızı yazmak bir yapıcı ve "what" fonksiyonuna ihtiyacımız var.</pre>
+
+        <pre id="codeh3">Gelin beraber nullptr hatası için bir hata sınıfı yazalım;
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+class DegerNullptr // Hata sınıfı
+{
+    public:
+        int *deger;
+        
+        DegerNullptr(int *dgr)
+        {
+            deger = dgr;
+        }
+
+        string what()
+        {
+            return "Bu deger nullptr oldugu icin islem yapilamaz!";
+        }
+};
+
+int main()
+{
+    int *sayi;
+    sayi = new int;
+    
+    *sayi = 123;
+
+    try
+    {
+        if (sayi == nullptr) // Kontrol
+        {
+            throw DegerNullptr(sayi); // Hata sınıfını fırlat
+        }
+        
+        cout << "Bu deger ile islem yapilabilir" << endl << endl;
+    }
+    catch(DegerNullptr e)
+    {
+        std::cerr << e.what() << endl << endl;
+    }
+    
+    sayi = nullptr;
+
+    try
+    {
+        if (sayi == nullptr)
+        {
+            throw DegerNullptr(sayi);
+        }
+        
+        cout << "Bu deger ile islem yapilabilir" << endl << endl;
+    }
+    catch(DegerNullptr e)
+    {
+        std::cerr << e.what() << endl;
+    }
+}</code>
+
+Çıktı;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/12 Cpp OOP.html/10.png" alt="12.10" width="80%">
+        </div>
+
+        <h3>Noexcept</h3>
+        <pre id="preh3">Noexcept, Throw ile fırlatılan hataları görmezden gelir.</pre>
+
+        <pre id="codeh3">Noexcept ile örneğimizi güncelleyelim;
+
+<code class="language-cpp">#include <iostream>
+
+using namespace std;
+
+class DegerNullptr
+{
+    public:
+        int *deger;
+        
+        DegerNullptr(int *dgr)
+        {
+            deger = dgr;
+        }
+
+        string what()
+        {
+            return "Bu deger nullptr oldugu icin islem yapilamaz!";
+        }
+};
+
+void nullptrKontrol(int *x) // nullptr kontrol fonksiyonu yaptık ki noexcept kullanabilelim
+{
+    if (x == nullptr)
+    {
+        throw DegerNullptr(x);
+    }
+        
+    cout << "Bu deger ile islem yapilabilir" << endl << endl;
+}
+
+int main()
+{
+    int *sayi = nullptr; // Direkt nullptr olarak atadık
+    try
+    {
+        nullptrKontrol(sayi);
+    }
+    catch(DegerNullptr e)
+    {
+        std::cerr << e.what() << endl << endl;
+    }
+
+    try
+    {
+        noexcept(nullptrKontrol(sayi)); // Noexcept ile çağırdık
+    }
+    catch(DegerNullptr e)
+    {
+        std::cerr << e.what() << endl;
+    }
+}</code>
+
+Çıktı;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/12 Cpp OOP.html/11.png" alt="12.11" width="80%">
+        </div>
+
+        <h2>Kapsülleme</h2>
+        <pre id="preh2">Kapsülleme; nesne yönelimli programlama destekliyen yazılım dillerinde, atama ve üzerinde işlemler yapılma veya veriyi çağırma işlemlerin önüne bir fonksiyon gibi işlevler yazabildiğimiz OOP yöntemidir. Getter ile değişken çağrılırken Setter'da değişkene işlem yapılır.</pre>
+
+        <pre id="codeh2">Kapsülleme bir nevi ön ayar veya ön kontrol sistemi gibi çalışır. Örnek olarak bir değişkene sıfır atanmamasını sağlayabiliriz;
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+class ornekClass
+{
+    private:
+        int sayi; // Kapsüllenen değişken
+    public:
+        int sayiAl() // Getter
+        {
+            return sayi;
+        }
+        void sayiVer(int atanacakSayi) // Setter
+        {
+            if (atanacakSayi > 0) // Kontrol
+                sayi = atanacakSayi;
+            else
+                cout << "0 degeri atanamaz!" << endl << endl; // Hata mesajo
+        }
+};
+
+int main()
+{
+    ornekClass nesne1; // Nesnemiz
+
+    nesne1.sayiVer(100); // Setter ile değer atadık
+
+    cout << "nesne1'deki sayi'nin degeri; " << nesne1.sayiAl() << endl << endl; // Getter ile değişkeni çağırdık
+
+    nesne1.sayiVer(0); // 0 değeri atamaya çalışıyoruz. Fakat hata alınıcaktır
+
+    cout << "nesne1'deki sayi'nin degeri; " << nesne1.sayiAl() << endl << endl;
+}</code>
+
+Çıktı ise;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/12 Cpp OOP.html/12.png" alt="12.12" width="80%">
+        </div>
+
+        <h2>Kalıtım</h2>
+        <pre id="preh2">Kalıtım, bir sınıfın içeriğini başka bir sınıfa direkt olarak miras alarak düzenleme veya kullanımı sağlayan bir OOP özelliğidir. Sınıfı kalıtmak için <code>sinif1 : kalitilicakSinif</code> şeklinde iki nokta(:) ile sağlanır.</pre>
+
+        <pre id="codeh2">Örnek olarak canlı örneğini yapalım;
+
+<code class="language-cpp"></code>
+
+Çıktı ise;</pre>
+
+        <h2>Kaynakça</h2>
+        <ul>
+            <li><a href="https://www.w3schools.com/cpp/cpp_classes.asp">https://www.w3schools.com/cpp/cpp_classes.asp</a></li>
+            <li><a href="https://en.cppreference.com/cpp/language/access">https://en.cppreference.com/cpp/language/access</a></li>
+            <li><a href="https://learn.microsoft.com/en-us/cpp/cpp/protected-cpp?view=msvc-170">https://learn.microsoft.com/en-us/cpp/cpp/protected-cpp?view=msvc-170</a></li>
+            <li><a href="https://www.geeksforgeeks.org/cpp/difference-between-constructor-and-destructor-in-c/">https://www.geeksforgeeks.org/cpp/difference-between-constructor-and-destructor-in-c/</a></li>
+            <li><a href="https://www.cppbetterexplained.com/posts/cpp-constructors-destructors/">https://www.cppbetterexplained.com/posts/cpp-constructors-destructors/</a></li>
+            <ul><li><a href="https://www.geeksforgeeks.org/cpp/copy-constructor-in-cpp/">https://www.geeksforgeeks.org/cpp/copy-constructor-in-cpp/</a></li></ul>
+            <li><a href="https://www.geeksforgeeks.org/cpp/move-constructors-in-c-with-examples/">https://www.geeksforgeeks.org/cpp/move-constructors-in-c-with-examples/</a></li>
+            <li><a href="https://www.geeksforgeeks.org/cpp/smart-pointers-cpp/">https://www.geeksforgeeks.org/cpp/smart-pointers-cpp/</a></li>
+            <li><a href="https://www.geeksforgeeks.org/cpp/this-pointer-in-c/">https://www.geeksforgeeks.org/cpp/this-pointer-in-c/</a></li>
+            <li><a href="https://www.geeksforgeeks.org/cpp/exception-handling-c/">https://www.geeksforgeeks.org/cpp/exception-handling-c/</a></li>
+            <li><a href="https://en.cppreference.com/cpp/language/noexcept">https://en.cppreference.com/cpp/language/noexcept</a></li>
+            <li><a href="https://www.geeksforgeeks.org/cpp/encapsulation-in-cpp/">https://www.geeksforgeeks.org/cpp/encapsulation-in-cpp/</a></li>
+        </ul>
+    </div>
+
+    <div style="height: 100px;"></div>
+
+    <footer style="position: fixed; left: 0; bottom: 0; width: 100%; background: transparent; text-align: center; padding: 10px 0; z-index: 100;">
+        <div>
+            <a href="./11 Cpp Fonksiyonlar.html" style="margin-right: 20px; cursor:pointer;">
+                &larr; Önceki
+            </a>
+            <a href="" style="cursor:pointer;">
+                Sonraki &rarr;
+            </a>
+        </div>
+        <div>
+            <p>&copy; 2026 Data's Book</p>
+        </div>
+
+        <div style="position: absolute; right: 20px; bottom: 20px;">
+            <a href="./1 Cpp İçindekiler.html" style="text-decoration: none;">
+                İçindekiler
+            </a>
+        </div>
+    </footer>
+</body>
+</html>
+
+<!-- Muhammet Enes nam-ı diğer Data Delete tarafından sevgi ile yapıldı <3 -->
