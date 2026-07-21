@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data's Book on Cpp</title>
+
+    <link rel="icon" type="image/x-icon" href="../Sources/favicon.png">
+
+    <script src="../Sources/JS/setBackgroundMedia.js"></script>
+
+    <link rel="stylesheet" href="../Sources/JS/hljs/vs2015.css">
+    <script src="../Sources/JS/hljs/highlight.min.js"></script>
+    <script>
+        window.onload = function() {
+            hljs.highlightAll();
+        };
+    </script>
+
+    <link rel="stylesheet" href="../Sources/CSS/main.css">
+</head>
+<body>
+    <h1>Struct ve Enum</h1>
+
+    <div style="height: 100px;"></div>
+    
+    <div id="mainDiv">
+        <h2>Struct Nedir?</h2>
+        <pre id="preh2">Struct, C programlama dilindendir beri var olan ve C++ ile geliştirilmiş bir değişken tipi tanımlama aracıdır. Aynı sınıflar gibi hem içerisinde değişkenler, fonksiyonlar ve başka Struct'lar yazabiliyor hemde erişim belirteçleri ile de OOP özelliklerinden yararlanabilinmektedir.</pre>
+
+        <h2>Struct Kullanımı</h2>
+        <pre id="preh2">Struct aracını kullanmak için <code>struct</code> + structIsmi yapısı kullanılır ve ardından kod blokları açılır. Daha sonra kod bloklarında özellikler tanımlanabilir. Ardından aynı sınıfıntan nesne oluşturur gibi Struct'lardan yani yapılardan nesne oluşturulur.</pre>
+
+        <pre id="codeh2">Örnek olması için bir vatandaş yapısı oluşturalım. Bir vatandaşın; ismi, soyismi, evi adresi ve yaşı gibi bilgiler bulunur. Gelin beraber bu sistemi kodlayalım:
+
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+struct vatandas // Vatandaş yapımızı oluşturduk
+{
+    string vatandasIsim; // Vatandaşın isim bilgisi, ayrıca özellik tanımlarken bu şekilde tanımı yapılır. Tanımın hemen ardından noktalı virgül konulur
+    string vatandasSoyisim; // Vatandaşın soyismi bilgisi
+
+    string vatandasEvAdres; // Vatandaşın ev adresi bilgisi
+
+    int vatandasYas = 0; // Vatandaşın yaş bilgisi. Ayrıca C'de yapılarda önceden tanımlı değişkenler tanımlanamıyorken C++11 standartı ile bu durum C++'da desteklenir hale gelmiştir
+};
+
+int main()
+{
+    vatandas ali; // Vatandaş nesnemizi oluşturduk
+    ali.vatandasIsim = "Ali";
+    ali.vatandasSoyisim = "Karakulak"; // Soyisim bilgisini bu şekilde atayabiliriz
+    ali.vatandasEvAdres = "Izmir/Konak"; // Ali İzmir Konak'ta otursun
+    ali.vatandasYas = 23; // Ali 23 yaşında olsun
+
+    // Bilgiler hazır şimdi sırayla yazdıralım...
+
+    cout << "Vatandas " << ali.vatandasIsim << "'nin bilgileri:" << endl << endl;
+    cout << "Soyismi: " << ali.vatandasSoyisim << endl;
+    cout << "Ev Adresi: " << ali.vatandasEvAdres << endl;
+    cout << "Yasi: " << ali.vatandasYas << endl;
+
+    return 0;
+}</code>
+
+Çıktı;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/13 Cpp Struct ve Enum.html/1.png" alt="13.1" width="100%">
+        </div>
+
+        <pre id="codeh2">Hadi gelin bu örneği biraz daha geliştirilem. Ancak sizi temin ederim ki şuan yapı üzerinde değişikliklerimizi yapabilceğimizi sağlayan C++11 standartıdır. Yani C programlama dilindeki eski yapı aracını C++ nasıl bir süper araca döndürtüğüne!
+
+Bildiğiniz üzere vatandaşlık sisteminde sizin bilgileriniz yer almakla beraber annenizin ve babanızın bilgileri olduğunu bir kısım vardır. O kısımlara bastığınızda sizin görebilceğiniz özellikler bulunur. Gelin bu sistemi geliştirelim:
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+struct vatandas
+{
+    private:
+        string vatandasEvAdres; // Ev adresinizi kimse göremez sizden başka
+
+    public:
+        string vatandasIsim;
+        string vatandasSoyisim;
+
+        vatandas* anaVatandas = NULL; // Bu şekilde yapı içerisinde kendi yapını kullanabilirsiniz
+        vatandas* babaVatandas = NULL; // İlk başta NULL olarak tanımlayalım
+
+        int vatandasYas = 0;
+        
+        void vatandasEvAdrisiniDegistir(string dogruVatandasMi, string yeniAdres) // Adres bilgisi gizli olduğunu için bir ara katman yerleştirilem
+        {
+            if (dogruVatandasMi == vatandasIsim) // Girilen isim ile değiştirilmek istenen vatandaşın ismi aynı mı?
+            { // Aynı ise
+                vatandasEvAdres = yeniAdres; // Eşitle
+
+                cout << "Basarili bir sekilde islem tamamlandi!" << endl << endl; // Bilgilendir
+            }
+            else // Değil ise
+                cout << "Islem red edildi. Izinsiz giris!" << endl << endl; // Bilgilendir
+        };
+
+        void vatandasBilgiYazdir() // Bilgileri yazdıralım
+        {
+            cout << vatandasIsim << " adli vatandasin bilgileri;" << endl << endl;
+            cout << "Soyismi: " << vatandasSoyisim << endl;
+            cout << "Yas: " << vatandasYas << endl;
+            cout << "Ev Adresi: " << vatandasEvAdres << endl;
+
+            // Vatandaşın temel bilgileri bu kadar. Şimdi ana ve baba kaydı varsa onlarında bilgilerini yazdıralım
+            
+            if (anaVatandas != NULL && babaVatandas != NULL)
+            {
+                cout << endl << "Ana bilgileri;" << endl;
+                cout << "Adi: " << anaVatandas->vatandasIsim << endl;
+                cout << "Yasi: " << anaVatandas->vatandasYas << endl;
+
+                // Yapılardan eğer Pointer şeklinde kullanılıcaksa eğer bir eksi ve büyüktür işareti(->) ile içindeki bilgiler kullanılır. Normal şartlar her Pointer tipi gibi yıldız(*) ile bellek adresindeki bilgiyi erişirdik. Fakat C ve C++'da yapılar sıklıkla kullanıldığı için böyle bir kolaylık sağlanmıştır. Aynı mantık C++'da pek tabi sınıflar içinde geçerlidir
+
+                cout << endl << "Baba bilgileri;" << endl;
+                cout << "Adi: " << babaVatandas->vatandasIsim << endl;
+                cout << "Yasi: " << babaVatandas->vatandasYas << endl;
+            }
+            else
+                cout << "Ana veya baba kaydi girilmemistir." << endl;
+        }
+};
+
+int main()
+{
+    // Vatandaşımızın kendisi
+    vatandas ali;
+    ali.vatandasIsim = "Ali";
+    ali.vatandasSoyisim = "Karakulak";
+    ali.vatandasYas = 23;
+    ali.vatandasEvAdrisiniDegistir(ali.vatandasIsim, "Izmir/Konak");
+
+    // Babasının ve anasının bilgileri
+    vatandas ahmet;
+    ahmet.vatandasIsim = "Ahmet";
+    ahmet.vatandasSoyisim = "Karakulak";
+    ahmet.vatandasYas = 47;
+    ahmet.vatandasEvAdrisiniDegistir(ahmet.vatandasIsim, "Izmir/Karsiyaka");
+    vatandas ayse;
+    ayse.vatandasIsim = "Ayse";
+    ayse.vatandasSoyisim = "Karakulak";
+    ayse.vatandasYas = 45;
+
+    ayse.vatandasEvAdrisiniDegistir(ahmet.vatandasIsim, "Izmir/Karsiyaka"); // Yanlış bir giriş yapalım
+
+    ali.anaVatandas = &ayse; // Kayıtlarını girdik, Pointer şeklinde tanımladığımız için bellek adresini gönderdik
+    ali.babaVatandas = &ahmet;
+
+    ali.vatandasBilgiYazdir();
+
+    return 0;
+}</code>
+
+Çıktısı;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/13 Cpp Struct ve Enum.html/2.png" alt="13.2" width="100%">
+        </div>
+
+        <pre id="codeh2">Son olarak sınıflarda olduğu gibi yapılarda yapıcılar ve yıkıcılarda kullanılabilir. Ayrıca <code>typedef</code> ile aynı değişken tiplerinin isimlerini değiştirebildiğimiz gibi de yapıların isimlerini değiştirebiliriz.</pre>
+
+        <h2>Union Nedir?</h2>
+        <pre id="preh2">Union, aynı Struct yani yapılar gibi kendi içerisinde birden fazla veri türünü sahip değişkenleri depolanabilcek olan bir araçtır. Fakat önemli bir detay var ki Union Struct gibi değerlerini farklı farklı bellek kısımlarında depolarken, Union'da bu durum tek bir bellek yuvasına gerçekleşir. Tanımlama ise <code>union</code> + unionIsmi şeklinde yapılır.</pre>
+
+        <pre id="codeh2">Yani siz Union içerisinde üç adet değişken oluşturduğunuz diyelim... Normal şartlarda yapılarda bir tanımladığımız değişken diğerini etkilemez fakat Union'da tüm değişkenler tek bir bellek adresinde depolandığı için bir değişiklik tüm değişkenleri etkiler. Gelin sizeof ile gözlemleyelim bu durumu:
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+union ornekUnion // Union'umuz
+{   // Değişkenleri
+    int s1;
+    int s2;
+    int s3;
+};
+
+struct ornekYapi // Yapımız
+{   // Değişkenleri
+    int s1;
+    int s2;
+    int s3;
+};
+
+int main()
+{
+    ornekUnion union1;
+    ornekYapi yapi1;
+
+    cout << "Union1'in bellekte kaplidigi yer: " << sizeof(union1) << endl;
+    cout << "Yapi'in bellekte kaplidigi yer: " << sizeof(yapi1) << endl;
+
+    return 0;
+}</code>
+
+Çıktısı ise;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/13 Cpp Struct ve Enum.html/3.png" alt="13.3" width="100%">
+        </div>
+
+        <pre id="preh2">Yapının boyutu on iki bayt iken Union'nun ki neden dört bayt? Az önce konuştuğumuz gibi yapı her bir değişken için ayrı ayrı bellek bölümleri kullanırken, Union ise tüm değişkenlerini tek bir bellek bölümünde depolar. Ayrıca Union, içerisindeki en büyük RAM boyutu istiyen veri türüne göre kendisi ilk başta boyutlandırır ki bu yüzden dört baytlık yani Integer veri türünün RAM'de istediği alan miktarıdır. Long türünü yazsaydık eğer sekiz baytlık alan kaplıcak olurdu.</pre>
+
+        <pre id="codeh2">Gelin bu durumu bir örnek ile açıklayalım:
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+union ornekUnion
+{
+    int s1;
+    int s2;
+    int s3;
+};
+
+struct ornekYapi
+{
+    int s1 = 0;
+    int s2 = 0;
+    int s3 = 0;
+};
+
+// Aşırımı yükleme ile yazdırma fonksiyonları
+void degerleriYazdir(ornekYapi y)
+{
+    cout << endl << "Yapinin degiskenlerinin degeri;" << endl << endl;
+    cout << "s1: " << y.s1 << endl;
+    cout << "s2: " << y.s2 << endl;
+    cout << "s3: " << y.s3 << endl;
+}
+void degerleriYazdir(ornekUnion u)
+{
+    cout << endl << "Union'nun degiskenlerinin degeri;" << endl << endl;
+    cout << "s1: " << u.s1 << endl;
+    cout << "s2: " << u.s2 << endl;
+    cout << "s3: " << u.s3 << endl;
+}
+
+int main()
+{
+    ornekUnion union1;
+    ornekYapi yapi1;
+
+    // Değişkenlerine sırayla değerler atıyalım ve değerlerini ekrana yazdıralım
+    union1.s1 = 1;
+    yapi1.s1 = 1;
+
+    degerleriYazdir(union1);
+    degerleriYazdir(yapi1);
+
+    cout << "---------------------------------" << endl;
+
+    union1.s2 = 2;
+    yapi1.s2 = 2;
+
+    degerleriYazdir(union1);
+    degerleriYazdir(yapi1);
+
+    cout << "---------------------------------" << endl;
+
+    union1.s3 = 3;
+    yapi1.s3 = 3;
+
+    degerleriYazdir(union1);
+    degerleriYazdir(yapi1);
+
+    cout << "---------------------------------" << endl;
+
+    return 0;
+}</code>
+
+Çıktı;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/13 Cpp Struct ve Enum.html/4.png" alt="13.4" width="100%">
+        </div>
+
+        <pre id="preh2">Gördüğünüz gibi yapılarda değişkenler birbirlerini etkilemezken Union'da tüm değişkenler etkilenir.</pre>
+
+        <h2>Enum Nedir?</h2>
+        <pre id="preh2">Enum, kendi özel veri değelerimizi oluşturabildiğimiz araçtır.</pre>
+
+        <pre id="preh2">Enum, ne yapı nede Union gibi verileri daha sonra atabilceğimiz araçlar gibi değildir. Daha çok sabit tanımlamlama ve verileri düzenleme gibi işlemlerde kullanılır. <code>enum</code> + enumIsmi şeklimde tanımlanır.</pre>
+
+        <pre id="codeh2">Örnek olması açısından girilen yaşın yaş grubunu hesaplayan bir sistem tasarlayalım:
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+enum yasGrublari // Yaş gruplarının Enum'ları. Ayrıca sabit oldukları için büyük harfle yazılması tavsiye edilir
+{
+    COCUK,
+    GENC,
+    YETISKIN,
+    ORTA_YASLI,
+    YASLI
+};
+
+int main()
+{
+    cout << "Yasinizi giriniz: ";
+
+    int yas;
+    cin >> yas;
+
+    yasGrublari yasGrubu; // Enum'lı veri değerlerimizi tutacak olan değişken
+
+    // Yaş aralılları ile yaş grubunu belirleme
+    if (yas <= 18)
+        yasGrubu = COCUK;
+    else if (yas > 18 && yas <= 25)
+        yasGrubu = GENC;
+    else if (yas > 25 && yas <= 40)
+        yasGrubu = YETISKIN;
+    else if (yas > 40 && yas <= 60)
+        yasGrubu = ORTA_YASLI;
+    else if(yas > 60)
+        yasGrubu = YASLI;
+
+    // Switch-Case ile de yas grubuna göre çıktı verme
+    switch (yasGrubu)
+    {
+        case COCUK:
+            cout << endl << "Yasiniz COCUK kategorisinde!" << endl;
+            break;
+
+        case GENC:
+            cout << endl << "Yasiniz GENC kategorisinde!" << endl;
+            break;
+
+        case YETISKIN:
+            cout << endl << "Yasiniz YETISKIN kategorisinde!" << endl;
+            break;
+
+        case ORTA_YASLI:
+            cout << endl << "Yasiniz ORTA_YASLI kategorisinde!" << endl;
+            break;
+
+        case YASLI:
+            cout << endl << "Yasiniz YASLI kategorisinde!" << endl;
+            break;
+    }
+
+    return 0;
+}</code>
+
+Çıktı ise;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/13 Cpp Struct ve Enum.html/5.png" alt="13.5" width="100%">
+        </div>
+
+        <h2>Kaynakça</h2>
+        <ul>
+            <li><a href="https://www.geeksforgeeks.org/cpp/structures-in-cpp/">https://www.geeksforgeeks.org/cpp/structures-in-cpp/</a></li>
+            <li><a href="https://www.geeksforgeeks.org/cpp/cpp-unions/">https://www.geeksforgeeks.org/cpp/cpp-unions/</a></li>
+            <li><a href="https://www.w3schools.com/cpp/cpp_enum.asp">https://www.w3schools.com/cpp/cpp_enum.asp</a></li>
+        </ul>
+    </div>
+
+    <div style="height: 100px;"></div>
+
+    <footer style="position: fixed; left: 0; bottom: 0; width: 100%; background: transparent; text-align: center; padding: 10px 0; z-index: 100;">
+        <div>
+            <a href="./12 Cpp OOP.html" style="margin-right: 20px; cursor:pointer;">
+                &larr; Önceki
+            </a>
+            <a href="./14 Cpp Template.html" style="cursor:pointer;">
+                Sonraki &rarr;
+            </a>
+        </div>
+        <div>
+            <p>&copy; 2026 Data's Book</p>
+        </div>
+
+        <div style="position: absolute; right: 20px; bottom: 20px;">
+            <a href="./1 Cpp İçindekiler.html" style="text-decoration: none;">
+                İçindekiler
+            </a>
+        </div>
+    </footer>
+</body>
+</html>
+
+<!-- Muhammet Enes nam-ı diğer Data Delete tarafından sevgi ile yapıldı <3 -->

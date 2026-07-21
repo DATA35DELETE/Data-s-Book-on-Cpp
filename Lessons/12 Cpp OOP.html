@@ -853,10 +853,442 @@ int main()
 
         <pre id="codeh2">Örnek olarak canlı örneğini yapalım;
 
-<code class="language-cpp"></code>
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+class canli // Genel canlı sınıfı
+{
+    public:
+        // Canlılarda bulunan genel fonksiyonları
+        void beslenme()
+        {
+            cout << "Canli beslendi!" << endl;
+        }
+        void hareket()
+        {
+            cout << "Canli hareket etti!" << endl;
+        }
+        void buyudu()
+        {
+            cout << "Canli buyudu!" << endl;
+        }
+};
+
+class kedi : public canli // Kedi sınıfını canlı sınıfından kalıttık. Public yazdık ki public kısımlar direkt olarak aktarılsın
+{
+    public:
+        void miyavlama() // Kediye özgü bir özellik ekledik
+        {
+            cout << "Kedi miyavladi!" << endl << endl;
+        }
+};
+
+class kopek : public canli // Köpek sınıfını canlı sınıfından kalıttık
+{
+    public:
+        void havlama() // Köpeklere özgü bir özellik 
+        {
+            cout << "Kopek havladi!" << endl << endl;
+        }
+};
+
+int main()
+{
+    kedi kedi1;
+    kedi1.beslenme(); // Canlı sınıfında olmasına rahmen, kalıtıldığından dolayı sınıfa aktarıldığı için kullanabiliyoruz
+    kedi1.buyudu(); // Kedi büyüdü
+    kedi1.hareket(); // Kedi hareket etti
+    kedi1.miyavlama(); // Kedi sınıfının kendisinde bulunan fonksiyonunu çağırdık
+
+    kopek kopek1;
+    kopek1.beslenme(); // Canlı sınıfında olmasına rahmen, kalıtıldığından dolayı sınıfa aktarıldığı için kullanabiliyoruz
+    kopek1.buyudu(); // Köpek büyüdü
+    kopek1.hareket(); // Köpek hareket etti
+    kopek1.havlama(); // Köpek sınıfının kendisinde bulunan fonksiyonunu çağırdık
+
+    return 0;
+}</code>
 
 Çıktı ise;</pre>
 
+        <div id="divh3Img">
+            <img src="../Bibliography/12 Cpp OOP.html/13.png" alt="12.13" width="80%">
+        </div>
+
+        <h3>Elmas Problemi</h3>
+        <pre id="preh3">Elmas problemi, birden fazla kalıtımı yapıldığında karşımıza çıkan ve programda belirsizlik yaratan bir hatadır. Sebebi ise bir sınıfın birinci neslinden türetilen ikinci neslinde ata sınıftan gelen özellikleri kullanımından çıkar. Çünkü ikinci nesildeki kullanılmak istenen özellik hem birinci nesil hemde ata sınıf sahip olduğu için karışıklık olur ve bu iki sahip arasında program kararsız kalır ve derlenemez.</pre>
+
+        <pre id="codeh3">Bu hatayı çözmek için ise "<code>virtural</code>" sözcüğü kullanılır. Kelime anlamıyla sanal yöntemi, sınıfları aktarırken sahipliği üzerine yazılmadığı süreççe özelliği aktarmaz. Çok biçimlilik konusunda daha detaylı göreceğiz fakat kalıtım yönteminde elmas problemini çözebildiğini bilmemiz yeterlidir.</pre>
+
+        <pre id="codeh3">Şimdi gelin şöyle yapalım. Kedinin ve köpeğin bir mucize aracılığıyla bir yeni tür çıktığını varsayalım. Adı ise "kopdi" olsun. Kopdi sınıfı doğal olarak hem kedi hem canlı hemde köpek sınıflarının özelliğini taşımalı. Demek ki kalıtım uygulacağız fakat elmas problemi yüzünden canlı sınıfındaki özellikleri aktaramayız. İşte bu durumda köpek ve kedi sınıfını canlı sınıfından kalıtırken <code>virtural</code> olarak aktarıcağız ki canlı sınıfındaki özelliklerin sahipliği canlı sınıfında kalsın.
+        
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+class canli
+{
+    public:
+        void beslenme()
+        {
+            cout << "Canli beslendi!" << endl;
+        }
+        void hareket()
+        {
+            cout << "Canli hareket etti!" << endl;
+        }
+        void buyudu()
+        {
+            cout << "Canli buyudu!" << endl;
+        }
+};
+
+class kedi : virtual public canli // Sanal olarak aktardık ki özelliklerin sahiplikleri canlı sınıfında kalsın
+{
+    public:
+        void miyavlama()
+        {
+            cout << "Kedi miyavladi!" << endl << endl;
+        }
+};
+
+class kopek : virtual public canli // Sanal olarak aktardık
+{
+    public:
+        void havlama()
+        {
+            cout << "Kopek havladi!" << endl << endl;
+        }
+};
+
+class kopdi : public kedi, public kopek{}; // Direkt olarak aktarabiliriz. Çünkü köpek ve kedi sanal olarak canlı sınıfını taşımakta
+
+int main()
+{
+    kopdi kopdi1; // Kopdi nesnemiz
+    kopdi1.beslenme();
+    kopdi1.buyudu();
+    kopdi1.hareket();
+    kopdi1.havlama();
+    kopdi1.miyavlama();
+
+    return 0;
+}</code>
+
+Çıktı;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/12 Cpp OOP.html/14.png" alt="12.14" width="80%">
+        </div>
+
+        <h2>Çok Biçimlilik</h2>
+        <pre id="preh2">Çok biçimlilik, kalıtılan sınıfılarda ata sınıftan gelen özellikleri yeniden yazma OOP yeteneğidir.</pre>
+
+        <pre id="codeh2">Bir nevi ata sınıfdaki bir özelliği kalıtılan sınıfta yeniden tanımlama işlemidir. Örnek olarak kalıtım örneğimizdeki canlı sınıfındaki ses çıkarma işlemlerini tanımlayalım ve diğer sınıflarda yeniden tanımlayarak çok biçimlilik uygulayalım;
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+class canli
+{
+    public:
+        void beslenme()
+        {
+            cout << "Canli beslendi!" << endl;
+        }
+        void hareket()
+        {
+            cout << "Canli hareket etti!" << endl;
+        }
+        void buyudu()
+        {
+            cout << "Canli buyudu!" << endl;
+        }
+
+        void sesCikar() // Çok biçimli olucak olan fonksiyon
+        {
+            cout << "Canli ses cikardi!" << endl << endl;
+        }
+};
+
+class kedi : public canli
+{
+    public:
+        void sesCikar() // Canlı sınıfından gelen özelliği çok biçimli hale getirdik
+        {
+            cout << "Kedi miyavladi!" << endl << endl;
+        }
+};
+
+class kopek : public canli 
+{
+    public:
+        void sesCikar()
+        {
+            cout << "Kopek havladi!" << endl << endl;
+        }
+};
+
+int main()
+{
+    kedi kedi1;
+    kedi1.beslenme();
+    kedi1.buyudu();
+    kedi1.hareket();
+    kedi1.sesCikar();
+
+    kopek kopek1;
+    kopek1.beslenme();
+    kopek1.buyudu();
+    kopek1.hareket();
+    kopek1.sesCikar();
+
+    canli canli1;
+    canli1.beslenme();
+    canli1.buyudu();
+    canli1.hareket();
+    canli1.sesCikar();
+
+    return 0;
+}</code>
+
+Çıktısı ise;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/12 Cpp OOP.html/15.png" alt="12.15" width="80%">
+        </div>
+
+        <h3>Sanal Fonksiyonlar</h3>
+        <pre id="preh3">Geldik çok biçimliliği var eden özelliğe; Çok biçimli nesneler veya beni tabirimle "mış" gibi yapan nesnelere... Peki nedir bu "mış" gibi yapan nesneler? Kısaca ata sınıfından oluşturulmuş bir nesneyi diğer nesillere uydurma biçimidir. Yani nesne olarak "canli" olarak gözüksede özelliklerini "kedi" sınıfından alır.</pre>
+
+        <pre id="preh3">Peki sanal fonksiyonlar nedir? Onlar ise bu "mış" gibi yapan nesnelerin atadan gelen özellikleri nesile göre üzerine yazmamızı sağlayan fonksiyon türledir. Aynı şekilde <code>virtural</code> kelimesi ile sanallaştırılır, <code>override</code> ile de sanal fonksiyonların üzerlerine yazılır.</pre>
+
+        <pre id="codeh3">Örnek olması açısından kalıtımdaki örneğimizi sanal fonksiyonlar ile yeniden yazalım;
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+class canli
+{
+    public:
+        void beslenme()
+        {
+            cout << "Canli beslendi!" << endl;
+        }
+        void hareket()
+        {
+            cout << "Canli hareket etti!" << endl;
+        }
+        void buyudu()
+        {
+            cout << "Canli buyudu!" << endl;
+        }
+
+        virtual void sesCikar() {}; // Ses çıkarma fonksiyonunun bir sanal fonksiyon olduğunu belirttik
+};
+
+class kedi : public canli 
+{
+    public:
+        void sesCikar() override // Sanal olarak tanımlanan fonksiyonu override ile üzerine yazdık
+        {
+            cout << "Kedi miyavladi!" << endl << endl;
+        }
+};
+
+class kopek : public canli
+{
+    public:
+        void sesCikar() override
+        {
+            cout << "Kopek havladi!" << endl << endl;
+        }
+};
+
+int main()
+{
+    canli *canli1; // Pointer tanımladık ki farklı farklı nesnelerin içeriğini alalım
+    kedi kedi1; // Kedi nesnemiz
+
+    canli1 = &kedi1; // Kedi nesnemizin Pointer'ını canlı nesnemize aktardık ki çok biçimli oldu
+    canli1->beslenme();
+    canli1->buyudu();
+    canli1->hareket();
+    canli1->sesCikar(); // Kedi sınıfına ait olan fonksiyon çağrılır
+
+    kopek kopek1;
+
+    canli1 = &kopek1; // Köpek nesnemizin Pointer'ını canlı nesnemize aktardık ki çok biçimli oldu
+    canli1->beslenme();
+    canli1->buyudu();
+    canli1->hareket();
+    canli1->sesCikar(); // Köpek sınıfına ait olan fonksiyon çağrılır
+
+    return 0;
+}</code>
+
+Çıktısı;</pre>
+
+        <div id="divh3Img"><img src="../Bibliography/12 Cpp OOP.html/16.png" alt="12.16" width="80%"></div>
+
+        <h3>Saf Sanal Fonksiyonlar</h3>
+        <pre id="preh3">Saf sanal fonksiyonlar, sanal fonksiyonlardan da sanal olan bir fonksiyon türüdür. Daha çok soyutlama ile çok biçimlilikte kullanılır. Saf sanal fonksiyon tanımlamak için <code>virtural</code> olarak belirlediğimiz fonksiyonun sağ tarafına <code>= 0</code> yazarak oluşturabiliriz.</pre>
+
+        <h3>Final</h3>
+        <pre id="preh3">Final, üzerlerine yazma işlemlerinde en sonunda konulan ve konulduktan sonraki nesillerde o fonksiyonun üzerine yazılmasını engelleyen bir araçtır. Yani bir nevi Override sonlandırıcıdır. Ayrıca C++11 standartı ile dile girmiştir.</pre>
+
+        <pre id="codeh3">Biliyorsunuz ki köpekler kurtlardan evrimleşmiş hayvanlardır. Eğer OOP yönünden bakacak olucaksak köpek sınıfı kurt sınıfından kalıtılmıştır. Kurtlarda olan özellikler köpekleri etkiliyebilir fakat köpeklerdeki özellikler kurtlardaki özellikleri etkilemezler. İşte bu durumu "sesCikar" fonksiyonu üzerinden ele alalım;
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+class canli
+{
+    public:
+        void beslenme()
+        {
+            cout << "Canli beslendi!" << endl;
+        }
+        void hareket()
+        {
+            cout << "Canli hareket etti!" << endl;
+        }
+        void buyudu()
+        {
+            cout << "Canli buyudu!" << endl;
+        }
+
+        virtual void sesCikar() = 0;
+};
+
+class kedi : public canli 
+{
+    public:
+        void sesCikar() override
+        {
+            cout << "Kedi miyavladi!" << endl << endl;
+        }
+};
+
+class kurt : public canli
+{
+    public:
+        void sesCikar() final // Final ile son olarak override yaptık
+        {
+            cout << "Kurt uludu!" << endl << endl;
+        }
+};
+
+class kopek : public kurt
+{
+    // Final yaptığımız için override ile üzerine yazamayız!
+    //void sesCikar() override
+};
+
+int main()
+{
+    kedi kedi1;
+    kedi1.beslenme();
+    kedi1.buyudu();
+    kedi1.hareket();
+    kedi1.sesCikar();
+
+    kurt kurt1;
+    kurt1.beslenme();
+    kurt1.buyudu();
+    kurt1.hareket();
+    kurt1.sesCikar();
+
+    kopek kopek1;
+    kopek1.beslenme();
+    kopek1.buyudu();
+    kopek1.hareket();
+    kopek1.sesCikar(); // Kurt sınıfındaki özellik çalışıcaktır
+
+    return 0;
+}</code>
+
+Çıktı ise;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/12 Cpp OOP.html/17.png" alt="12.17" width="80%">
+        </div>
+
+        <h2>Soyutlama</h2>
+        <pre id="preh2">Soyutlama, ata sınıftan gelen özelliklerin üzerlerine yazılmasını zorunlu kılan OOP yöntemidir. İLk olarak soyut bir sınıf oluşturulur, daha sonra o sınıftan olma nesillerde ata sınıfta saf sanal özellikleri override ile tanımlanır.</pre>
+
+        <pre id="preh2">Final konusundaki örneğimiz aynı zamanda soyutlama örneğidir. Denemek açısından "kedi" sınıfındaki üzerine yazılmış fonksiyonu kaldırın. Görüceksiniz ki derliyici sizlere hata vericektir.</pre>
+
+        <h2>Arkadaş Fonksiyonlar</h2>
+        <pre id="preh2">Arkadaş veya ortak fonksiyonlar, sınıflarda sınıflara ortak olan ve onların <code>private</code>, <code>protected</code> ve <code>public</code> alanlarına erişimine sahip olan fonksiyon türüdür. <code>friend</code> kelimesi ile tanımlanır. Sınıf içinde imzaları bırakılır ardından tanımlanır.</pre>
+
+        <pre id="codeh2">Bilirsiniz ki en iyi arkadaşınız sizin her şeyinizi bilirler. Sırlarda dahil! Fakat diğer arkadaşlarınız sırlanırını bilmezler... İşte bu durumu C++ programlama dilinde kodlayalım;
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+class ahmet
+{
+    private: // Özel alanınız
+        string sir = "Geceleri anime izlemeden uyumam..."; // Sırrınız
+        
+    public:
+        void sirriniSoyle() // Kendi sırrını bilirsin
+        {
+            cout << "Benim sirrim; " << sir << endl << endl; // Söylersin
+        }
+
+        friend void mehmetAgam(ahmet ahmetinKisiligi); // Mehmet en iyi arkadaşın olsun
+
+        void ayse(ahmet ahmetinKisiligi); // Ayşe isminde de başka arkadaşın olsun
+};
+
+void mehmetAgam(ahmet ahmetinKisiligi) // Mehmet'in yeri
+{
+    cout << "Ahmet'in sirri; " << ahmetinKisiligi.sir << endl << endl; // Mehmet en iyi arkadaşınız olduğu için sırrınızı bilir
+}
+
+void ayse(ahmet ahmetinKisiligi) // Ayşe'nin yeri
+{
+    //cout << "Ahmet'in sirri; " << ahmetinKisiligi.sir << endl << endl; // Fakat Ayşe en iyi arkadaşınız olmadığı için sırrınızı bilmez
+
+    cout << "Ahmet'in sirrini bilmiyorum..." << endl << endl;
+}
+
+int main()
+{
+    ahmet ben; // Kendinizi nesne olarak tanımladınız
+
+    ben.sirriniSoyle(); // Kendi sırrını söyledin
+
+    mehmetAgam(ben); // Mehmet'te senin sırrını söyledi
+    ayse(ben); // Fakat Ayşe en iyi arkadaşın olmadığı için bilemedi...
+}</code>
+
+Çıktı ise;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/12 Cpp OOP.html/18.png" alt="12.18" width="80%">
+        </div>
+
+        <h2>Static Sınıflar</h2>
+        <pre id="preh2">Static; "Değişkenler" sayfasında gördüğümüz depolama sınıfı olan <code>static</code>, bir sınıfta nesne üretmeden içerisindeki değişkenleri veya fonksiyonları kullanmamızı sağlayan ayrı bir özelliği vardır. Böylelikle bellekten tasaruf edilir. Yani bir nevi bizler için sınıflar bir değişken görevi görür.</pre>
+
+        <pre id="codeh2">Bir önceki örneğimizi <code>static</code> ile yeniden yazalım.
+        
+<code class="language-cpp"></code>
+
+Çıktısı;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/12 Cpp OOP.html/19.png" alt="12.19" width="80%">
+        </div>
+        
         <h2>Kaynakça</h2>
         <ul>
             <li><a href="https://www.w3schools.com/cpp/cpp_classes.asp">https://www.w3schools.com/cpp/cpp_classes.asp</a></li>
@@ -864,13 +1296,23 @@ int main()
             <li><a href="https://learn.microsoft.com/en-us/cpp/cpp/protected-cpp?view=msvc-170">https://learn.microsoft.com/en-us/cpp/cpp/protected-cpp?view=msvc-170</a></li>
             <li><a href="https://www.geeksforgeeks.org/cpp/difference-between-constructor-and-destructor-in-c/">https://www.geeksforgeeks.org/cpp/difference-between-constructor-and-destructor-in-c/</a></li>
             <li><a href="https://www.cppbetterexplained.com/posts/cpp-constructors-destructors/">https://www.cppbetterexplained.com/posts/cpp-constructors-destructors/</a></li>
-            <ul><li><a href="https://www.geeksforgeeks.org/cpp/copy-constructor-in-cpp/">https://www.geeksforgeeks.org/cpp/copy-constructor-in-cpp/</a></li></ul>
+            <li><a href="https://www.geeksforgeeks.org/cpp/copy-constructor-in-cpp/">https://www.geeksforgeeks.org/cpp/copy-constructor-in-cpp/</a></li>
             <li><a href="https://www.geeksforgeeks.org/cpp/move-constructors-in-c-with-examples/">https://www.geeksforgeeks.org/cpp/move-constructors-in-c-with-examples/</a></li>
             <li><a href="https://www.geeksforgeeks.org/cpp/smart-pointers-cpp/">https://www.geeksforgeeks.org/cpp/smart-pointers-cpp/</a></li>
             <li><a href="https://www.geeksforgeeks.org/cpp/this-pointer-in-c/">https://www.geeksforgeeks.org/cpp/this-pointer-in-c/</a></li>
             <li><a href="https://www.geeksforgeeks.org/cpp/exception-handling-c/">https://www.geeksforgeeks.org/cpp/exception-handling-c/</a></li>
             <li><a href="https://en.cppreference.com/cpp/language/noexcept">https://en.cppreference.com/cpp/language/noexcept</a></li>
             <li><a href="https://www.geeksforgeeks.org/cpp/encapsulation-in-cpp/">https://www.geeksforgeeks.org/cpp/encapsulation-in-cpp/</a></li>
+            <li><a href="https://www.geeksforgeeks.org/cpp/diamond-problem-in-cpp/">https://www.geeksforgeeks.org/cpp/diamond-problem-in-cpp/</a></li>
+            <li><a href="https://www.geeksforgeeks.org/cpp/virtual-function-cpp/">https://www.geeksforgeeks.org/cpp/virtual-function-cpp/</a></li>
+            <li><a href="https://www.w3schools.com/cpp/cpp_polymorphism.asp">https://www.w3schools.com/cpp/cpp_polymorphism.asp</a></li>
+            <li><a href="https://stackoverflow.com/questions/1306778/virtual-pure-virtual-explained">https://stackoverflow.com/questions/1306778/virtual-pure-virtual-explained</a></li>
+            <li><a href="https://www.geeksforgeeks.org/cpp/pure-virtual-functions-and-abstract-classes/">https://www.geeksforgeeks.org/cpp/pure-virtual-functions-and-abstract-classes/</a></li>
+            <li><a href="https://stackoverflow.com/questions/39932391/should-i-use-virtual-override-or-both-keywords">https://stackoverflow.com/questions/39932391/should-i-use-virtual-override-or-both-keywords</a></li>
+            <li><a href="https://en.cppreference.com/cpp/language/final">https://en.cppreference.com/cpp/language/final</a></li>
+            <li><a href="https://www.geeksforgeeks.org/cpp/abstraction-in-cpp/">https://www.geeksforgeeks.org/cpp/abstraction-in-cpp/</a></li>
+            <li><a href="https://www.geeksforgeeks.org/cpp/friend-class-function-cpp/">https://www.geeksforgeeks.org/cpp/friend-class-function-cpp/</a></li>
+            <li><a href="https://www.geeksforgeeks.org/cpp/static-keyword-cpp/">https://www.geeksforgeeks.org/cpp/static-keyword-cpp/</a></li>
         </ul>
     </div>
 
@@ -881,7 +1323,7 @@ int main()
             <a href="./11 Cpp Fonksiyonlar.html" style="margin-right: 20px; cursor:pointer;">
                 &larr; Önceki
             </a>
-            <a href="" style="cursor:pointer;">
+            <a href="./13 Cpp Struct ve Enum.html" style="cursor:pointer;">
                 Sonraki &rarr;
             </a>
         </div>

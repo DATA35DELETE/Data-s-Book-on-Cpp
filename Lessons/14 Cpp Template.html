@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data's Book on Cpp</title>
+
+    <link rel="icon" type="image/x-icon" href="../Sources/favicon.png">
+
+    <script src="../Sources/JS/setBackgroundMedia.js"></script>
+
+    <link rel="stylesheet" href="../Sources/JS/hljs/vs2015.css">
+    <script src="../Sources/JS/hljs/highlight.min.js"></script>
+    <script>
+        window.onload = function() {
+            hljs.highlightAll();
+        };
+    </script>
+
+    <link rel="stylesheet" href="../Sources/CSS/main.css">
+</head>
+<body>
+    <h1>Template</h1>
+
+    <div style="height: 100px;"></div>
+    
+    <div id="mainDiv">
+        <h2>Template Nedir?</h2>
+        <pre id="preh2">Temlate; fonksiyonlarda, değişkenlerde ve sınıflarda tür bağımsız yapılar kurabilmemizi sağlayan bir araçtır.</pre>
+
+        <pre id="preh2">Amacı ise kendi küçüktür büyüktür parantezlerinde yer alan parametrelerinde gerek veri türü ismi gerek veri değeri girilerek tür bağımsız bir şekile programlama yapabilmemizi sağlayan özel bir araçtır.</pre>
+
+        <h2>Fonksiyonlarda Template</h2>
+        <pre id="codeh2">Daha önceden bir örneğini vermiştik "Fonksiyonlar" sayfasında;
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+// Şablon ile fonksiyon bu şekilde tanımlanır
+template&lt;typename girilenTur> girilenTur topla(girilenTur a, girilenTur b) // Şablonların içerisine yazılan veri türünün aynı bir değişken gibi "girilenTur" adlı bir tür değişkenine atadık. Ardından tür bağımsız olucak olan kısımlara uygun olacak şekilde yerleştirdik
+{
+    return a + b;
+}
+
+int main()
+{
+    cout << "2 + 3 = " << topla&lt;int>(2,3) << endl << endl; // Integer türü ile çağırdık
+
+    cout << "2.43 + 3.321 = " << topla&lt;double>(2.43,3.321) << endl; // Double türü ile çağırdık
+
+    return 0;
+}</code></pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/14 Cpp Template.html/1.png" alt="14.1" width="100%">
+        </div>
+
+        <h2>Sınıflarda Template</h2>
+        <pre id="codeh2">Sınflarda Template kullanımı aynı fonksiyonlarda Template kullanımı gibidir.
+
+Gelin mevcut örneğimizi geliştirelim;
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+template&lt;typename girilenTur> class hesapMakinesi // Nesnesi oluşturulken hangi veir türü ile işlem yapılcağı önceden Template ile belirlenir. Daha sonraki işlemlerde girilen veri türünde devam edelir
+{
+    public:
+        girilenTur topla(girilenTur x, girilenTur y)
+        {
+            return x + y;
+        }
+        girilenTur cikar(girilenTur x, girilenTur y)
+        {
+            return x - y;
+        }
+        girilenTur carp(girilenTur x, girilenTur y)
+        {
+            return x * y;
+        }
+        girilenTur bol(girilenTur x, girilenTur y)
+        {
+            return x / y;
+        }
+};
+
+int main()
+{
+    hesapMakinesi&lt;int> integerIslemleri; // Integer işlemleri için nesnemiz
+
+    cout << "2 + 2 = " << integerIslemleri.topla(2,2) << endl;
+    cout << "10 - 4 = " << integerIslemleri.cikar(10,4) << endl;
+    cout << "5 * 6 = " << integerIslemleri.carp(5,6) << endl;
+    cout << "100 / 5 = " << integerIslemleri.bol(100,5) << endl << endl;
+
+    hesapMakinesi&lt;double> doubleIslemleri; // Double işlemleri için nesnemiz
+
+    cout << "2.4 + 2.3 = " << doubleIslemleri.topla(2.4,2.3) << endl;
+    cout << "10.2 - 4.5 = " << doubleIslemleri.cikar(10.2,4.5) << endl;
+    cout << "5.2 * 6.4 = " << doubleIslemleri.carp(5.2,6.3) << endl;
+    cout << "100.8 / 5.2 = " << doubleIslemleri.bol(100.8,5.2) << endl << endl;
+
+    return 0;
+}</code>
+
+Çıktısı;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/14 Cpp Template.html/2.png" alt="14.2" width="100%">
+        </div>
+
+        <h2>Değişkenlerde Template</h2>
+        <pre id="codeh2">Değişkenlerde tıpkı fonksiyonlar ve sınıflarda oluduğu gibi kullanım aynıdır. Ayrıca C++14 standartı ile dile girmiştir.
+
+Basit bir örnek yazalım;
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+template&lt;typename girilenTur> girilenTur degisken = 123.543; // Bu şekilde tanımlanır
+
+int main()
+{
+    cout << "123.543 saysinin Integer hali: " << degisken&lt;int> << endl; // Template ile Integer halini aldık
+    cout << "123.543 saysinin Double hali: " << degisken&lt;double> << endl; // Template ile Double halini aldık
+
+    return 0;
+}</code>
+
+Çıktısı;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/14 Cpp Template.html/3.png" alt="14.3" width="100%">
+        </div>
+
+        <h2>Varsayalın Tür Atama</h2>
+        <pre id="codeh2">OOP'nin özelliği olan varsayalın atama Template'de de vardır.
+
+Bir önceki örneği bu özellik ile yeniden düzenleyelim:
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+template&lt;typename girilenTur = double> girilenTur degisken = 123.543;
+
+int main()
+{
+    cout << "123.543 saysinin Integer hali: " << degisken&lt;int> << endl;
+    cout << "123.543 saysinin Double hali: " << degisken&lt;> << endl; // Template ile varsayılan halini aldık
+
+    return 0;
+}</code>
+
+Çıktı değişmicektir lakin yöntem değişiklik göstericektir.</pre>
+        
+        <h2>Template Üzerinden Değer Aktarma</h2>
+        <pre id="codeh2">Dilersek Template'ler üzerinden değer aktarabiliriz.
+
+Hadi bir dönüştürücü örneği yapalım;
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+template&lt;typename girilenTur, typename degerTur, degerTur deger> girilenTur donustur()
+{
+    return (girilenTur)deger;
+}
+
+int main()
+{
+    cout << "32.53 sayisinin Integer hali; " << donustur&lt;int, double, 32.53>() << endl;
+
+    return 0;
+}</code>
+
+Çıktısı;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/14 Cpp Template.html/4.png" alt="14.4" width="100%">
+        </div>
+        
+        <h2>Kaynakça</h2>
+        <ul>
+            <li><a href="https://www.geeksforgeeks.org/cpp/templates-cpp/">https://www.geeksforgeeks.org/cpp/templates-cpp/</a></li>
+        </ul>
+    </div>
+
+    <div style="height: 100px;"></div>
+
+    <footer style="position: fixed; left: 0; bottom: 0; width: 100%; background: transparent; text-align: center; padding: 10px 0; z-index: 100;">
+        <div>
+            <a href="./13 Cpp Struct ve Enum.html" style="margin-right: 20px; cursor:pointer;">
+                &larr; Önceki
+            </a>
+            <a href="" style="cursor:pointer;">
+                Sonraki &rarr;
+            </a>
+        </div>
+        <div>
+            <p>&copy; 2026 Data's Book</p>
+        </div>
+
+        <div style="position: absolute; right: 20px; bottom: 20px;">
+            <a href="./1 Cpp İçindekiler.html" style="text-decoration: none;">
+                İçindekiler
+            </a>
+        </div>
+    </footer>
+</body>
+</html>
+
+<!-- Muhammet Enes nam-ı diğer Data Delete tarafından sevgi ile yapıldı <3 -->
