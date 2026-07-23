@@ -332,11 +332,11 @@
   - **Attribute Okuma**: `attribute()`. Örnek.
   - **XPath ile Sorgulama**: Tanım. `select_nodes()`. Örnek.
   - **XML Yazma**: `append_child()`. `save_file()`. Örnek.
-- **Zlib ile Sıkıştırılmış Dosyalar**: Tanım. Kullanım Senaryoları.
-  - **Zlib Nedir?**: Kurulum. Örnek.
-  - **Dosya Sıkıştırma**: deflate. Örnek.
-  - **Dosya Açma**: inflate. Örnek.
-  - **gzip Formatı**: Tanım. Örnek.
+- **Zstandard ile Sıkıştırılmış Dosyalar**: Tanım. Kullanım Senaryoları.
+  - **Zstandard Nedir?**: Kurulum. Örnek.
+  - **Kompresyon**: `ZSTD_compress`. Örnek. Sıkıştırma seviyeleri
+  - **Dekompresyon**: `ZSTD_decompress`. Örnek.
+  - **.zst Formatı**: Tanım. Örnek.
  
 ---
  
