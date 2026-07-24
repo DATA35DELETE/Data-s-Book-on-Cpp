@@ -28,11 +28,343 @@
         <h2>STL Nedir?</h2>
         <pre id="preh2">STL yani Standart Template Library(Standart Şablon Kütüphanesi); C++ dilinde önceden bizler uğraşmayalım diye onaylanmış liste yapıları, algoritmalar ve yenilicilerle donatılmış bir C++ kütüphane birliğidir. Bileşenleri farklı farklı kütüphane dosyalarındadır.</pre>
 
-        <pre id="preh2">Peki neden biz kendimiz tanımlamak yerine STL'de hazır olarak sunulan nesneleri kullanalım? Cevap hız! Evet kendimiz belkide daha iyi tanımlayabilir ama bu belki aylar belkide yıllarımız alırdı... Ama bizim yerimize yıllarca uğraşmış mühendisler tarafından tasarlanmış ve denetlenmiş olan bu sistemlerede haksızlık etmemek gerekir! Onlar gece gündüz çalıştılar ve bize modern ve tüm dillerin atası olma yeteneğine sahip olması bu STL kütüphanesi sayesindendir...</pre>
+        <pre id="preh2">Peki neden biz kendimiz tanımlamak yerine STL'de hazır olarak sunulan nesneleri kullanalım? Cevap hız! Evet kendimiz belkide daha iyi tanımlayabilir ama bu belki aylar belkide yıllarımız alırdı... Ama bizim yerimize yıllarca uğraşmış mühendisler tarafından tasarlanmış ve denetlenmiş olan bu sistemlerede haksızlık etmemek gerekir! Onlar gece gündüz çalıştılar ve bize bu muazzam kütüphaneyi armağan ettileri...</pre>
+
+        <h2>Containers</h2>
+        <pre id="preh2">Containers yani kapsayıcılar, verileri aynı bir liste veya dizi gibi depolama ve organize etme işlevlerine sahip bir STL kütüphaneleridir.</pre>
+
+        <h3>Vector</h3>
+        <pre id="codeh3">Vector, "vector" kütüphanesinde yer alan veri ekleyip çıkartabildiğimiz, boyutu değişebilen bir liste türüdür. STL kütüphanelerinde kapsayıcılar sınıfına girer. Template ile beraber hangi veri türlerinin saklanacağı belirtilir.
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;vector> // Vector kütüphanemiz
+
+using namespace std;
+
+int main()
+{
+    vector&lt;int> ornekVector; // Bu şekilde tanımlanır
+    ornekVector = {1,2,3,4}; // Bu şekilde de atanabilir
+
+    int ornekVektordekiUcuncuIndexEleman = ornekVector.at(3); // Parantezlerindeki Index numarasına denk gelen elemanı alır
+    cout << "ornekVector'deki 3. Index numarasina sahip deger: " << ornekVektordekiUcuncuIndexEleman << endl << endl;
+
+    ornekVector.assign(3,12); // 0. Index'den nereye kadar hangi değer ile yazılacağı.
+    // 4; 0. Index'den (n - 1)'den 2. Index'de kadarki alan. Diğer kısımları sil
+    // 12; Neyin yazılacağı
+    cout << "ornekVector'deki 2. Index numarasina sahip deger: " << ornekVector.at(2) << endl << endl;
+    
+    ornekVector = {10,20,30,40};
+
+    int ornekVectorSonEleman = ornekVector.back(); // Vector'deki son elemanı alır
+    cout << "ornekVector'deki son elemanin degeri: " << ornekVectorSonEleman << endl << endl;
+
+    int ornekVectorIlkEleman = ornekVector.front(); // Vector'deki ilk elemanı alır
+    cout << "ornekVector'deki ilk elemanin degeri: " << ornekVectorIlkEleman << endl << endl;
+    
+    int ornekVectorunKapasitesi = ornekVector.capacity(); // Vector'un kapasitesini alır
+    cout << "ornekVector'un kapasitesinin degeri: " << ornekVectorunKapasitesi << endl << endl;
+
+    ornekVector.clear(); // Vector'un içini temizler
+
+    bool ornekVectorBosMu = ornekVector.empty(); // Vector'un boş olup olmadığına göre bir Bool değeri döndürür. Boş ise true değil ise false döndürür
+    cout << "ornekVector bos mu: " << ornekVectorBosMu << endl;
+    ornekVector = {11,22,33,44,55}; // ornekVector'e değerler ekledik
+    ornekVectorBosMu = ornekVector.empty(); // Tekrardan kontrol ettik
+    cout << "ornekVector bos mu: " << ornekVectorBosMu << endl << endl;
+
+    int *ornekVectorunBellekAdresi = ornekVector.data(); // Vector'un bellek adresini alır
+    cout << "ornekVector'un bellek adresi: " << ornekVectorunBellekAdresi << endl;
+    int ornekVectorunBellekAdresindenIkinciIndexdekiEleman = ornekVectorunBellekAdresi[2]; // Bellek adresinden eleman alma, daha çok C++ programlama dilinden C programlama diline Vector aktarılırken kullanılır. Pointer adresleri bir nevi diziler için kullanıldığı ve Vector'lerde temelinde bir dizi oldukları için bu tarz bir yöntem bulunmaktadır ki C++ C köprüsü sağlıklı kurulsun. Ayrıca C'de Vecktor yoktur
+    cout << "ornekVector'un bellek adresinden bulunan 2. Index numarasina sahip degeri: " << ornekVectorunBellekAdresindenIkinciIndexdekiEleman << endl << endl;
+
+    ornekVector.emplace(ornekVector.begin(), 1); // Elemanların arasına eklemek için kullanılır.
+    // ornekVector.begin(); Bir iteratör alır. Bir nevi STL'ler için "Hangi Index'den" gibi bir araçtır. Ayrıca sayı ekliyerek istediğimiz yere yazdırmasını da sağlayabiliriz
+    // 1; Yazılacak değer
+    cout << "ornekVector'un 0. Index numarasina sahip degeri; " << ornekVector.at(0) << endl << endl;
+
+    ornekVector.emplace_back(66); // Vector'un en sonuna İteratör ihtiyaç duymadan direkt en sona ekleme yapar.
+    cout << "ornekVector'deki elemanlar: " << endl;
+    for (int eleman : ornekVector)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    ornekVector.erase(ornekVector.begin(), ornekVector.end() - 1); // Vector'lerde erase kullanımı İteratörler ile yapılır
+    // ornekVector.begin(); Başlangıç İteratörü
+    // ornekVector.end() - 1; Bitiş İteratörü
+    cout << "ornekVector'deki elemanlar: " << endl;
+    for (int eleman : ornekVector)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    ornekVector.insert(ornekVector.begin(), 77);
+    cout << "ornekVector'deki elemanlar: " << endl;
+    for (int eleman : ornekVector)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    unsigned long long ornekVectorunMaksBoyutu = ornekVector.max_size();
+    cout << "ornekVector'un maksimum tutabilcegi degerler sayisi; " << ornekVectorunMaksBoyutu << endl << endl;
+
+    ornekVector.push_back(88); // Sona bir eleman ekler
+    cout << "ornekVector'deki elemanlar: " << endl;
+    for (int eleman : ornekVector)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    ornekVector.pop_back(); // Sondan bir eleman siler
+    cout << "ornekVector'deki elemanlar: " << endl;
+    for (int eleman : ornekVector)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    ornekVector.reserve(100);
+    cout << "ornekVector'un kapasitesi; " << ornekVector.capacity() << endl << endl;
+
+    ornekVector.resize(10);
+    int ornekVectorBoyutu = ornekVector.size();
+    cout << "ornekVector'un boyutu; " << ornekVectorBoyutu << endl << endl;
+
+    ornekVector.shrink_to_fit();
+    cout << "ornekVector'un kapasitesi; " << ornekVector.capacity() << endl << endl;
+
+    vector&lt;int> baskaOrnekVector = {1,2,3,4,5,6};
+    ornekVector.swap(baskaOrnekVector);
+    cout << "ornekVector'deki elemanlar: " << endl;
+    for (int eleman : ornekVector)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    cout << "baskaOrnekVector'deki elemanlar: " << endl;
+    for (int eleman : baskaOrnekVector)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    return 0;
+}</code>
+
+Çıktısı;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/15 Cpp STL.html/1.png" alt="15.1" width="100%">
+        </div>
+
+        <h3>List</h3>
+        <pre id="codeh3">List, tıpkı bir Vector gibi bir dinamik listedir. Tek farkı Index yani sıralama sistemi bulunmamaktadır. Genelde sıralama yani Index ile ilgili işlemler List kapsayacısında yapılmaz.
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;list> // List kütüphanemiz
+
+using namespace std;
+
+// remove_if işlemi için fonksiyonumuz
+int remove_if_islemi_fonksiyonum(int eleman)
+{
+    cout << eleman << " >= 500 = " << (eleman >= 500) << endl; // 500 veya küçük olan elemanları
+
+    return eleman >= 500; // Çıkartıyoruz
+}
+
+int main()
+{
+    list&lt;int> ornekList; // Bu şekilde tanımlanır
+
+    ornekList.assign(3, 100);
+    cout << "ornekList'deki elemanlar;" << endl;
+    for (int eleman : ornekList)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    ornekList = {100,200,300};
+
+    int ornekListIlkEleman = ornekList.front();
+    int ornekListSonEleman = ornekList.back();
+    cout << "ornekList'deki ilk ve son elemanlar; " << ornekListIlkEleman << "," << ornekListSonEleman << endl << endl;
+
+    bool ornekListBosMu = ornekList.empty();
+    cout << "ornekList bos mu; " << ornekListBosMu << endl;
+    ornekList.clear();
+    ornekListBosMu = ornekList.empty();
+    cout << "ornekList bos mu; " << ornekListBosMu << endl << endl;
+
+    ornekList = {400,500,600};
+
+    ornekList.emplace(ornekList.begin(), 700);
+    cout << "ornekList'deki elemanlar;" << endl;
+    for (int eleman : ornekList)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    ornekList.emplace_back(800);
+    cout << "ornekList'deki elemanlar;" << endl;
+    for (int eleman : ornekList)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    ornekList.emplace_front(300); // İteratöre gerek kalmadan başa eklememizi sağlar
+    cout << "ornekList'deki elemanlar;" << endl;
+    for (int eleman : ornekList)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    ornekList.erase(ornekList.begin(), ornekList.end());
+
+    ornekList = {200,300,400};
+
+    ornekList.insert(ornekList.begin(), 100);
+    cout << "ornekList'deki elemanlar;" << endl;
+    for (int eleman : ornekList)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    unsigned long long ornekListinMaksBoyutu = ornekList.max_size();
+    cout << "ornekList'un maksimum tutabilcegi degerler sayisi; " << ornekListinMaksBoyutu << endl << endl;
+
+    list&lt;int> baskaBirOrnekList = {500,600,700};
+    ornekList.merge(baskaBirOrnekList); // Parantezlerindeki listeyi ornekList'i birleştirir
+    cout << "ornekList'deki elemanlar;" << endl;
+    for (int eleman : ornekList)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    ornekList.pop_back();
+    cout << "ornekList'deki elemanlar;" << endl;
+    for (int eleman : ornekList)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    ornekList.pop_front();
+    cout << "ornekList'deki elemanlar;" << endl;
+    for (int eleman : ornekList)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    ornekList.push_back(800);
+    cout << "ornekList'deki elemanlar;" << endl;
+    for (int eleman : ornekList)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    ornekList.push_front(100);
+    cout << "ornekList'deki elemanlar;" << endl;
+    for (int eleman : ornekList)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    //list&lt;int> baskaBirOrnekList2 = {900,1000};
+    ornekList.remove(800); // ornekList'deki parantezlerindeki değerle uyuşan elemanları çıkartır
+    cout << "ornekList'deki elemanlar;" << endl;
+    for (int eleman : ornekList)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    ornekList.remove_if(remove_if_islemi_fonksiyonum); // İçerisinde fonksiyon şekilde çıkarma işlemi yapabilceğimiz bir yöntem sağlar. Fonksiyona, elemanlar sırayla birinci parametre şeklinde gönderilir. Eğer fonksiyon tarafından dönen değer 1 ise mevcut sıradaki olan değer silinir. Değil ise sıradakine geçilir
+    cout << endl << "ornekList'deki elemanlar;" << endl;
+    for (int eleman : ornekList)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    int ornekListBoyutu = ornekList.size();
+    cout << "ornekList'in boyutu; " << ornekListBoyutu << endl;
+    ornekList.resize(10);
+    ornekListBoyutu = ornekList.size();
+    cout << "ornekList'in boyutu; " << ornekListBoyutu << endl << endl;
+
+    ornekList.sort(); // ornekList'deki elemanları alfanumarik şeklinde küçükten büyüğe doğru sıralar
+    cout << "ornekList'deki elemanlar;" << endl;
+    for (int eleman : ornekList)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    list&lt;int> baskaBirOrnekList2 = {500,600,700};
+    ornekList.splice(ornekList.end(), baskaBirOrnekList2); // emplace'ın toplu halidir. baskaBirOrnekList2 içeriği ornekList'e iteratör ile taşır
+    cout << "ornekList'deki elemanlar;" << endl;
+    for (int eleman : ornekList)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    list&lt;int> baskaBirOrnekList3 = {1,2,2,3,3,4,4,5,6,6,6};
+    cout << "ornekList'deki elemanlar;" << endl;
+    ornekList.swap(baskaBirOrnekList3);
+    for (int eleman : ornekList)
+    {
+        cout << eleman << endl;
+    }
+    cout << "baskaBirOrnekList3'deki elemanlar;" << endl;
+    for (int eleman : baskaBirOrnekList3)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    ornekList.unique(); // Benzer elemanları listeden çıkartır
+    cout << "ornekList'deki elemanlar;" << endl;
+    for (int eleman : ornekList)
+    {
+        cout << eleman << endl;
+    }
+
+    return 0;
+}</code>
+
+Çıktı;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/15 Cpp STL.html/2.png" alt="15.2" width="100%">
+            <img src="../Bibliography/15 Cpp STL.html/3.png" alt="15.3" width="100%">
+            <img src="../Bibliography/15 Cpp STL.html/4.png" alt="15.4" width="100%">
+        </div>
 
         <h2>Kaynakça</h2>
         <ul>
             <li><a href="https://www.geeksforgeeks.org/cpp/the-c-standard-template-library-stl/">https://www.geeksforgeeks.org/cpp/the-c-standard-template-library-stl/</a></li>
+            <li><a href="https://data35delete.github.io/Data-s-Book-on-Cpp/Lessons/8%20Cpp%20Diziler%20ve%20Stringler.html">Data's Book on Cpp - Diziler ve Stringler</a></li>
+            <li><a href="https://www.geeksforgeeks.org/cpp/vector-emplace-function-in-c-stl/">https://www.geeksforgeeks.org/cpp/vector-emplace-function-in-c-stl/</a></li>
+            <li><a href="https://en.cppreference.com/cpp/container/vector/emplace_back">https://en.cppreference.com/cpp/container/vector/emplace_back</a></li>
+            <li><a href="https://www.w3schools.com/CPP/cpp_list.asp">https://www.w3schools.com/CPP/cpp_list.asp</a></li>
+            <li><a href="https://www.geeksforgeeks.org/cpp/list-splice-function-in-c-stl/">https://www.geeksforgeeks.org/cpp/list-splice-function-in-c-stl/</a></li>
         </ul>
     </div>
 
