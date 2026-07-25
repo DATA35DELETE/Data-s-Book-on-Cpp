@@ -357,6 +357,259 @@ int main()
             <img src="../Bibliography/15 Cpp STL.html/4.png" alt="15.4" width="100%">
         </div>
 
+        <h3>Deque</h3>
+        <pre id="codeh3">Deque yani çift uçlu kuyruk, Queue yapısını hemde Vector yapısını birleştiren bir kapsayıcıdır. Hem Index numarası yardımıyla erişimi destekler hemde verimli bir şekilde öne ve arkaya eklemeyi sağlar.
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;deque> // Kütüphanemiz
+
+using namespace std;
+
+int main()
+{
+    deque&lt;int> ornekDeque; // Bu şekilde oluşturulur
+    ornekDeque = {10,20,30,40}; // Bu şekilde de atanır
+    cout << "ornekDeque'deki elemanlar;" << endl;
+    for (int eleman : ornekDeque)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    ornekDeque.assign(3, 100);
+    cout << "ornekDeque'deki elemanlar;" << endl;
+    for (int eleman : ornekDeque)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+    
+    int ornekDequeSifirinciIndexdekiEleman = ornekDeque.at(0);
+    cout << "ornekDeque'deki 0. Index numarasina sahip deger; " << ornekDequeSifirinciIndexdekiEleman << endl << endl;
+
+    ornekDeque.emplace(ornekDeque.begin(), 50);
+    cout << "ornekDeque'deki elemanlar;" << endl;
+    for (int eleman : ornekDeque)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    ornekDeque.emplace_back(200);
+    ornekDeque.emplace_front(25);
+    cout << "ornekDeque'deki elemanlar;" << endl;
+    for (int eleman : ornekDeque)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    ornekDeque.erase(ornekDeque.begin() + 2, ornekDeque.end() - 1);
+    cout << "ornekDeque'deki elemanlar;" << endl;
+    for (int eleman : ornekDeque)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    bool ornekDequeBosMu = ornekDeque.empty();
+    cout << "ornekDeque bos mu; " << ornekDequeBosMu << endl;
+    ornekDeque.clear();
+    ornekDequeBosMu = ornekDeque.empty();
+    cout << "ornekDeque bos mu; " << ornekDequeBosMu << endl << endl;
+
+    ornekDeque.insert(ornekDeque.begin(), 100);
+    ornekDeque.insert(ornekDeque.end(), 200);
+
+    int ornekDequeninIlkElemani = ornekDeque.front();
+    int ornekDequeninSonElemani = ornekDeque.back();
+    cout << "ornekDeque'nin ilk ve son elemanlari; " << ornekDequeninIlkElemani << "," << ornekDequeninSonElemani << endl << endl;
+
+    unsigned long long int ornekDequeninMaksBoyutu = ornekDeque.max_size();
+    cout << "ornekDeque'nin maksimum boyutu; " << ornekDequeninMaksBoyutu << endl << endl;
+
+    ornekDeque.pop_back();
+    cout << "ornekDeque'deki elemanlar;" << endl;
+    for (int eleman : ornekDeque)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    ornekDeque.pop_front();
+    cout << "ornekDeque'deki elemanlar;" << endl;
+    for (int eleman : ornekDeque)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    ornekDeque.push_back(50);
+    ornekDeque.push_front(25);
+    cout << "ornekDeque'deki elemanlar;" << endl;
+    for (int eleman : ornekDeque)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    int ornekDequeninBoyutu = ornekDeque.size();
+    cout << "ornekDeque'nin boyutu; " << ornekDequeninBoyutu << endl << endl;
+
+    ornekDeque.resize(5);
+    cout << "ornekDeque'deki elemanlar;" << endl;
+    for (int eleman : ornekDeque)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    ornekDequeninBoyutu = ornekDeque.size();
+    cout << "ornekDeque'nin boyutu; " << ornekDequeninBoyutu << endl << endl;
+
+    deque&lt;int> baskaOrnekDeque = {1,2,3,4,5};
+    ornekDeque.swap(baskaOrnekDeque);
+    cout << "ornekDeque'deki elemanlar;" << endl;
+    for (int eleman : ornekDeque)
+    {
+        cout << eleman << endl;
+    }
+    cout << "baskaOrnekDeque'deki elemanlar;" << endl;
+    for (int eleman : baskaOrnekDeque)
+    {
+        cout << eleman << endl;
+    }
+
+    return 0;
+}</code>
+
+Çıktısı ise;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/15 Cpp STL.html/5.png" alt="15.5" width="100%">
+        </div>
+
+        <h3>Stack</h3>
+        <pre id="codeh3">Stack yani yığın, diğer kapsayıcılara nazaran RAM'deki bölgelerden isminide aldığı Stack bölümünde verileri saklar. Mantığı ise LIFO denilen açılımı Last In First Out(Son Giren İlk Çıkar) prensibi ile kapsayıcı rolünde olan bir STL kütüphanesidir.</pre>
+
+        <pre id="preh3">Peki neden FIFO var? Çünkü performans! FIFO veya Stack yapısı diğer STL yapılarına kıyasla daha küçük ve performanslıdır. Normal şartlarda aslında Stack bir yapı değil bir yöntemdir. C programlama dili geliştiricileri dinamik bir veri yapısı oluşturmayı çalışırken Stack yapısını keşfetmişlerdir. Stack, bir nevi yapıların bir birlerinin Pointerlarını tuttuğu ve gerektiğinde aralırında geçiş yapmayı olanak sağlayan bir yöntemdir. Yani Stack yapısının içerisindeki verileri kendisinden önce yazılan verilerin bellek adreslerini tutarlar. Geçiş yapılmak istendiğinde bellek adresleri aracığıyla geçiş mümkün kılınır. Bu yöntem daha çok soyut olarak işlenmektedir. Göreseli aşağıda verilmiştir.</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/15 Cpp STL.html/6.svg" alt="15.6" width="100%">
+        </div>
+
+        <pre id="codeh3">Kendisini ve metodlarını inceleyelim;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;stack> // Kütüphanemiz
+
+using namespace std;
+
+int main()
+{
+    stack&lt;int> ornekStack;
+
+    bool ornekStackBosMu = ornekStack.empty();
+    cout << "ornekStack bos mu; " << ornekStackBosMu << endl << endl;
+
+    ornekStack.push(10); // Stack'de sadece push ile veri konulabilir
+    ornekStack.push(20);
+    ornekStack.push(30);
+    ornekStack.push(40);
+
+    //        |
+    //        |
+    //        |
+    //        v
+
+    // 40,30,20,10 sırası oluştu
+
+    ornekStackBosMu = ornekStack.empty();
+    cout << "ornekStack bos mu; " << ornekStackBosMu << endl << endl;
+
+    int ornekStackBoyutu = ornekStack.size();
+    cout << "ornekStack'in boyutu ; " << ornekStackBoyutu << endl << endl;
+
+    ornekStack.pop(); // Stack'larde sadece pop ile veri silinebilir. En baştaki veriyi siler oda 40'a denk gelir
+
+    ornekStackBoyutu = ornekStack.size();
+    cout << "ornekStack'in boyutu ; " << ornekStackBoyutu << endl << endl;
+
+    // Range tabanlı For Stack yapısında işlemez
+    cout << "ornekStack'deki degerler;" << endl;
+    int deger = 0;
+
+    for (int i = 0; i < ornekStackBoyutu; i++)
+    {
+        deger = ornekStack.top(); // En üstdeki veriyi deger değişkenine ata
+
+        cout << deger << endl;
+
+        ornekStack.pop(); // Ardından en üstdeki veriyi sil
+    }
+    cout << endl;
+    
+    ornekStack.push(1);
+    ornekStack.push(2);
+    ornekStack.push(3);
+
+    stack&lt;int> baskaOrnekStack;
+    baskaOrnekStack.push(11);
+    baskaOrnekStack.push(22);
+    baskaOrnekStack.push(33);
+
+    ornekStack.swap(baskaOrnekStack);
+
+    cout << "ornekStack'deki degerler;" << endl;
+    deger = 0;
+
+    for (int i = 0; i < ornekStackBoyutu; i++)
+    {
+        deger = ornekStack.top();
+
+        cout << deger << endl;
+
+        ornekStack.pop();
+    }
+    cout << endl;
+
+    int baskaOrnekStackBoyutu = baskaOrnekStack.size();
+
+    cout << "baskaOrnekStack'deki degerler;" << endl;
+    deger = 0;
+
+    for (int i = 0; i < baskaOrnekStackBoyutu; i++)
+    {
+        deger = baskaOrnekStack.top();
+
+        cout << deger << endl;
+
+        baskaOrnekStack.pop();
+    }
+
+    return 0;
+}</code>
+
+Çıktı ise;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/15 Cpp STL.html/7.png" alt="15.7" width="100%">
+        </div>
+
+        <h3>Queue</h3>
+        <pre id="preh3">Queue yani kuyruk, aynı Stack gibi RAM'in farklı kısmında depolanan ve performans açısından diğerlerinde daha iyi olan bir STL kapsayıcısıdır.</pre>
+
+        <pre id="preh3">Stack'in keşfedeldiği dönemlerde Queue'de keşfedilmiştir. Mantığı ise FIFO yani First In First Out(İlk Giren İlk Çıkar) adı verilen bir metod ile yapılır. Yani sizin eklediğiniz her veri bir öncekinin arkasına yerleşir. Bu Stack'de tam tersidir. Örnek olarakda bir metro sistemini verebiliriz. Aynı hat üzerinde ilk sefere çıkan metro her zaman ilk önce son durağa ulaşan metrodur. Daha iyi anlamak için bir görsel üzerinden anlatalım;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/15 Cpp STL.html/8.svg" alt="15.8" width="100%">
+        </div>
+
+        <pre id="codeh3">Şimdi kodlarını inceleyelim;
+
+<code class="language-cpp"></code>
+        </pre>
+
         <h2>Kaynakça</h2>
         <ul>
             <li><a href="https://www.geeksforgeeks.org/cpp/the-c-standard-template-library-stl/">https://www.geeksforgeeks.org/cpp/the-c-standard-template-library-stl/</a></li>
@@ -365,6 +618,7 @@ int main()
             <li><a href="https://en.cppreference.com/cpp/container/vector/emplace_back">https://en.cppreference.com/cpp/container/vector/emplace_back</a></li>
             <li><a href="https://www.w3schools.com/CPP/cpp_list.asp">https://www.w3schools.com/CPP/cpp_list.asp</a></li>
             <li><a href="https://www.geeksforgeeks.org/cpp/list-splice-function-in-c-stl/">https://www.geeksforgeeks.org/cpp/list-splice-function-in-c-stl/</a></li>
+            <li><a href="https://data35delete.github.io/Data-s-Book-on-C/Lessons/13%20C%20Bellek%20Yönetimi.html">Data's Book on C - Bellek Yönetimi</a></li>
         </ul>
     </div>
 
