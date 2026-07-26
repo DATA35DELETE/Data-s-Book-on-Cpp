@@ -607,9 +607,424 @@ int main()
 
         <pre id="codeh3">Şimdi kodlarını inceleyelim;
 
-<code class="language-cpp"></code>
-        </pre>
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;queue> // Kütüphanemiz
 
+using namespace std;
+
+int main()
+{
+    queue&lt;int> ornekQueue; // Bu şekilde tanımlanır
+
+    bool ornekQueueBosMu = ornekQueue.empty();
+    cout << "ornekQueue bos mu; " << ornekQueueBosMu << endl;
+
+    ornekQueue.push(10); // Queue'de veri eklemek için sadece Push kullanılır
+    ornekQueue.push(20);
+    ornekQueue.push(30);
+    ornekQueue.push(40);
+
+    //      |
+    //      |
+    //      |
+    //      v
+    // 10,20,30,40
+
+    ornekQueueBosMu = ornekQueue.empty();
+    cout << "ornekQueue bos mu; " << ornekQueueBosMu << endl << endl;
+
+    int ornekQueueIlkEleman = ornekQueue.front();
+    int ornekQueueSonEleman = ornekQueue.back();
+    cout << "ornekQueue'nin ilk ve son elemani; " << ornekQueueIlkEleman << "," << ornekQueueSonEleman << endl << endl;
+
+    int ornekQueueBoyutu = ornekQueue.size();
+    cout << "ornekQueue'nin boyutu; " << ornekQueueBoyutu << endl;
+
+    ornekQueue.pop(); // Queue'lerde sadece pop ile çıkartma işlemi yapılır. İlk eleman 10 olduğu için Queue'den o çıkar
+
+    ornekQueueBoyutu = ornekQueue.size();
+    cout << "ornekQueue'nin boyutu; " << ornekQueueBoyutu << endl << endl;
+
+    // Range tabanlı For Queue yapısında işlemez
+    cout << "ornekQueue'deki degerler;" << endl;
+    int deger = 0;
+
+    for (int i = 0; i < ornekQueueBoyutu; i++)
+    {
+        deger = ornekQueue.front(); // İlk giren veriyi ata
+
+        cout << deger << endl;
+
+        ornekQueue.pop(); // Ardından en üstdeki veriyi sil
+    }
+    cout << endl;
+
+    ornekQueue.push(11);
+    ornekQueue.push(22);
+    ornekQueue.push(33);
+
+    queue&lt;int> baskaOrnekQueue;
+
+    baskaOrnekQueue.push(1);
+    baskaOrnekQueue.push(2);
+    baskaOrnekQueue.push(3);
+
+    int baskaOrnekQueueBoyutu = baskaOrnekQueue.size();
+    cout << "baskaOrnekQueue'nin boyutu; " << baskaOrnekQueueBoyutu << endl << endl;
+
+    ornekQueue.swap(baskaOrnekQueue);
+
+    cout << "ornekQueue'deki degerler;" << endl;
+    deger = 0;
+
+    for (int i = 0; i < ornekQueueBoyutu; i++)
+    {
+        deger = ornekQueue.front();
+
+        cout << deger << endl;
+
+        ornekQueue.pop();
+    }
+    cout << endl;
+
+    cout << "baskaOrnekQueue'deki degerler;" << endl;
+    deger = 0;
+
+    for (int i = 0; i < baskaOrnekQueueBoyutu; i++)
+    {
+        deger = baskaOrnekQueue.front();
+
+        cout << deger << endl;
+
+        baskaOrnekQueue.pop();
+    }
+    cout << endl;
+
+    return 0;
+}</code>
+
+Çıktı;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/15 Cpp STL.html/9.png" alt="15.9" width="100%">
+        </div>
+
+        <h3>Priority Queue</h3>
+        <pre id="codeh3">Priority Queue, Queue kütüphanesinin altında bulunan ve Queue gibi olan fakat girilen değerleri alfanumarik bir şekilde büyükten küçüğe sıralar sıralar. Bir diğer özelliği ise RAM'in Queue gibi Stack bölümünden ziyade Heap bölümünde yer alır. "Bellek Yönetimi" sayfasında daha detaylı işleceğiz fakat şuanlık Priority Queue'nin RAM'in Heap bölümünde depolandığını bilelim.
+
+Kodlarını inceleyelim;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;queue> // Priority Queue kütüphanesi Queue kütüphanesiyle beraber gelir
+
+using namespace std;
+
+int main()
+{
+    priority_queue&lt;int> ornekPriority_Queue; // Bu şekilde tanımlanır
+
+    bool ornekPriority_QueueBosMu = ornekPriority_Queue.empty();
+    cout << "ornekPriority_Queue bos mu; " << ornekPriority_QueueBosMu << endl;
+
+    ornekPriority_Queue.push(50);
+    ornekPriority_Queue.push(20);
+    ornekPriority_Queue.push(10);
+    ornekPriority_Queue.push(40);
+    ornekPriority_Queue.push(30);
+
+    //          |
+    //          |
+    //          |
+    //          v
+
+    // 50,40,30,20,10; Rastgele push'lasakda Priority Queue onu otomatik olarak büyükten küçüğe sıralar
+
+    ornekPriority_QueueBosMu = ornekPriority_Queue.empty();
+    cout << "ornekPriority_Queue bos mu; " << ornekPriority_QueueBosMu << endl << endl;
+
+    int ornekPriority_QueueBoyutu = ornekPriority_Queue.size();
+    cout << "ornekPriority_Queue'nin boyutu; " << ornekPriority_QueueBoyutu << endl;
+
+    ornekPriority_Queue.pop(); // Sıralama sonucu en üstte 50 değeri bulunduğu için o listeden çıkartıldı
+
+    ornekPriority_QueueBoyutu = ornekPriority_Queue.size();
+    cout << "ornekPriority_Queue'nin boyutu; " << ornekPriority_QueueBoyutu << endl << endl;
+
+    // Range tabanlı For Priority Queue yapısında işlemez
+    cout << "ornekPriority_Queue'deki degerler;" << endl;
+    int deger = 0;
+
+    for (int i = 0; i < ornekPriority_QueueBoyutu; i++)
+    {
+        deger = ornekPriority_Queue.top(); // En üstdeki veriyi deger değişkenine ata. Top kullanılır çünkü Priority Queue'de Queue gibi front kullanılırmaz. Çünkü sıralama direkt olmaz fonksiyonlar aracığıyla karşılaştırılarak yapılır
+
+        cout << deger << endl;
+
+        ornekPriority_Queue.pop(); // Ardından veriyi sil
+    }
+    cout << endl;
+
+    ornekPriority_Queue.push(3);
+    ornekPriority_Queue.push(1);
+    ornekPriority_Queue.push(4);
+    ornekPriority_Queue.push(2);
+
+    priority_queue&lt;int> baskaOrnekPriority_Queue;
+
+    baskaOrnekPriority_Queue.push(22);
+    baskaOrnekPriority_Queue.push(44);
+    baskaOrnekPriority_Queue.push(11);
+    baskaOrnekPriority_Queue.push(33);
+
+    int baskaOrnekPriority_QueueBoyutu = baskaOrnekPriority_Queue.size();
+    cout << "baskaOrnekPriority_Queue'nin boyutu; " << baskaOrnekPriority_QueueBoyutu << endl << endl;
+
+    ornekPriority_Queue.swap(baskaOrnekPriority_Queue);
+
+    cout << "ornekPriority_Queue'deki degerler;" << endl;
+    deger = 0;
+
+    for (int i = 0; i < ornekPriority_QueueBoyutu; i++)
+    {
+        deger = ornekPriority_Queue.top();
+
+        cout << deger << endl;
+
+        ornekPriority_Queue.pop();
+    }
+    cout << endl;
+
+    cout << "baskaOrnekPriority_Queue'deki degerler;" << endl;
+    deger = 0;
+
+    for (int i = 0; i < baskaOrnekPriority_QueueBoyutu; i++)
+    {
+        deger = baskaOrnekPriority_Queue.top(); // En üstdeki veriyi deger değişkenine ata. Top kullanılır çünkü Priority Queue'de Queue gibi front kullanılırmaz. Çünkü sıralama direkt olmaz fonksiyonlar aracığıyla karşılaştırılarak yapılır
+
+        cout << deger << endl;
+
+        baskaOrnekPriority_Queue.pop(); // Ardından veriyi sil
+    }
+    cout << endl;
+}</code>
+
+Çıktısı;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/15 Cpp STL.html/10.png" alt="15.10" width="100%">
+        </div>
+
+        <h3>Set</h3>
+        <pre id="codeh3">Set, içerisindeki verileri küçükten büyüğe sıralar. Ayrıca girilen verilerin içerisindeki farklı olmasına dikkat eder ve aynı verileri kabul etmez.
+            
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;set> // Kütüphanemiz
+
+using namespace std;
+
+int main()
+{
+    set&lt;int> ornekSet; // Bu şekilde tanımlanır
+
+    bool ornekSetBosMu = ornekSet.empty();
+    cout << "ornekSet bos mu; " << ornekSetBosMu << endl;
+
+    ornekSet = {50,20,10,10,20,30,40,50}; // Bu şekilde de veri atanır
+
+    ornekSetBosMu = ornekSet.empty();
+    cout << "ornekSet bos mu; " << ornekSetBosMu << endl << endl;
+
+    cout << "ornekSet'deki elemanlar;" << endl;
+    for (int eleman : ornekSet)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    bool ornekSetdeyirmiDegeriVarMi = ornekSet.contains(20); // Set içerisinde parantezlerdeki değeri aramamızı sağlar. Bulursa true bulamazsa false döner
+    cout << "ornekSet'in icerisinde 20 degeri var mi; " << ornekSetdeyirmiDegeriVarMi << endl << endl;
+
+    ornekSet.emplace(60); // Emplace, normal şartlarda bizden bir İteratör ister fakat Set otomatik sıraladığı için emplace'de Iteratör kullanılmaz. Set gerisini halleder
+    ornekSet.emplace(60); // Aynı değeri 2 kere eklemeyi deniyelim
+
+    cout << "ornekSet'deki elemanlar;" << endl;
+    for (int eleman : ornekSet)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    ornekSet.erase(10); // Girilen değeri Set'den siler
+
+    cout << "ornekSet'deki elemanlar;" << endl;
+    for (int eleman : ornekSet)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    ornekSet.insert(65); // Parantezlerindeki veriyi Set'e ekler
+
+    cout << "ornekSet'deki elemanlar;" << endl;
+    for (int eleman : ornekSet)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    unsigned long long ornekSetSetMaksBoyutu = ornekSet.max_size();
+    cout <<"ornekSet'in maksimum boyutu; " << ornekSetSetMaksBoyutu << endl << endl;
+
+    set&lt;int> baskaOrnekSet = {11,22,33,44,55};
+
+    ornekSet.merge(baskaOrnekSet);
+
+    cout << "ornekSet'deki elemanlar;" << endl;
+    for (int eleman : ornekSet)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    int ornekSetBoyutu = ornekSet.size();
+    cout << "ornekSet'in boyutu; " << ornekSetBoyutu << endl << endl;
+
+    set&lt;int> baskaOrnekSet2 = {1,2,3,4,5,6};
+
+    ornekSet.swap(baskaOrnekSet2);
+
+    cout << "ornekSet'deki elemanlar;" << endl;
+    for (int eleman : ornekSet)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    cout << "baskaOrnekSet2'deki elemanlar;" << endl;
+    for (int eleman : baskaOrnekSet2)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    return 0;
+}</code>
+
+Çıktısı ise;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/15 Cpp STL.html/11.png" alt="15.11" width="100%">
+        </div>
+
+        <h3>MultiSet</h3>
+        <pre id="codeh3">MultiSet, Set'ten farkı aynı değere sahip verileri kabul eder. Fakat silme gibi işlemlerde sanki tek bir o aynı veriden varmış gibi değerlendirir.
+
+Kodlar;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;set> // MultiSet Set içerisinde gelir Kütüphanemiz
+
+using namespace std;
+
+int main()
+{
+    multiset&lt;int> ornekMultiSet; // Bu şekilde tanımlanır
+
+    bool ornekMultiSetBosMu = ornekMultiSet.empty();
+    cout << "ornekMultiSet bos mu; " << ornekMultiSetBosMu << endl;
+
+    ornekMultiSet = {50,20,10,10,20,30,40,50}; // Bu şekilde de veri atanır
+
+    ornekMultiSetBosMu = ornekMultiSet.empty();
+    cout << "ornekMultiSet bos mu; " << ornekMultiSetBosMu << endl << endl;
+
+    cout << "ornekMultiSet'deki elemanlar;" << endl;
+    for (int eleman : ornekMultiSet)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    bool ornekMultiSetdeyirmiDegeriVarMi = ornekMultiSet.contains(20); // MultiSet içerisinde parantezlerdeki değeri aramamızı sağlar. Bulursa true bulamazsa false döner
+    cout << "ornekMultiSet'in icerisinde 20 degeri var mi; " << ornekMultiSetdeyirmiDegeriVarMi << endl << endl;
+
+    int ornekMultiSetIcindeKacTane20DegeriVar = ornekMultiSet.count(20); // İçerisinde yazılan değerlin multiset'de kaç adet olduğunu verir
+    cout << "ornekMultiSet'in icerisinde kac adet 20 değeri var; " << ornekMultiSetIcindeKacTane20DegeriVar << endl << endl;
+
+    ornekMultiSet.emplace(60); // Emplace, normal şartlarda bizden bir İteratör ister fakat MultiSet otomatik sıraladığı için emplace'de Iteratör kullanılmaz. MultiSet gerisini halleder
+    ornekMultiSet.emplace(60); // Aynı değeri 2 kere eklemeyi deniyelim
+
+    cout << "ornekMultiSet'deki elemanlar;" << endl;
+    for (int eleman : ornekMultiSet)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    ornekMultiSet.erase(10); // Girilen değeri MultiSet'den siler
+
+    cout << "ornekMultiSet'deki elemanlar;" << endl;
+    for (int eleman : ornekMultiSet)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    ornekMultiSet.insert(65); // Parantezlerindeki veriyi MultiSet'e ekler
+
+    cout << "ornekMultiSet'deki elemanlar;" << endl;
+    for (int eleman : ornekMultiSet)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    unsigned long long ornekMultiSetSetMaksBoyutu = ornekMultiSet.max_size();
+    cout <<"ornekMultiSet'in maksimum boyutu; " << ornekMultiSetSetMaksBoyutu << endl << endl;
+
+    set&lt;int> baskaOrnekSet = {11,22,33,44,55};
+
+    ornekMultiSet.merge(baskaOrnekSet); // İsterset MultiSet'e Set'e ekliyebiliriz
+
+    cout << "ornekMultiSet'deki elemanlar;" << endl;
+    for (int eleman : ornekMultiSet)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    int ornekMultiSetBoyutu = ornekMultiSet.size();
+    cout << "ornekMultiSet'in boyutu; " << ornekMultiSetBoyutu << endl << endl;
+
+    multiset&lt;int> baskaOrnekSet2 = {1,2,3,4,5,6};
+
+    ornekMultiSet.swap(baskaOrnekSet2);
+
+    cout << "ornekMultiSet'deki elemanlar;" << endl;
+    for (int eleman : ornekMultiSet)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    cout << "baskaOrnekSet2'deki elemanlar;" << endl;
+    for (int eleman : baskaOrnekSet2)
+    {
+        cout << eleman << endl;
+    }
+    cout << endl;
+
+    return 0;
+}</code>
+
+Çıktısı ise;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/15 Cpp STL.html/13.png" alt="15.13" width="100%">
+        </div>
+
+        <h3></h3>
+        
         <h2>Kaynakça</h2>
         <ul>
             <li><a href="https://www.geeksforgeeks.org/cpp/the-c-standard-template-library-stl/">https://www.geeksforgeeks.org/cpp/the-c-standard-template-library-stl/</a></li>
@@ -619,6 +1034,8 @@ int main()
             <li><a href="https://www.w3schools.com/CPP/cpp_list.asp">https://www.w3schools.com/CPP/cpp_list.asp</a></li>
             <li><a href="https://www.geeksforgeeks.org/cpp/list-splice-function-in-c-stl/">https://www.geeksforgeeks.org/cpp/list-splice-function-in-c-stl/</a></li>
             <li><a href="https://data35delete.github.io/Data-s-Book-on-C/Lessons/13%20C%20Bellek%20Yönetimi.html">Data's Book on C - Bellek Yönetimi</a></li>
+            <li><a href="https://www.geeksforgeeks.org/cpp/priority-queue-in-cpp-stl/">https://www.geeksforgeeks.org/cpp/priority-queue-in-cpp-stl/</a></li>
+            <li><a href="https://www.geeksforgeeks.org/cpp/set-in-cpp-stl/">https://www.geeksforgeeks.org/cpp/set-in-cpp-stl/</a></li>
         </ul>
     </div>
 
