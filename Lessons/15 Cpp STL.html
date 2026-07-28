@@ -1023,8 +1023,531 @@ int main()
             <img src="../Bibliography/15 Cpp STL.html/13.png" alt="15.13" width="100%">
         </div>
 
-        <h3></h3>
+        <h3>Map</h3>
+        <pre id="preh3">Map, diğer kapsayıcalardan farklı olarak anahtar-değer ilişkisi ile değer tutar. Temlate'ine iki adet tür alır. İlki anahtar değerin türü diğeri ise değerin veri türüdür.</pre>
+
+        <pre id="codeh3">Peki nedir bu anahtar-değer nam-ı diğer Key-Value ilişikisi? Mantıkları ise bir anahtar ve kilitli kutuya benzer... Anahtarımızla kilitli kutuyu açarız ve içerisindeki tanımlanmış veriyi elde ederiz. Fakat başka anahtarla erişemeyiz. İşte Map böyle bir yapıdır. Ayrıca Map'de Index sıralaması yoktur. Fakat kendi içinde Anahtar değerlerin alfanumarik bir şekilde sıralar.
+
+Şimdi gelin kodlarını inceleyelim;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;map> // Kütüphanemiz
+
+using namespace std;
+
+int main()
+{
+    map&lt;string, int> ornekMap; // Bu şekilde tanımlanır
+
+    bool ornekMapBosMu = ornekMap.empty();
+    cout << "ornekMap bos mu; " << ornekMapBosMu << endl;
+
+    ornekMap = {
+        {"Assembly", 1947},
+        {"C", 1972},
+        {"C++", 1979},
+        {"Java", 1995},
+        {"C#", 2000},
+        {"Rust", 2010}
+    };  // Bu şekilde de değerleri atanır. Küme parantezlerinde içindeki küme parantezlerindeki ilk eleman Key, diğeri ise Value'dir. Anahtar-Değer'lerin arasına virgül konulmalıdır.
+
+    ornekMapBosMu = ornekMap.empty();
+    cout << "ornekMap bos mu; " << ornekMapBosMu << endl << endl;
+
+    int CNinCiktigiTarih = ornekMap.at("C"); // Bu şekilde anahtar girilerek değere ulaşılır
+    cout << "C programlama dili su tarihte cikmistir; " << CNinCiktigiTarih << endl << endl;
+
+    ornekMap.emplace("Kotlin", 2011); // Emplace ile de Anahtar-Değer ekliyebiliriz
+
+    int KotlininCiktigiTarih = ornekMap.at("Kotlin");
+    cout << "Kotlin programlama dili su tarihte cikmistir; " << KotlininCiktigiTarih << endl << endl;
+
+    ornekMap.emplace_hint(ornekMap.end(), "Go", 2009); // İstersek emplace_hint ile de İteratör ile ekliyebiliriz fakat Map'de sıralama pek önemli değildir
+
+    int GonunCiktigiTarih = ornekMap.at("Go");
+    cout << "Go programlama dili su tarihte cikmistir; " << GonunCiktigiTarih << endl << endl;
+
+    ornekMap.erase(ornekMap.find("C"), ornekMap.find("Kotlin").operator++()); // Bu kısımda find metodu ile ornekMap'den belirli kısımları silinmesini istiyoruz. Find metodu ise bizlere girilen anahtar değerinin İteratörünü döndürüyor ki erase İteratör ile çalışsın. operator++ ise Find'in döndüğü sabit İteratör değerine bir eklememizi sağlar. Çünkü erase'in bitiş İteratörünü bir geriden alır. Bu bizim için sorun çünkü son İteratördeki elemanı silmiyor. Bu sebeble bir artırıyoruz ki bu durumu çözelim
+
+    cout << "ornekMap'deki elemanlar;" << endl;
+    for (auto i : ornekMap) // Range tabanlı For ilede Map'in sıraladığı şekilde anahtar-değer elemanlarını görebiliriz
+    {
+        cout << i.first << " -> " << i.second << endl; // First anahtar, second ise değerdir
+    }
+    cout << endl;
+
+    ornekMap.insert({"PHP", 1995}); // Insert ile de Anahtar-Değer şeklinde eklenebilir
+    ornekMap.insert({"PHP", 1995}); // Aynı değeri ikinci kez eklemeyi çalışalım
+
+    int PHPninCiktigiTarih = ornekMap.at("PHP");
+    cout << "PHP programlama dili su tarihte cikmistir; " << PHPninCiktigiTarih << endl << endl;
+
+    unsigned long long int ornekMapInMaksBoyutu = ornekMap.max_size();
+    cout << "ornekMap'in maksimum boyutu; " << ornekMapInMaksBoyutu << endl << endl;
+
+    map&lt;string, int> baskaOrnekMap = {
+        {"HTML", 1993},
+        {"CSS", 1996},
+        {"JavaScript", 1995}
+    };
+
+    ornekMap.merge(baskaOrnekMap);
+
+    cout << "ornekMap'deki elemanlar;" << endl;
+    for (auto i : ornekMap)
+    {
+        cout << i.first << " -> " << i.second << endl;
+    }
+    cout << endl;
+
+    int ornekMapinBoyutu = ornekMap.size();
+    cout << "ornekMap'in boyutu; " << ornekMapinBoyutu << endl << endl;
+
+    map&lt;string, int> baskaOrnekMap2 = {
+        {"Windows 8.1", 2013},
+        {"Windows 10", 2015},
+        {"Windows 11", 2021}
+    };
+
+    ornekMap.swap(baskaOrnekMap2);
+
+    cout << "ornekMap'deki elemanlar;" << endl;
+    for (auto i : ornekMap)
+    {
+        cout << i.first << " -> " << i.second << endl;
+    }
+    cout << endl;
+
+    cout << "baskaOrnekMap2'deki elemanlar;" << endl;
+    for (auto i : baskaOrnekMap2)
+    {
+        cout << i.first << " -> " << i.second << endl;
+    }
+    cout << endl;
+}</code>
+
+Çıktısı;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/15 Cpp STL.html/13.png" alt="15.13" width="100%">
+        </div>
         
+        <h3>MultiMap</h3>
+        <pre id="codeh3">MultiMap, tıpkı Set'in MultiSet'i olduğu gibi aynı değerleri izin verir fakat bir bütünmüş gibi davranış gösterir.
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;map> // Kütüphanemiz. Map'in içerisinde MultiMap gelir
+
+using namespace std;
+
+int main()
+{
+    multimap&lt;string, int> ornekMultiMap; // Bu şekilde tanımlanır
+
+    bool ornekMapBosMu = ornekMultiMap.empty();
+    cout << "ornekMultiMap bos mu; " << ornekMapBosMu << endl;
+
+    ornekMultiMap = {
+        {"Assembly", 1947},
+        {"C", 1972},
+        {"C", 1972},
+        {"C++", 1979},
+        {"Java", 1995},
+        {"C#", 2000},
+        {"Rust", 2010}
+    }; // İçerisinde aynı Anahtar değerlerinide tanımlayabiliriz.
+
+    ornekMapBosMu = ornekMultiMap.empty();
+    cout << "ornekMultiMap bos mu; " << ornekMapBosMu << endl << endl;
+
+    // MultiMap'de at komutu bulunmadığından Range tabanlı For ile tüm değerler yazdırılır.
+    cout << "ornekMultiMap'deki elemanlar;" << endl;
+    for (auto i : ornekMultiMap)
+    {
+        cout << i.first << " -> " << i.second << endl;
+    }
+    cout << endl;
+
+    ornekMultiMap.emplace("Kotlin", 2011);
+
+    cout << "ornekMultiMap'deki elemanlar;" << endl;
+    for (auto i : ornekMultiMap)
+    {
+        cout << i.first << " -> " << i.second << endl;
+    }
+    cout << endl;
+
+    ornekMultiMap.emplace_hint(ornekMultiMap.end(), "Go", 2009);
+
+    cout << "ornekMultiMap'deki elemanlar;" << endl;
+    for (auto i : ornekMultiMap)
+    {
+        cout << i.first << " -> " << i.second << endl;
+    }
+    cout << endl;
+
+    ornekMultiMap.erase(ornekMultiMap.find("C"), ornekMultiMap.find("Kotlin").operator++());
+
+    cout << "ornekMultiMap'deki elemanlar;" << endl;
+    for (auto i : ornekMultiMap)
+    {
+        cout << i.first << " -> " << i.second << endl;
+    }
+    cout << endl;
+
+    ornekMultiMap.insert({"PHP", 1995}); // Insert ile de Anahtar-Değer şeklinde eklenebilir
+    ornekMultiMap.insert({"PHP", 1995}); // Aynı değeri ikinci kez eklemeyi çalışalım
+
+    cout << "ornekMultiMap'deki elemanlar;" << endl;
+    for (auto i : ornekMultiMap)
+    {
+        cout << i.first << " -> " << i.second << endl;
+    }
+    cout << endl;
+
+    unsigned long long int ornekMapInMaksBoyutu = ornekMultiMap.max_size();
+    cout << "ornekMultiMap'in maksimum boyutu; " << ornekMapInMaksBoyutu << endl << endl;
+
+    int ornekMultiMapinIcindeKacTanePHPVar = ornekMultiMap.count("PHP");
+    cout << "ornekMultiMap'in icinde su kadar PHP var; " << ornekMultiMapinIcindeKacTanePHPVar << endl << endl;
+
+    map&lt;string, int> ornekMap = {
+        {"HTML", 1993},
+        {"CSS", 1996},
+        {"JavaScript", 1995}
+    };
+
+    ornekMultiMap.merge(ornekMap);
+
+    cout << "ornekMultiMap'deki elemanlar;" << endl;
+    for (auto i : ornekMultiMap)
+    {
+        cout << i.first << " -> " << i.second << endl;
+    }
+    cout << endl;
+
+    int ornekMapinBoyutu = ornekMultiMap.size();
+    cout << "ornekMultiMap'in boyutu; " << ornekMapinBoyutu << endl << endl;
+
+    multimap&lt;string, int> baskaOrnekMultiMap = {
+        {"Windows 8.1", 2013},
+        {"Windows 10", 2015},
+        {"Windows 11", 2021}
+    };
+
+    ornekMultiMap.swap(baskaOrnekMultiMap);
+
+    cout << "ornekMultiMap'deki elemanlar;" << endl;
+    for (auto i : ornekMultiMap)
+    {
+        cout << i.first << " -> " << i.second << endl;
+    }
+    cout << endl;
+
+    cout << "baskaOrnekMultiMap'deki elemanlar;" << endl;
+    for (auto i : baskaOrnekMultiMap)
+    {
+        cout << i.first << " -> " << i.second << endl;
+    }
+    cout << endl;
+
+    return 0;
+}</code>
+
+Çıktı ise;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/15 Cpp STL.html/14.png" alt="15.14" width="100%">
+        </div>
+
+        <h2>İteratörler(Yeniliciler)</h2>
+        <pre id="preh2">Yeniliyiciler, STL kapsayacıların elemanları arasında geçiş yapmamız sağlayan, içeriğini kullanabilmemizi sağlayan sınıflardır. Her kapsayıcıda bu özellik bulunur.</pre>
+
+        <pre id="codeh2">Tüm kapsayıcılarda bulunsada ben yenilicileri Vector üzerinden anlatıcağım;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;vector>
+
+using namespace std;
+
+int main()
+{
+    vector&lt;int> raklamlar = {1,2,3,4,5,6,7,8,9,0}; // Rakamlarımız
+
+    cout << "rakamlar Vector'nun elemanlari;" << endl;
+    for (auto rakam = raklamlar.begin(); rakam != raklamlar.end(); rakam++)
+    {
+        cout << rakam.base() << " -> " << *rakam << endl;  
+    }
+    cout << endl;
+    // Bu For döngüsü yenilicilerler rakamlar'daki elemanların bellek adresleriyle birlikte değerlerini yazdırdık. Peki nasıl?
+    // Olay şu: "auto rakam = raklamlar.begin();" dediğimiz kısım bizim için bir nevi başlangıç Index değeri gibidir. Başlangıç olarak .begin yani "Bana elemanı alcak şekilde yenilicisini ver" diyoruz. Fonksiyonda bizlere ilk elemanın yenilicisini veriyor. Şimdi yenilicilere demiştik ki içeriğini dokunulmadan kapsayıcıların elemanlarını sıralamamızı sağlayan yapılar demiştik. Begin fonksiyonu aslında bize ilk elemanın bellek adresini vermiş oldu. Ardından "auto" ile hangi tür olduğu fark etmekmizin rakam değişkenine atadı
+    // Daha sonra kısımın "rakam != raklamlar.end();" anlamı ise rakam değişkeni, yenilicisi veya işaretçisi rakamlar Vector'unun son elemanın yenilicisine veya bellek adresine eşit olmadığı süreççe dön. Böylelikle For döndügüsü ilk yeniliciden son yeniliciye yani ilk elemanın bellek adresinden son elemanın bellek adresine kadarki bütün elemanları işleme alıcaktır
+    // Son kısım olan "rakam++" ise Pointer Aritmatiğine dayanır. "Pointerlar" sayfasında öğrendiğimiz üzere bir işaretçiye bir değeri eklersek bellek adresindeki hemen yanındaki bellek adresini işaret etmeye başlar. Böylelikle diziler veya bütünleşik yapılar oluşmaktır. Aynı mantığı döngü her döndüğünde bir sonraki bellek adresine geçiriyoruz ki elemanlar arasında geçiş yapalım
+    // Son olarak yenilicinin tuttuğu bellek adresini base fonksiyonu alıp, yenilicinin tuttuğu değeride bellek adresinden çekip ekrana yazdırıyoruz
+
+    cout << "rakamlar Vector'nun elemanlari;" << endl;
+    for (auto rakam = raklamlar.cbegin(); rakam != raklamlar.cend(); rakam++)
+    {
+        cout << rakam.base() << " -> " << *rakam << endl;  
+    }
+    cout << endl;
+    // cbegin ve cend'in begin ve end'den farkı ise "sabit yeniliyici" döndürmesidir. Ancak kayda değer bir farklılık göstermezler
+
+    cout << "rakamlar Vector'nun tersten elemanlari;" << endl;
+    for (auto rakam = raklamlar.rbegin(); rakam != raklamlar.rend(); rakam++)
+    {
+        cout << *rakam << endl;  
+    }
+    cout << endl;
+    // rbegin ve rend begin ve end'in terslerini verir. Yani begin = rend, end = rbegin
+
+    return 0;
+}</code>
+
+Çıktı;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/15 Cpp STL.html/15.png" alt="15.15" width="100%">
+        </div>
+
+        <h2>Algoritmalar</h2>
+        <pre id="preh2">Algoritmalar, kapsayacıların içeriğini sıralama, sayma veya içlerinden değer bulma gibi işlemler için yazılmış fonksiyonlardır. Genel olarak tüm kapsayıcılarda kullanılabilir.</pre>
+
+        <pre id="codeh2">Örnek olması açısından ben bu fonksiyonları Vector üzerinden yazdım;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;vector>
+#include &lt;algorithm> // STL algoritmalarının bulunduğu kütüphanedir
+#include &lt;numeric> // accumulate fonksiyonu için gerekli kütüphane
+
+using namespace std;
+
+int main()
+{
+    vector&lt;int> sayilar = {7,5,8,3,1,10,4,6,2,9}; // Örnek Vector'umuz
+
+    cout << "sayilar Vector'unun elemanlari;" << endl;
+    for (int sayi : sayilar)
+    {
+        cout << sayi << endl;
+    }
+    cout << endl;
+    
+    sort(sayilar.begin(), sayilar.end()); // Girilen başlangıç ve bitiş yenilicilerini alfanumarik olarak küçükten büyüğe sıralar. Eğer ters yenileyicisi verilirse(rbegin ve rend) alfonumarik olarak büyükten küçüğe sıralar
+    
+    cout << "sayilar Vector'unun elemanlari;" << endl;
+    for (int sayi : sayilar)
+    {
+        cout << sayi << endl;
+    }
+    cout << endl;
+
+    auto eleman7 = find(sayilar.begin(), sayilar.end(), 7); // Girilen başlangıç ve bitiş yenilicilerinin içerisinde 3. parametre olan 7 sayısının yenilicisini yani bellek adresini verir
+    cout << "sayilar Vector'unun 7 degerine sahip elemanin bellek adresi ve degeri; " << eleman7.base() << " , " << *eleman7 << endl << endl;
+
+    cout << "sayilar Vector'unun elemanlari;" << endl;
+    for_each(sayilar.begin(), sayilar.end(),
+    [] (auto sayi) 
+    {
+        cout << sayi << endl;
+    }
+    ); // Girilen başlangıç ve bitiş yenilicilerini 3. parametredeki fonksiyona veya lambda fonksiyonuna ilk parametre olarak başlangıçtan bitişe doğru değerleri gönderir. Tüm elemanları vericek şekilde döndürür
+    cout << endl;
+
+    vector&lt;int> sayilar2;
+    sayilar2.resize(sayilar.size());
+
+    transform(sayilar.begin(), sayilar.end(), sayilar2.begin(), 
+    [] (auto sayi)
+    {
+        return sayi;
+    }
+    ); // Girilen başlangıç ve bitiş yenilicilerini 3. parametredeki başka bir kapsayıcının başlangıç yenileyicisine 4. parametredeki lambda veya fonksiyona ilk parametre olarak başlangıçtan bitiş yenileyicisine sırayla gönderir. Lambdan veya fonksiyon return'lenen değer 3. parametredeki yenileyiciye aktarılır
+
+    cout << "sayilar2 Vector'unun elemanlari;" << endl;
+    for (int sayi : sayilar2)
+    {
+        cout << sayi << endl;
+    }
+    cout << endl;
+
+    sayilar.push_back(10);
+    sayilar.push_back(10);
+    sayilar.push_back(10);
+    sayilar.push_back(10);
+    sayilar.push_back(10);
+
+    int sayilardaKacAdet10Var = count(sayilar.begin(), sayilar.end(), 10); // Girilen başlangıç ve bitiş yenilicilerinin arasında kaç adet 3. parametredeki değerin olduğu hesaplar ve bir Integer değeri döner
+
+    cout << "sayilar Vector'unde kac adet 10 degeri var; " << sayilardaKacAdet10Var << endl;
+
+    sayilardaKacAdet10Var = count_if(sayilar.begin(), sayilar.end(),
+    [] (auto sayi)
+    {
+        if (sayi == 10)
+            return 1;
+        return 0;
+    }
+    ); // count'un lambda veya fonksiyonlu halidir. Lambdan veya fonksiyondan dönen değer 0'dan büyük ise bir, 0 ise herhangi bir ekleme yapmaz.
+    cout << "sayilar Vector'unde kac adet 10 degeri var; " << sayilardaKacAdet10Var << endl << endl;
+
+    int sayilarElemanlarininToplami = accumulate(sayilar.begin(), sayilar.end(), 0); //  // Girilen başlangıç ve bitiş yenilicilerinin arasında değerleri 3. parametredeki başlangıç değer olarak toplar ve bir Integer değeri döndürür
+
+    cout << "sayilar elemanlarinin toplami; " << sayilarElemanlarininToplami << endl << endl;
+
+    return 0;
+}</code>
+
+Çıktısı ise;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/15 Cpp STL.html/16.png" alt="15.16" width="100%">
+        </div>
+
+        <h2>Pair</h2>
+        <pre id="preh2">Pair veya çiftli, aynı anda iki tane veri tutabilen ve <code>first</code> ve <code>second</code> olara ulaşabilceğimiz bir sınıftır. Utility kütüphanesinde yer alır.</pre>
+
+        <pre id="codeh2">Bir insan hem ismini hemde soyismini sanki tek bir veriymiş gibi beyninde saklar. Fakat gerektiğinde rahatlıkla ayırabilir çünkü ismimizi ve soyismimizi ayrı şekilde kullanmamız gereken zamanlar olur. İşte gelin bu yapıyı C++ programlama dilinde yazalım;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;utility> // Kütüphanemiz
+
+using namespace std;
+
+int main()
+{
+    pair&lt;string, string> insan1 = {"Data", "Delete"};
+
+    cout << "insan1'in ismi ve soyismi; " << insan1.first << " " << insan1.second << endl << endl;
+}</code>
+
+Çıktı;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/15 Cpp STL.html/17.png" alt="15.17" width="100%">
+        </div>
+
+        <h2>Tuple</h2>
+        <pre id="preh2">Tuple, Pair'in ikiden fazla tanımlamayı izin veren halidir. <code>first</code> ve <code>second</code> olarak erişilmez fakat Template içerisinde yazılan Index numarası ve <code>get</code> fonksiyonu ile değere ulaşılır. Tuple kütüphanesinde yer alır.</pre>
+
+        <pre id="codeh2">insan1'e birde yaş ekliyelim bakalım;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;tuple> // Kütüphanemiz
+
+using namespace std;
+
+int main()
+{
+    tuple&lt;string, string, int> insan1 = {"Data", "Delete", 16};
+
+    cout << "insan1'in ismi, soyismi ve yasi; " << get&lt;0>(insan1) << " " << get&lt;1>(insan1) << " " << get&lt;2>(insan1) << endl << endl;
+}</code>
+
+Çıktısı ise;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/15 Cpp STL.html/18.png" alt="15.18" width="100%">
+        </div>
+
+        <h2>Optional</h2>
+        <pre id="preh2">Optional veya opsiyonel, tek bir veri türünün tek bir nesnede işlem yapmamızı sağlayan bir sınıftır. Optional kütüphanesinde yer alır. C++17 ile standartlaşmıştır.</pre>
+
+        <pre id="codeh2">Hadi inceleyelim;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;optional> // Kütüphanemiz
+
+using namespace std;
+
+int main()
+{
+    optional&lt;int> ornekOptional; // Bu şekilde tanımlanır
+
+    bool ornekOptionalBosMu = ornekOptional.has_value(); // Boş mu değil mi diye kontrol eder
+    cout << "ornekOptional bos mu; " << ornekOptionalBosMu << endl;
+
+    ornekOptional.emplace(100); // Atama yapar
+
+    ornekOptionalBosMu = ornekOptional.has_value();
+    cout << "ornekOptional bos mu; " << ornekOptionalBosMu << endl << endl;
+
+    int ornekOptionalNinDegeri = ornekOptional.value(); // Optional'in değerini alır
+    cout << "ornekOptional degeri; " << ornekOptionalNinDegeri << endl;
+
+    ornekOptional.reset(); // Değeri nullptr'e çevirir
+
+    ornekOptional.emplace(200);
+
+    ornekOptionalNinDegeri = ornekOptional.value();
+    cout << "ornekOptional degeri; " << ornekOptionalNinDegeri << endl << endl;
+
+    ornekOptional.reset();
+
+    ornekOptionalNinDegeri = ornekOptional.value_or(0); // Eğer nullptr ise parantezlerdeki değer döndür
+    cout << "ornekOptional degeri; " << ornekOptionalNinDegeri << endl << endl;
+
+    ornekOptional.emplace(10);
+
+    optional&lt;int> baskaOrnekOptional = 20;
+
+    ornekOptional.swap(baskaOrnekOptional);
+
+    ornekOptionalNinDegeri = ornekOptional.value();
+    cout << "ornekOptional degeri; " << ornekOptionalNinDegeri << endl;
+
+    int baskaOrnekOptionalNinDegeri = baskaOrnekOptional.value();
+    cout << "baskaOrnekOptional degeri; " << baskaOrnekOptionalNinDegeri << endl;
+
+    return 0;
+}</code>
+
+Çıktısı;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/15 Cpp STL.html/19.png" alt="15.19" width="100%">
+        </div>
+
+        <h2>Variant</h2>
+        <pre id="codeh2">Variant, aynı Union gibi tek bir değer fakat birden fazla türden depolama sağlayabilen bir yapıdır. C++17 ile standartlaşmıştır. Variant kütüphanesinde bulunur.
+
+Hadi inceleyelim;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;variant> // Kütüphanemiz
+
+using namespace std;
+
+int main()
+{
+    variant&lt;int, float> intVeFloat; // Bu şekilde tanımlıyoruz
+
+    intVeFloat.emplace&lt;int>(1234); // Emplace'in Template'ine hangi tür girildi ise o türe göre değer atanır
+
+    int kullanilanIndex = intVeFloat.index(); // Hangi veri türü kullanılıyorsa onun Index'ini almak için
+    cout << "intVeFloat'in kullanilan Index numarasi; " << kullanilanIndex << endl << endl;
+
+    int intVeFloatIntDegeri = get&lt;0>(intVeFloat);
+    cout << "intVeFloat Variant'nin 0. Index'deki turunun degeri; " << intVeFloatIntDegeri << endl << endl;
+
+    intVeFloat.emplace&lt;float>(12.54f);
+
+    kullanilanIndex = intVeFloat.index();
+    cout << "intVeFloat'in kullanilan Index numarasi; " << kullanilanIndex << endl << endl;
+
+    float intVeFloatFloatDegeri = get&lt;1>(intVeFloat);
+    cout << "intVeFloat Variant'nin 1. Index'deki turunun degeri; " << intVeFloatFloatDegeri << endl << endl;
+
+    return 0;
+}</code>
+
+Çıktı;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/15 Cpp STL.html/20.png" alt="15.20" width="100%">
+        </div>
+
         <h2>Kaynakça</h2>
         <ul>
             <li><a href="https://www.geeksforgeeks.org/cpp/the-c-standard-template-library-stl/">https://www.geeksforgeeks.org/cpp/the-c-standard-template-library-stl/</a></li>
@@ -1036,6 +1559,20 @@ int main()
             <li><a href="https://data35delete.github.io/Data-s-Book-on-C/Lessons/13%20C%20Bellek%20Yönetimi.html">Data's Book on C - Bellek Yönetimi</a></li>
             <li><a href="https://www.geeksforgeeks.org/cpp/priority-queue-in-cpp-stl/">https://www.geeksforgeeks.org/cpp/priority-queue-in-cpp-stl/</a></li>
             <li><a href="https://www.geeksforgeeks.org/cpp/set-in-cpp-stl/">https://www.geeksforgeeks.org/cpp/set-in-cpp-stl/</a></li>
+            <li><a href="https://www.w3schools.com/cpp/cpp_maps.asp">https://www.w3schools.com/cpp/cpp_maps.asp</a></li>
+            <li><a href="https://www.geeksforgeeks.org/cpp/multimap-associative-containers-the-c-standard-template-library-stl/">https://www.geeksforgeeks.org/cpp/multimap-associative-containers-the-c-standard-template-library-stl/</a></li>
+            <li><a href="https://en.cppreference.com/cpp/container/multimap">https://en.cppreference.com/cpp/container/multimap</a></li>
+            <li><a href="https://www.geeksforgeeks.org/cpp/iterators-c-stl/">https://www.geeksforgeeks.org/cpp/iterators-c-stl/</a></li>
+            <li><a href="https://en.cppreference.com/cpp/algorithm/sort">https://en.cppreference.com/cpp/algorithm/sort</a></li>
+            <li><a href="https://www.geeksforgeeks.org/cpp/std-find-in-cpp/">https://www.geeksforgeeks.org/cpp/std-find-in-cpp/</a></li>
+            <li><a href="https://www.geeksforgeeks.org/cpp/transform-c-stl-perform-operation-elements/">https://www.geeksforgeeks.org/cpp/transform-c-stl-perform-operation-elements/</a></li>
+            <li><a href="https://en.cppreference.com/cpp/algorithm/count">https://en.cppreference.com/cpp/algorithm/count</a></li>
+            <li><a href="https://en.cppreference.com/cpp/algorithm/accumulate">https://en.cppreference.com/cpp/algorithm/accumulate</a></li>
+            <li><a href="https://www.geeksforgeeks.org/cpp/pair-in-cpp-stl/">https://www.geeksforgeeks.org/cpp/pair-in-cpp-stl/</a></li>
+            <li><a href="https://www.geeksforgeeks.org/cpp/tuples-in-c/">https://www.geeksforgeeks.org/cpp/tuples-in-c/</a></li>
+            <li><a href="https://en.cppreference.com/cpp/utility/optional">https://en.cppreference.com/cpp/utility/optional</a></li>
+            <li><a href="https://en.cppreference.com/cpp/utility/optional/value_or">https://en.cppreference.com/cpp/utility/optional/value_or</a></li>
+            <li><a href="https://www.geeksforgeeks.org/cpp/std-variant-in-cpp-17/">https://www.geeksforgeeks.org/cpp/std-variant-in-cpp-17/</a></li>
         </ul>
     </div>
 
