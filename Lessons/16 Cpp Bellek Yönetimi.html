@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data's Book on Cpp</title>
+
+    <link rel="icon" type="image/x-icon" href="../Sources/favicon.png">
+
+    <script src="../Sources/JS/setBackgroundMedia.js"></script>
+
+    <link rel="stylesheet" href="../Sources/JS/hljs/vs2015.css">
+    <script src="../Sources/JS/hljs/highlight.min.js"></script>
+    <script>
+        window.onload = function() {
+            hljs.highlightAll();
+        };
+    </script>
+
+    <link rel="stylesheet" href="../Sources/CSS/main.css">
+</head>
+<body>
+    <h1>Bellek Yönetimi</h1>
+
+    <div style="height: 100px;"></div>
+    
+    <div id="mainDiv">
+        <h2>Bellek Yönetimi Nedir?</h2>
+        <pre id="preh2">Bellek yönetimi, yazılım program tarafından kontrol edilmeyen ve kontrolu tamamiyle programcıda olduğu veri yapılarının yönetiminidir.</pre>
+
+        <pre id="preh2">Bellek yani RAM'de bir programcılar olarak özel alanlar istiyebiliriz. Normal şartlarda bellek yönetimi program tarafından yapılır. Program kapsama adı verilen ve bizim kod blokları adını veridiğimiz küme parantezlerinde({ ... }) tanımlanan yerel değişkenleri programın kendisi yönetir. Değişken tanımlandığı kod blokları içerisinde aktiflik gösterir taki program akışı değişkenin kod bloklarının sonuna geldiğinde değişkeni serbest yani RAM'e geri verir. Bu durumu bilgisayar özelinden anlatırsak biz programcı olarak değişkenimizi tanımlarken RAM'e "Şu kadar alanda bana yer aç" diye bir komut veriyoruz. RAM'de eğer yer varsa uygun alanı açıyor ve bize erişim sağlıyor ki o erişim bizim değişkenimiz oluyor. Daha sonra o erişim yani değişken üzerine kendimize özel RAM'den tahsis ettirdiğimiz alanda işlemlerimizi gerçekleştiriyoruz. Ardından program o değişkenin kod bloklarının sonuna geldiğinde RAM'e gidip "Bu değişkenle işim bitti. Dolayısıyla bu alan sana geri veriyorum" der ve değişkenimizi RAM geri alır. Bu durum bir nevi ödünç alma ilişkisidir. İhtiyacımız olduğunda RAM'den ödünçlük yer isteriz. RAM verdiği ödünçlük alanda istediğimizi yaparız ve ardından ödünç aldığımız alanı RAM'e geri teslim ederiz. Bu olaylar programcıdan ziyade program tarafında yapılır. Biz sadece tanımlar kullanılır ve geçeriz. Gelin bir örnek yazalım;</pre>
+
+        <pre id="codeh2"><code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main()
+{
+
+    int sayi1 = 12; // Örnek bir sayı tanımladık
+
+    { // Kod blokları içerisinde başka kod blokları açabiliriz.
+        cout << "sayi1 = " << sayi1 << endl << endl; // Üst kod bloklarında tanımlanan değişkeni bu kısımda kullanabiliriz
+
+        int sayi2 = 54; // Şimdi bu kod blokları içerisinde bir değişken tanımlayalım
+        
+        cout << "sayi2 = " << sayi2 << endl << endl; // Ardından kullanalım
+    } // sayi2 değişkeninin serbest bırakıldığı yani RAM'e geri verildiği kısım
+
+    cout << "sayi1 = " << sayi1 << endl << endl; // Hala aynı kod blokları içerisinde olduğumuz için sayi1 değişkenini kullanabiliriz
+    
+    //cout << "sayi2 = " << sayi2 << endl << endl;
+    // Fakat sayi2 değişkeni kendi kod bloklarında serbest bırakıldığı için başka kod bloklarında kullanılamaz
+
+    return 0;
+}</code>
+
+Çıktısı ise;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/16 Cpp Bellek Yönetimi.html/1.png" alt="16.1" width="100%">
+        </div>
+
+        <pre id="preh2">Görüceğiniz üzere yerel değişkenler program tarafından yönetilir.</pre>
+
+        <pre id="preh2">Peki ya biz yönetseydik? Bazı durumlar olucak ve bizim o kod bloklarının içinden başka kod bloklarına veri aktarmamız gerek durumlar elbette olucaktır. İşte bu durumlarda bellek yönetimi devreye gidiyor... Bellek yönetimi asasen programcı tarafından yönetilen bellek demek. Yani değişken tanımlarken biz talimat vericeğiz ve biz yer ayırttıp boşaltacağız. Bu işlemleri ise <code>new</code> ve <code>delete</code> komutları ile gerçekleştiriceğiz. Ayrıca bellek yönetimi direkt olarak işaretçilerden yürür. Bu sebeble Pointerlar konusunda eksiğiniz bulmaması önemle rica olunur. Gelin bir örnek daha yaplım;</pre>
+
+        <pre id="codeh2"><code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main()
+{
+    int *sayi2Ptr; // Şimdilik tanımlayalım. 2. kod bloğunda new ile alan açıcağımızda bu değişkene atıcağız. Yoksa program olarak mümkün değil kod blokları arasında veri iletişimi. İşte bu yüzden Pointer'lar bizim en yakın dostumuzdur
+
+    int *sayi1Ptr = new int; // sayi1Ptr adlı bir işaretçi tanımlıyoruz ve new komutu ile RAM'den bir Integer'lık alan talep ediyoruz. New eğer başarılı olursa bize ayrdığı belleğin adresini döndürür. Başarısız olursa bize nullptr döndürür
+    if (sayi1Ptr == nullptr) // Eğer başaramazza. Genelde RAM çok dolu olduğunda bellek ayrılma işlemi doğal olarak başarısız olur ve bize new nullptr döndürür. Daha önceki sayfalarda konuştuğumuz gibi nullptr bir felakete yol açmadan hemen önce fark edilip programın durdurulması veya doğru yönetilmesi gerekir
+    {
+        cout << "Bellek ayrilamadi" << endl; // Hata mesajı
+
+        delete sayi1Ptr; // Ayıramadığı için serbest bırakalım
+    }
+
+    // Başarılı bir şekilde ayrılırsa
+
+    *sayi1Ptr = 12; // Atama gerçekleştirelim
+    
+    { // Başka bir kod bloğu açalım
+        cout << "sayi1Ptr = " << sayi1Ptr << " -> " << *sayi1Ptr << endl << endl; // Hem bellek adresini hemde bellek adresindeki veriyi yazdıralım
+
+        sayi2Ptr = new int(56); // Şimdi new ile sayi2Ptr'yi RAM'de özel alan ayırtalım. Eğer parantezlere bir değer yazarsak, new başarılı olursa direkt atama gerçekleştirir
+        if (sayi2Ptr == nullptr) // Kontrol
+        {
+            cout << "Bellek ayrilamadi" << endl; // Hata mesajı
+
+            delete sayi2Ptr; // Ayıramadığı için serbest bırakalım
+        }
+
+        cout << "sayi2Ptr = " << sayi2Ptr << " -> " << *sayi2Ptr << endl << endl;
+    } // new ile ayrdığımız için değişken bu kısımda RAM'e geri verilmez
+
+    cout << "sayi1Ptr = " << sayi1Ptr << " -> " << *sayi1Ptr << endl << endl;
+    // Şimdi ikisini beraber bu kod bloklarında kullanabiliriz
+    cout << "sayi2Ptr = " << sayi2Ptr << " -> " << *sayi2Ptr << endl << endl;
+
+    delete sayi1Ptr; // Ardından RAM'den ödünç aldığımız alanları RAM'e geri veriyoruz
+    delete sayi2Ptr; // ki program bellek hatalarıyla ve sızmalarla karşılaşmasın. Bu tüm new ile ayrılan veriler için geçerlidir
+
+    return 0;
+}</code>
+
+Çıktısı;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/16 Cpp Bellek Yönetimi.html/2.png" alt="16.2" width="100%">
+        </div>
+
+        <pre id="preh2">Artık istediğimiz gibi kullanabiliriz...</pre>
+
+        <pre id="preh2">İşte bellek yönetimi tamda budur. Bellek yönetimi programcıya mutlak güç verir. Pek tabi büyük güç büyük sorumluluk gerektirir. Eğer gücü kullanıp sorumluluğu yerine getirmezsek RAM'ın gazabına uğrarız. RAM'den ödünç alınan her alan ne olursa olsun program kapanmadın geri verilmelidir. Yoksa RAM gereksiz yere şişer ve o belleklere erişemez hale geliriz. Buda RAM'de eve işgal edip kira dahi ödemeyen bir misafir olur. Bu misafir günümüzde pek önemsemesede eskiden RAM'ler dolayısıyla evler küçüktü. Bu zamanki RAM'leri eski RAM'lerle karşılaştırıcaksak bizim RAM'lerde eskilere göre koca bir megakent. Eski RAM'ler bir nevi küçük bir köy gibi kalıyor. Nasıl Megakentlerde kira vermeyen oturan insanlar önemsemiyorsa şimdiki zamanlarda aynı şekilde bu serbest bırakılmayan RAM alanlarıda aynı şekilde önemsemiyor. Keza eskiden bu durum tam bir baş belasıydı. Ama eğer şimdi o davetsiz misafirlerle ilgilenmezsek yarın bir gün onlar bizi misafir hatta evsiz bile bırakabilir.... Dikkatli olmakla fayda var.</pre>
+
+        <h2>RAM'in Katmanları</h2>
+        <pre id="preh2">RAM'ın belirli başlı katmanlara sahiptir. Bu katmanlar farklı amaçlar doğrultusunda kullanılır. Gelin beraber incelemek için bir görsel gösterelim;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/16 Cpp Bellek Yönetimi.html/3.svg" alt="16.3" width="100%">
+        </div>
+
+        <h3>Yazı Katmanı(Text Segment)</h3>
+        <pre id="preh3">Yazı katmanı, programlarımızın derlenmiş hallerinin RAM'de saklandığı kısımdır.</pre>
+
+        <pre id="preh3">Bu katman salt okunur olarak kullanılır. Yani okunabilir fakat yazılamaz. Bu önemlin amacı canlı olarak çalışan programın içeriğini değiştirilmesini önlemektir. Yani evet programlar sanılınanın aksine SSD veya HDD'de değil RAM'in kendi içindeki yazı katmanında çalışırlar.</pre>
+
+        <h3>Veri Katmanı(Data Segment)</h3>
+        <pre id="preh3">Veri katmanı programda tanımlanan değişkenlerin saklandığı kısımdır.</pre>
+
+        <pre id="preh3">Tanımlanan değişkenler şekillerine göre bu katmanın alanları olan başlatılmış ve BSS yani başlatılmamış alanlara yazılır. Başlatılmış değişkenler tanımlandığı an itibariyle değeri atanan değişkenlerdir. BSS yani başlatılmamış değişkenler ise tanımlandığı anda tanımlanmayan değişkenlere denir. Gelin bir örnek yapalım;</pre>
+
+        <pre id="codeh3"><code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main()
+{
+    int BSS_Degisken; // Veri katmanındaki BSS alanında depolanır
+
+    int baslatilmisDegisken = 23; // Veri katmanındaki başlatılmış alanında depolanır
+
+    cout << "BSS_Degisken = " << BSS_Degisken << endl << endl; // Eğer BSS değişkenlere başlatılmadan erişilmeye çalışınılırsa derleme zamanında rastgele bir değer atanan değeri verir
+    cout << "baslatilmisDegisken = " << baslatilmisDegisken << endl << endl;
+
+    return 0;
+}</code>
+        
+Çıktı;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/16 Cpp Bellek Yönetimi.html/4.png" alt="16.4" width="100%">
+        </div>
+
+        <h3>Heap Katmanı(Heap Segment)</h3>
+        <pre id="codeh3">Heap katmanında boyutu belli olmayan, programcı tarafından ayrılan değişkenler ve işaretçiler bu katmanda yer alır. Yani bu değişken
+
+<code class="language-cpp">int *sayi1Ptr;</code>
+
+Bu katmanda yer alır.</pre>
+
+        <h3>Stack Katmanı(Stack Segment)</h3>
+        <pre id="codeh3">Stack katmanı ise boyutu belli olan ve önceden tanımlı veriler yer alır. Yani bu değişken
+
+<code class="language-cpp">int sayi1 = 32;</code>
+
+Bu katmanda yer alır.</pre>
+
+        <h3>Segmentation Fault</h3>
+        <pre id="preh3">Segmentation Fault veya katman hatası, bir bellek alanına izinsiz giriş veya <code>nullptr</code> olarak tanımlanan bir işaretçinin bellek adresine erişim çalışmasında gerçekleşen ve programın çökmesiyle sonuçlanan bir hatadır. Gelin bir örnek yazalım;</pre>
+
+        <pre id="codeh3"><code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main()
+{
+    int *sayi1Ptr = nullptr; // Bir işaretçiyi kasten nullptr olarak tanımlandık
+
+    cout << "sayi1Ptr = " << *sayi1Ptr << endl << endl; // Erişmeye çalışma ve bam... Program çöker
+
+    return 0;
+}</code>
+
+Program sonuç olarak çöker.</pre>
+
+        <h2>New ve Delete Komutları</h2>
+        <pre id="preh2">Sayfanın başında değindiğimiz <code>new</code> ve <code>delete</code> komutlarına değinelim. Bu komutlar bizim bellek yönetimimizde en temel araçlarımızdır. <code>new</code> ile yer ayırtır, <code>delete</code> ile de ayrılan alanları RAM'e geri verilir.</pre>
+
+        <pre id="codeh2">Bir örnek yazalım.
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main()
+{
+    int *sayi1Ptr = new int(10);
+
+    cout << "sayi1Ptr = " << sayi1Ptr << " -> " << *sayi1Ptr << endl;
+
+    delete sayi1Ptr;
+
+    return 0;
+}</code>
+
+Çıktısı bellek adresi ile "10" olucaktır.</pre>
+
+        <pre id="codeh2">Karşılaştırma açısından birde C programlama dilinde az önce yazdığımız kodun karşılığını yazalım;
+
+<code class="language-c">#include &lt;stdio.h>
+#include &lt;stdlib.h>
+
+int main()
+{
+    int *sayi1Ptr = (int*)malloc(1 * sizeof(int)); // -> new
+
+    *sayi1Ptr = 10;
+
+    printf("%x -> %d\n", sayi1Ptr, *sayi1Ptr);
+
+    free(sayi1Ptr); // -> delete
+
+    return 0;
+}</code>
+
+
+Çıktı aynı olucaktır.</pre>
+
+        <pre id="preh2">Çıktılar ve amaçlar aynı olsada kullanılan yöntemler birbirinden tamamiyle farklıdır.</pre>
+
+        <pre id="preh2">C++ programlama dilinde <code>malloc</code> ve <code>free</code> kullanılabilir fakat standartlar doğrultusunda tavsiye edilmez. Çünkü <code>malloc</code>;</pre>
+
+        <ul>
+            <li>Dönüş olarak void* gibi bir işaretçi değer döndürür. Bu durum tür güvenliğini tehlikeye atar. Bu sebeble dönüştürme işlemi yapılır.</li>
+            <li>Başarısız olursa NULL döndürür ki NULL bir nevi sıfır demektir.</li>
+            <li>Tahsis edilmesi gereken alan bayt cinsinden belirtilmelidir. Bu sebeble "1 * sizeof(int)" kolaylık açısından yazılır.</li>
+            <li>Dizi tanımlamak için herhangi bir yardımcı yoktur.</li>
+        </ul>
+
+        <pre id="preh2">Gibi sebeblerden dolayı modern C++ kodlarında <code>malloc</code> kullanılmaz. <code>new</code>'i ele alıcaksak eğer;</pre>
+
+        <ul>
+            <li>Dönüş tipi olarak, tanımlanan türün işaretçisini döndürür. Ekstra dönüştürmeye gerek yoktur.</li>
+            <li>Başarısız olursa nullptr döndürür.</li>
+            <li>Tahsil edilmesi gereken alanın belirtilmesine gerek yoktur.</li>
+            <li>Dizi tanımlamak için yardımıcısı bulunur.</li>
+        </ul>
+
+        <pre id="preh2">Gibi nedenlerde dolayı <code>new</code> C++ programlama dilinde bellek yönetimi için birer standarttır.</pre>
+
+        <h3>Dizi Tanımlama</h3>
+        <pre id="preh3">Tekli veriler tanımlayabiliyoruz da dizi neden tanımlayamamalım? <code>new tur[elemanSayisi]</code> şeklinde dizi tanımlanır ve <code>delete[]</code> ile serbest bırakılır.</pre>
+
+        <pre id="codeh3">Gelin bir örnek yapalım;
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main()
+{
+    int *sayilar = new int[4]; // 4 elemanlı bir dizi tanımladık
+
+    *sayilar = 10; // Değerler atadık
+    *(sayilar + 1) = 20;
+    *(sayilar + 2) = 30;
+    *(sayilar + 3) = 40;
+
+    cout << "sayilar dizisinin elemanlari;" << endl; // Bellek adresleriyle yazdırdık
+    for (int i = 0; i < 4; i++)
+    {
+        cout << &sayilar[i] << " -> " << *(sayilar + i) << endl;
+    }
+    cout << endl;
+
+    delete[] sayilar; // Serbest bıraktır
+
+    return 0;
+}</code>
+
+Çıktı;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/16 Cpp Bellek Yönetimi.html/5.png" alt="16.5" width="100%">
+        </div>
+
+        <h2>Akıllı İşaretçiler ile Bellek Yönetimi</h2>
+        <pre id="codeh2">Akıllı işaretçilerle bellek yönetimi sıklıkla kullanılırlar. Örnek olması açısından akıllı işaretçiler konusundaki <code>unique_ptr</code>'i bellek yöntemiyle beraber yazalım;</pre>
+
+        <pre id="codeh2"><code class="language-cpp">#include &lt;iostream>
+#include &lt;memory>
+
+using namespace std;
+
+class ornekClass
+{
+    public:
+        int *s;
+
+        ornekClass()
+        {
+            s = new int;
+        }
+        ~ornekClass()
+        {
+            delete s;
+        }
+};
+
+int main()
+{
+    unique_ptr&lt;ornekClass> sayi1 = unique_ptr&lt;ornekClass>(new ornekClass()); // İçini new ile değiştirdik
+    *sayi1->s = 123; // Değer atadık
+
+    cout << "sayi1'deki s'in degeri; " << *sayi1->s << endl << endl;
+
+    //ornekClass* sayi2 = sayi1; Bu tarz bir kullanıma izin vermez
+    unique_ptr&lt;ornekClass> sayi2 = move(sayi1); // Taşıma ile verileri aktardık
+    cout << "sayi2'deki s'in degeri; " << *sayi2->s << endl << endl;
+
+    return 0;
+}</code>
+
+Çıktısı ise fakat yöntemi farklıdır.</pre>
+
+        <h2>Placement New</h2>
+        <pre id="preh2">Placement New yani belirli alanda New işlemi, <code>new</code> komutunun bir kullanım tarafıdır. <code>new</code> parantezlerine belirtilen bellek alanında istenilen bellek tahsisin gerçekleştiren bir yöntemdir.</pre>
+
+        <pre id="codeh2">Gelin bir örnek yapalım;
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main()
+{
+    char *belirliBirAlan = new char[8]; // 8 baytlık bir alan tahsis ettik
+
+    int *sayi1 = new(belirliBirAlan) int(100); // 4 baytlık alanın 1. 4 baytlık alanına bir Integer tanımladık ardından 100 değerini atadık
+
+    float *ondalikli1 = new(belirliBirAlan + 4) float(50.5f); // Aynı şekilde bir Float tanımladık. belirliBirAlan'a 4 ekledik çünkü Integer'ın için ayırdığımız bölgeyi işgal etmesin
+
+    // Ardından hepsini yazdıralım
+    cout << "sayi1 = " << sayi1 << " -> " << *sayi1 << endl;
+    cout << "ondalikli1 = " << ondalikli1 << " -> " << *ondalikli1 << endl;
+
+    delete belirliBirAlan; // Delete işleminde ana alan faz alınır
+
+    return 0;
+}</code>
+
+Çıktısı;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/16 Cpp Bellek Yönetimi.html/6.png" alt="16.6" width="100%">
+        </div>
+
+        <h2>Kaynakça</h2>
+        <ul>
+            <li><a href="https://www.geeksforgeeks.org/cpp/new-and-delete-operators-in-cpp-for-dynamic-memory/">https://www.geeksforgeeks.org/cpp/new-and-delete-operators-in-cpp-for-dynamic-memory/</a></li>
+            <li><a href="https://data35delete.github.io/Data-s-Book-on-C/Lessons/13%20C%20Bellek%20Yönetimi.html">Data's Book on C - Bellek Yönetimi</a></li>
+            <li><a href="https://stackoverflow.com/questions/240212/what-is-the-difference-between-new-delete-and-malloc-free">https://stackoverflow.com/questions/240212/what-is-the-difference-between-new-delete-and-malloc-free</a></li>
+            <li><a href="https://stackoverflow.com/questions/72161324/replacing-new-with-smart-pointers-in-this-example">https://stackoverflow.com/questions/72161324/replacing-new-with-smart-pointers-in-this-example</a></li>
+            <li><a href="https://www.geeksforgeeks.org/cpp/placement-new-operator-cpp/">https://www.geeksforgeeks.org/cpp/placement-new-operator-cpp/</a></li>
+            <li><a href="https://stackoverflow.com/questions/6783993/placement-new-and-delete">https://stackoverflow.com/questions/6783993/placement-new-and-delete</a></li>
+        </ul>
+    </div>
+
+    <div style="height: 100px;"></div>
+
+    <footer style="position: fixed; left: 0; bottom: 0; width: 100%; background: transparent; text-align: center; padding: 10px 0; z-index: 100;">
+        <div>
+            <a href="./15 Cpp STL.html" style="margin-right: 20px; cursor:pointer;">
+                &larr; Önceki
+            </a>
+            <a href="" style="cursor:pointer;">
+                Sonraki &rarr;
+            </a>
+        </div>
+        <div>
+            <p>&copy; 2026 Data's Book</p>
+        </div>
+
+        <div style="position: absolute; right: 20px; bottom: 20px;">
+            <a href="./1 Cpp İçindekiler.html" style="text-decoration: none;">
+                İçindekiler
+            </a>
+        </div>
+    </footer>
+</body>
+</html>
+
+<!-- Muhammet Enes nam-ı diğer Data Delete tarafından sevgi ile yapıldı <3 -->
