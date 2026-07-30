@@ -362,6 +362,544 @@ int main()
             <img src="../Bibliography/16 Cpp Bellek Yönetimi.html/6.png" alt="16.6" width="100%">
         </div>
 
+        <h2>Bellek Hataları</h2>
+        <pre id="preh2">Geldik şimdi büyük güçte sorumluğumuzu yerine getirmezsek olacaklardan biraz bahsedelim. Bellek hataları, programcının kendine özel RAM'de açtığı alanları doğru kullanmadığı zamanlarda ortaya çıkan; Veri kaybı, program çökmesi veya başka programları bozma gibi kötü sonuçlanan durumlardır. Genel olarak sıklıkla yapılan hatalar şunlardır;</pre>
+
+        <h3>Dangling Pointer</h3>
+        <pre id="preh3">Dangling Pointer yada sarkan işaretçi, bir değişkene ayrılmış alanın RAM'e geri verildikten sonra tekrar erişmeye işleminde oluşan bir hatadır. Erişilmeye çalışıldığında ya rastgele bir değer yada programın çökmesiyle sonuçlanır.</pre>
+
+        <pre id="codeh3">Gelin bir örnek yazalım;
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main()
+{
+    int *sayi1Ptr = new int(12); // Kendimize RAM'den alan açtık
+
+    cout << "sayi1Ptr = " << sayi1Ptr << " -> " << *sayi1Ptr << endl << endl; // Bellek adresi ile beraber yazalım
+
+    delete sayi1Ptr; // Bu kısımdan itibariyle sayi1Ptr erişilmeye çalışıldığında sarkan işaretçi hatası oluşur
+
+    cout << "sayi1Ptr = " << sayi1Ptr << " -> " << *sayi1Ptr << endl << endl; // Rastgele bir değerle sonuçlanır
+
+    int *sayi2Ptr = nullptr; // Bir işaretçiyi nullptr olarak tanımlayalım
+
+    cout << "sayi2Ptr = " << sayi2Ptr << " -> " << *sayi2Ptr << endl << endl; // Program anaında çöker
+
+    return 0;
+}</code>
+
+Çıktısı ise;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/16 Cpp Bellek Yönetimi.html/7.png" alt="16.7" width="100%">
+        </div>
+
+        <h3>Buffer Overflow</h3>
+        <pre id="preh3">Buffer Overflow veya bellek taşması, bir yapının alabilceğinden daha fazla üzerine veri yazdırmadan kaynaklanan, sonuç olarakda başka programların bellek alanlarına izinsiz yazma işlemi gerçekleştirip programların çökmesine neden olabilcek bir bellek hatasıdır. Genelde kullanıcı veri girişlerine veya liste boyutu aşımlarında beydana gelir.</pre>
+
+        <pre id="codeh3">Gelin bir örnek daha yapalım;
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main()
+{
+    int sayilar[10]; // 10 Integer'lık bir dizi tanımladık
+
+    for (int i = 0; i < 11; i++) // For döngüsü ile 11 eleman yazdırarak Buffer Overflow yaptırıyoruz. Yani başkalarının alanına giriyoruz
+    {
+        sayilar[i] = i; // Atama işlemi
+    }
+    
+    cout << "sayilar dizisinin elemanlari;" << endl;
+    for (int i = 0; i < 11; i++)
+    {
+        cout << "sayilar[" << i << "] = " << sayilar[i] << endl; // Yazdıralım
+    }
+    cout << endl;
+
+    // Çıktıda 10. Index yani 11. elemanında göründüğünü görürüz. Ama bizim dizimiz 10 elemanlık. Şuan 11. eleman başkasının bellek alanında ve buda Buffer Overflow demektir!!!
+
+    return 0;
+}</code>
+
+Çıktı;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/16 Cpp Bellek Yönetimi.html/8.png" alt="16.8" width="100%">
+        </div>
+
+        <h3>Memory Leak</h3>
+        <pre id="preh3">Memory Leak veya bellek sızıntısı, kendimize özel ayırdığımız alanları geri RAM'e verilmediğinde ortaya çıkan ve metaforunu yaptığımız hatadır. Bu hata dediğimiz gibi davetsiz bir misafir gibi RAM'imizi doldurabilir hatta ev sahibi konumumuzda bizi evden bile kovabilir.</pre>
+
+        <pre id="codeh3">Gelin bir davetsiz misafiri RAM'imize konduralım;
+ 
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main()
+{
+    int *sayi1Ptr = new int(10);
+ 
+    cout << "sayi1Ptr = " << sayi1Ptr << " -> " << *sayi1Ptr << endl << endl;
+
+    return 0; // sayi1Ptr RAM'e geri verilmediği için şuan bir davetsiz misafir!!!!
+}</code>
+
+Çıktısı "sayi1Ptr = 0x140a4b81a30 -> 10" olucaktır.</pre>
+
+        <h2>RAM'de İletişim(Shared Memory)</h2>
+        <pre id="preh2">RAM'de iletişim, program arası RAM'de özel bir yer açıp aynı yerde veri paylaşımı yapabildikleri bir yöntemdir.</pre>
+        
+        <pre id="preh2">Bu durum asasen aynı odayı birden fazla kişinin kalma durumuna benzetebiliriz. Programlar paylaştıkları alanlarında diğer programlarla konuşabilir veya veri alışverişi gerçekleştirebilir. Böylelikle programlar arası iletişim ağ oluşur ve herkes istediği veri için programa mesaj atıp aldığı veriyi kullanabilir. Bu mesaj hatlarına Pipe yani boru denir.</pre>
+
+        <h3>Linux'da RAM'de İletişim</h3>
+        <pre id="preh3">Linux'da Shared Memory yapabilmek için sıkça karşımıza çıkaçak ve çokça işimize yarıcak olan POSIX yani Portable Operating System Interface(Taşınabilir İşletim Sistemi Arayüzü) kütüphanesi Unix'e benzer işletim sistemlerinde(BSD, Linux, MacOS gibi) işletim sisteminin işlevlerini kolaylaştıran ve bir arayüz sunan bir araçtır. POSIX, dosya işlemlerinden internete, bellek işlemlerine kadar geniş bir yelpazede Unix benzeri işletim sistemlerine bir arayüz sağlıyarak daha kolay kod yazmayı sağlar.</pre>
+
+        <pre id="preh3">Linux'da iki program arasında RAM'de iletişim için Programlar ARası İletişim Ağı yani PARIA sistemini kodlıyalım;
+
+main.cpp
+<code class="language-cpp">#include &lt;iostream>
+
+#include &lt;sys/shm.h> // Shared Memory açmamızı sağlayan kütüphaneler
+#include &lt;sys/mman.h>
+#include &lt;fcntl.h>
+#include &lt;unistd.h>
+
+#include &lt;string.h> // strcmp için gerekli C kütüphanesi
+
+using namespace std;
+
+int main()
+{
+    while (1) // Döngü içerisinde bir sistem olsun ki sürek yeniden başlatmak zorunda kalmıyalım
+    {
+        cout << "1: PARİA Hattı Kur" << endl;
+        cout << "2: PARİA Hattına Katıl" << endl;
+        cout << "0: Çıkış" << endl;
+        cout << "-->"; // Kullanıcıya bir seçimli menü sunduk
+
+        int inp1 = 0;
+        cin >> inp1; // Girdiyi aldık
+
+        if (inp1 == 1) // Kullanıcı PARİA hattı kurmak isterse
+        {
+            cout << endl;
+
+            cout << "PARİA Hattının İsmi; ";
+            string inp2; // Kurulacak PARİA hattının ismini tutacak değişken
+            cin >> inp2; // Girdi alma
+
+            cout << endl;
+
+            cout << "PARİA Akışı Kuruluyor..."; // Kullanıcıyı bilgilendirme
+
+            int paria = shm_open(inp2.c_str(), O_CREAT | O_EXCL | O_RDWR, 06660); // shm_open, Shared Memory için dosya akışı açar. Dosya işlemlerinde dosya akışları daha detaylı işlenicektir
+            // inp2.c_str(); Açılacak Shared Memory'nin ismi
+            // O_CREAT | O_RDWR; Açılacak olan Shared Memory'nin açılma izinleridir
+            //  O_CREAT: Oluştur
+            //  O_EXCL: Zaten mevcutsa hata ver
+            //  O_RDWR; Hem okuma hemde yazma
+            // 06660; Açılma modudur
+
+            if (paria < 0) // shm_open başarısız olursa negatif bir sayı döndürür
+            {
+                shm_unlink(inp2.c_str()); // shm_unlink, shm_open ile oluşturulan Shared Memory dosya akışlarını kapatmamızı sağlar
+
+                cout << "HATA" << endl; // Hata mesajı
+
+                cout << "PARİA AKIŞI KURULAMADI. BU İSİMLE BAŞKA BİR HAT VAR VEYA GEÇERSİZ BİR İSİM GİRDİNİZ!!!" << endl << endl; // Hata mesajı
+
+                continue; // Döngü tekrar döner
+            }
+            else // Eğer başarılı ise
+            {
+                cout << "OK" << endl << endl;
+            }
+            
+            cout << "PARİA Akışı Biçimlendiriliyor...";
+
+            ftruncate(paria, 129); // Açılan dosya akışlarını dolayısıyla bizim Shared Memory'mizin biçimlendirmemizi sağlar
+            // paria; Dosya akşını, şuanlık bizim için Shared Memory
+            // 129; Verilicek boyut, 129 baytlık bir alan açtırdım fakat isterseniz daha fazla açtırtabilirsiniz. Eğer yazma işleminde bu sınır aşılırsa Buffer Overflow yaşanır
+
+            cout << "OK" << endl << endl;
+
+            cout << "PARİA Akışı Belleğe Eşleniyor...";
+
+            char *pariaBellegi = (char*)mmap(NULL, 129, PROT_WRITE, MAP_SHARED, paria, 0); // Bu işlem açılan dosya akışlarını belleğe eşlemek için kullanılan bir komuttur
+            // NULL; Boş kısım
+            // 129; Belleğe eşlinilecek boyut
+            // PROT_WRITE; Yazılabilir
+            // MAP_SHARED; Paylaşımlı
+            // paria; Dosya akışı, şuanlık bizim için Shared Memory
+            // 0; 2. Boş kısım
+
+            cout << "OK" << endl << endl;
+
+            cout << "PARİA AKIŞI OLUŞTURULMUŞTUR...(Devam etmek için bir tuşa basıp Enter'a basın)" << endl; // Bildirme
+
+            cin >> inp2;
+
+            cout << endl;
+
+            continue;
+        }
+        else if (inp1 == 2) // Kullanıcı bir PARİA Hattına katılmak isterse
+        {
+            cout << endl;
+
+            cout << "PARİA Hattının İsmi; ";
+            string inp2 = "";
+            cin >> inp2;
+
+            cout << endl;
+
+            cout << "PARİA Akışına Katılınıyor...";
+
+            int paria = shm_open(inp2.c_str(), O_RDWR, 06660);
+
+            if (paria < 0)
+            {
+                shm_unlink(inp2.c_str());
+
+                cout << "HATA" << endl;
+
+                cout << "PARİA AKIŞINA KATILINAMADI. İSİMLE BİR HAT BULUNAMADI" << endl << endl;
+
+                cin >> inp2;
+
+                cout << endl;
+
+                continue;
+            }
+            else
+            {
+                cout << "OK" << endl << endl;
+            }
+            
+            cout << "PARİA Akışı Biçimlendiriliyor...";
+
+            ftruncate(paria, 129);
+
+            cout << "OK" << endl << endl;
+
+            cout << "PARİA Akışı Belleğe Eşleniyor...";
+
+            char *pariaBellegi = (char*)mmap(NULL, 129, PROT_WRITE, MAP_SHARED, paria, 0);
+
+            cout << "OK" << endl << endl;
+
+            cout << "PARİA Akışına Katılınıldı..." << endl << endl;
+
+            string inp3; // Girdiler için
+
+            while (1) // Sonsuz döngü olsun ki mesaj akışı gerçekleşsin
+            {
+                cout << "1: Mesaj Al" << endl;
+                cout << "2: Mesaj Yaz" << endl;
+                cout << "0: PARİA Akışından Çık ve Sil" << endl;
+                cout << "-->"; // Seçimli menü ekranı
+
+                cin >> inp1; // Bellek tasarufu için inp1'i kullan
+
+                if (inp1 == 1) // Mesaj yaz denirse
+                {   
+                    if (!strcmp(pariaBellegi, "")) // Strcmp, iki char dizisi ifadeyi karşılaştırır. Aynı ise 0, değil ise 1 değer döndürür
+                    { // Mesaj yoksa
+                        cout << endl  << "Bir mesaj bulunamamıştır..." << endl << endl;
+                    }
+                    else // Mesaj varsa
+                    {
+                        cout << endl << "Mesaj; " << pariaBellegi << endl << endl; // Mesajı yaz
+
+                        memset(pariaBellegi, 0, 129); // Mesaj kısmını sıfırla. Memset C dilinde bir bellek alanının belirtilen alan kadar sıfırlanmasını sağlar
+                        // pariaBellegi; Bellek alanı
+                        // 0; Sıfırlanması için üstüne yazılacak olan karakterin ASCII kodu
+                        // 129; Sıfırlanacak alan
+                    }
+                }
+                else if (inp1 == 2) // Mesaj yazmak istenirse
+                {
+                    cout << endl << "Mesaj: ";
+
+                    cin >> inp3;
+
+                    snprintf(pariaBellegi, 128, "%s", inp3.c_str()); // Snprintf, C dilinde Char dizelerine formatlı bir şekilde char dizesi yazdırmamızı sağlar
+                    // pariaBellegi; Yazılacak char dizesi
+                    // 128; Boyutu
+                    // "%s"; Format
+                    // inp2.c_str(); Formatın içerisinde olucak olan değer
+
+                    cout << "Mesaj yazıldı..." << endl << endl;
+                }
+                else if (inp1 == 0) // Çıkmak isterse
+                {
+                    cout << "Çıkılıyor...";
+
+                    munmap(pariaBellegi, 129); // Shared Memory için ayrıldığımız alanı tekrar RAM'e geri verir
+                    shm_unlink(inp2.c_str());
+
+                    cout << "OK" << endl;
+                    
+                    cin >> inp2;
+
+                    cout << endl;
+
+                    break;
+                }
+                else
+                {
+                    cout << "Geçersiz Bir Seçim Girdiniz!" << endl << endl;
+                }
+                
+            }
+        }
+        else if (inp1 == 0) // Çıkmak istenirse
+        {
+            break; // Döngüyü kır
+        }
+        else
+        {
+            cout << "Geçersiz Bir Seçim Girdiniz!" << endl << endl;
+        }
+    }
+
+    return 0;
+}</code>
+
+Kodlarımız bu kadar şimdi derliyelim;
+
+<code class="language-bash">g++ main.cpp -o paria1 -lrt -pthread # Paria1
+g++ main.cpp -o paria2 -lrt -pthread # Paria2</code>
+
+Şimdi videolu olarak inceleyelim;</pre>
+
+        <div id="divh3Vid">
+            <video width="100%" controls src="../Bibliography/16 Cpp Bellek Yönetimi.html/9.mp4" type="video/mp4"></video>
+        </div>
+
+        <h3>Windows'da RAM'de İletişim</h3>
+        <pre id="preh3">Windows'da RAM'de iletişim Linux'un adımlarıyla aynıdır. Aynı şekilde dosya akışı oluşturulur ve MAP işlemi ile RAM'e bağlanır. Sadece Windows'ın kendi kütüphanesindeki fonksiyon çağrılır.</pre>
+
+        <pre id="codeh3">Aynı şekilde PARİA sistemini Windows içinde kodlıyalım;
+
+main.cpp
+<code class="language-cpp">#include &lt;iostream>
+
+#include &lt;windows.h> // Shared Memmory için gerekli kütüphaneler Windows'un kendi gelen kütüphanesinde yer alır
+
+#include &lt;string.h> // strcmp için gerekli C kütüphanesi
+
+using namespace std;
+
+int main()
+{
+    SetConsoleCP(CP_UTF8); // Bu ayarlamalar
+    SetConsoleOutputCP(CP_UTF8); // Windows'da Türkçe karakter gözükmeme sorunun çözen ayarlardır. Konsolu Türkçemizinde bulunduğu UTF-8 ayarına getir. Böylelikle harfler bozuk gözükmez
+
+    while (1) // Döngü içerisinde bir sistem olsun ki sürek yeniden başlatmak zorunda kalmıyalım
+    {
+        cout << "1: PARİA Hattı Kur" << endl;
+        cout << "2: PARİA Hattına Katıl" << endl;
+        cout << "0: Çıkış" << endl;
+        cout << "-->"; // Kullanıcıya bir seçimli menü sunduk
+
+        int inp1 = 0;
+        cin >> inp1; // Girdiyi aldık
+
+        if (inp1 == 1) // Kullanıcı PARİA hattı kurmak isterse
+        {
+            cout << endl;
+
+            cout << "PARİA Hattının İsmi; ";
+            string inp2; // Kurulacak PARİA hattının ismini tutacak değişken
+            cin >> inp2; // Girdi alma
+
+            cout << endl;
+
+            cout << "PARİA Akışı Kuruluyor..."; // Kullanıcıyı bilgilendirme
+
+            HANDLE pariaHandle = CreateFileMappingA(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, 129, inp2.c_str()); // POSIX'deki shm_open'e eş değerdir
+            // INVALID_HANDLE_VALUE; Dosya sayfalama yapma
+            // NULL; Varsayılan güvenlik ayarları
+            // PAGE_READWRITE; Yazma ve okuma izni
+            // 0; Boyutunun en üsteki DWORD'u
+            // 129; İstenilen alan (129 karakterlik bir Char)
+            // inp2.c_str(); Açılacak olan Shared Memory'nin ismi
+
+            // Fark etti iseniz POSIX'de bir dosya akışı tanımlarken Windows'da HANDLE adı verilen bir yapı tanımladık. Nedeni bilinmez Windows API'larının neredeyse hepsi HANDLE denilen bir tür ile yürütülür. Bu sebeble Shared Memory için bir HANDLE tanımladık. Fakat POSIX'deki mantıkla hiç bir farklığı yoktur
+
+            if (pariaHandle == NULL) // CreateFileMappingA başarısız olursa NULL döndürür
+            {
+                CloseHandle(pariaHandle); // shm_unlink yerine CloseHandle kullanılır
+
+                cout << "HATA" << endl; // Hata mesajı
+
+                cout << "PARİA AKIŞI KURULAMADI. BU İSİMLE BAŞKA BİR HAT VAR VEYA GEÇERSİZ BİR İSİM GİRDİNİZ!!!" << endl << endl; // Hata mesajı
+
+                continue; // Döngü tekrar döner
+            }
+            else // Eğer başarılı ise
+            {
+                cout << "OK" << endl << endl;
+            }
+            
+            // Windows'da POSIX'deki biçimlendirme komutu gerekmez. Bunun sebebi Windows'un kendisine göre biçimlendirmesidir
+
+            cout << "PARİA Akışı Belleğe Eşleniyor...";
+
+            char *pariaBellegi = (char*)MapViewOfFile(pariaHandle, FILE_MAP_ALL_ACCESS, 0, 0, 129); // POSIX'deki mmap'e takbul gelir
+            // pariaHandle; Belleğe eşlenicek olan akışın Handle'ı
+            // FILE_MAP_ALL_ACCESS; Okuma ve yazmaya izin ver
+            // 0; Yüksek mertebeden kaydırma
+            // 0; Düşük mertebeden kaydırma
+            // 129; Belleğe eşlenicek olan belleğin boyutu
+
+            cout << "OK" << endl << endl;
+
+            cout << "PARİA AKIŞI OLUŞTURULMUŞTUR...(Devam etmek için bir tuşa basıp Enter'a basın)" << endl; // Bildirme
+
+            cin >> inp2;
+
+            cout << endl;
+
+            continue;
+        }
+        else if (inp1 == 2) // Kullanıcı bir PARİA Hattına katılmak isterse
+        {
+            cout << endl;
+
+            cout << "PARİA Hattının İsmi; ";
+            string inp2 = "";
+            cin >> inp2;
+
+            cout << endl;
+
+            cout << "PARİA Akışına Katılınıyor...";
+
+            HANDLE pariaHandle = CreateFileMappingA(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, 129, inp2.c_str());
+
+            if (pariaHandle == NULL)
+            {
+                CloseHandle(pariaHandle);
+
+                cout << "HATA" << endl;
+
+                cout << "PARİA AKIŞINA KATILINAMADI. İSİMLE BİR HAT BULUNAMADI" << endl << endl;
+
+                cin >> inp2;
+
+                cout << endl;
+
+                continue;
+            }
+            else
+            {
+                cout << "OK" << endl << endl;
+            }
+
+            cout << "PARİA Akışı Belleğe Eşleniyor...";
+
+            char *pariaBellegi = (char*)MapViewOfFile(pariaHandle, FILE_MAP_ALL_ACCESS, 0, 0, 129);
+
+            cout << "OK" << endl << endl;
+
+            cout << "PARİA Akışına Katılınıldı..." << endl << endl;
+
+            string inp3; // Girdiler için
+
+            while (1) // Sonsuz döngü olsun ki mesaj akışı gerçekleşsin
+            {
+                cout << "1: Mesaj Al" << endl;
+                cout << "2: Mesaj Yaz" << endl;
+                cout << "0: PARİA Akışından Çık ve Sil" << endl;
+                cout << "-->"; // Seçimli menü ekranı
+
+                cin >> inp1; // Bellek tasarufu için inp1'i kullan
+
+                if (inp1 == 1) // Mesaj yaz denirse
+                {   
+                    if (!strcmp(pariaBellegi, "")) // Strcmp, iki char dizisi ifadeyi karşılaştırır. Aynı ise 0, değil ise 1 değer döndürür
+                    { // Mesaj yoksa
+                        cout << endl  << "Bir mesaj bulunamamıştır..." << endl << endl;
+                    }
+                    else // Mesaj varsa
+                    {
+                        cout << endl << "Mesaj; " << pariaBellegi << endl << endl; // Mesajı yaz
+
+                        memset(pariaBellegi, 0, 129); // Mesaj kısmını sıfırla. Memset C dilinde bir bellek alanının belirtilen alan kadar sıfırlanmasını sağlar
+                        // pariaBellegi; Bellek alanı
+                        // 0; Sıfırlanması için üstüne yazılacak olan karakterin ASCII kodu
+                        // 129; Sıfırlanacak alan
+                    }
+                }
+                else if (inp1 == 2) // Mesaj yazmak istenirse
+                {
+                    cout << endl << "Mesaj: ";
+
+                    cin >> inp3;
+
+                    snprintf(pariaBellegi, 128, "%s", inp3.c_str()); // Snprintf, C dilinde Char dizelerine formatlı bir şekilde char dizesi yazdırmamızı sağlar
+                    // pariaBellegi; Yazılacak char dizesi
+                    // 128; Boyutu
+                    // "%s"; Format
+                    // inp2.c_str(); Formatın içerisinde olucak olan değer
+
+                    cout << "Mesaj yazıldı..." << endl << endl;
+                }
+                else if (inp1 == 0) // Çıkmak isterse
+                {
+                    cout << "Çıkılıyor...";
+
+                    UnmapViewOfFile(pariaBellegi); // POSIX'deki unmmap fonksiyonuna tekabul gelir
+                    CloseHandle(pariaHandle);
+
+                    cout << "OK" << endl;
+                    
+                    cin >> inp2;
+
+                    cout << endl;
+
+                    break;
+                }
+                else
+                {
+                    cout << "Geçersiz Bir Seçim Girdiniz!" << endl << endl;
+                }
+                
+            }
+        }
+        else if (inp1 == 0) // Çıkmak istenirse
+        {
+            break; // Döngüyü kır
+        }
+        else
+        {
+            cout << "Geçersiz Bir Seçim Girdiniz!" << endl << endl;
+        }
+    }
+
+    return 0;
+}</code>
+
+Kodlar bu kadar şimdi derliyelim
+
+<code class="language-cmd">g++ main.cpp -o paria1 # Paria1
+g++ main.cpp -o paria2 # Paria2</code>
+
+Şimdi videolu olarak inceleyelim;
+</pre>
+
+        <div id="divh3Vid">
+            <video width="100%" controls src="../Bibliography/16 Cpp Bellek Yönetimi.html/10.mp4" type="video/mp4"></video>
+        </div>
+
         <h2>Kaynakça</h2>
         <ul>
             <li><a href="https://www.geeksforgeeks.org/cpp/new-and-delete-operators-in-cpp-for-dynamic-memory/">https://www.geeksforgeeks.org/cpp/new-and-delete-operators-in-cpp-for-dynamic-memory/</a></li>
@@ -370,6 +908,11 @@ int main()
             <li><a href="https://stackoverflow.com/questions/72161324/replacing-new-with-smart-pointers-in-this-example">https://stackoverflow.com/questions/72161324/replacing-new-with-smart-pointers-in-this-example</a></li>
             <li><a href="https://www.geeksforgeeks.org/cpp/placement-new-operator-cpp/">https://www.geeksforgeeks.org/cpp/placement-new-operator-cpp/</a></li>
             <li><a href="https://stackoverflow.com/questions/6783993/placement-new-and-delete">https://stackoverflow.com/questions/6783993/placement-new-and-delete</a></li>
+            <li><a href="https://www.geeksforgeeks.org/cpp/dangling-pointers-in-cpp/">https://www.geeksforgeeks.org/cpp/dangling-pointers-in-cpp/</a></li>
+            <li><a href="https://en.wikipedia.org/wiki/POSIX">https://en.wikipedia.org/wiki/POSIX</a></li>
+            <li><a href="https://www.geeksforgeeks.org/cpp/input-in-cpp/">https://www.geeksforgeeks.org/cpp/input-in-cpp/</a></li>
+            <li><a href="https://www.man7.org/linux/man-pages/man3/shm_open.3.html">https://www.man7.org/linux/man-pages/man3/shm_open.3.html</a></li>
+            <li><a href="https://stackoverflow.com/questions/19849400/how-to-createfilemapping-in-c">https://stackoverflow.com/questions/19849400/how-to-createfilemapping-in-c</a></li>
         </ul>
     </div>
 
@@ -380,7 +923,7 @@ int main()
             <a href="./15 Cpp STL.html" style="margin-right: 20px; cursor:pointer;">
                 &larr; Önceki
             </a>
-            <a href="" style="cursor:pointer;">
+            <a href="./17 Cpp Dinamik Liste Yapımı.html" style="cursor:pointer;">
                 Sonraki &rarr;
             </a>
         </div>
