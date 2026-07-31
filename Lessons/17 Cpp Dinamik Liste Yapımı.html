@@ -20,12 +20,355 @@
     <link rel="stylesheet" href="../Sources/CSS/main.css">
 </head>
 <body>
-    <h1>Example Main Title</h1>
+    <h1>Dinamik Liste Yapımı</h1>
 
     <div style="height: 100px;"></div>
     
     <div id="mainDiv">
-       
+        <h2>Dinamik Listeler Nedir?</h2>
+        <pre id="preh2">Dinamik listeler, boyutu içeriğine göre uzayıp kısalabilen yapılardır. Yani ne kadar içine içerik varsa o kadarda boyutları büyük olurlar. Aynı zamanda içlerindeki içeriğe erişim sağlarlar.</pre>
+
+        <pre id="preh2">Peki diğer Array veya dizilerden farkı nedir? Adındanda anlaşılcağı üzere dinamik yani ortama göre değişkenlik gösterme becerileridir. Siz bir sayı dizisi tanımladığınızda RAM'de belirtilen alan kadar sabit bir bellek alırsınız. On verilik bir alan ise siz o dizise on adet veri yazabilirsiniz. Fazlası ise Buffer Overflow ile sonuçlanır. Fakat dinamik listeler ise sabit bir alana sahip olmayan ve ortama göre büyüp küçülebilen yapılardır.</pre>
+
+        <pre id="pre2">C++ programlama dili C'den farklı olarak STL kütüphanesi ile dinamik liste ihtiyacını karşılar. Fakat şuan öğrenceklerimiz ise STL kütüphanesinin kapsayıcı elemanlarının temel yapı taşıdır. Biz görmesekte STL kapsayıcıların arka planında birazdan görüceğimiz yapılar bulunur. Pek tabi C'de bırakın STL'i hazır kütüphane bulunmadığından, C'de bu işlemler sık kullanılırdı. C'de C++'ın atası olduğundan öğrenmekte fayda vardır elbet.</pre>
+
+        <h2>Linked List</h2>
+        <pre id="preh2">Linked List veya bağlantılı liste, kendilerinden sonraki veya önceki elemanların bellek adreslerinin kendi içlerinde tutan ve dilendiği zamanlarda geçiş yapılabilen belkide en ilkel dinamik liste yapısıdır. Üç adet türü vardır.</pre>
+
+        <h3>Tek Yönlü</h3>
+        <pre id="preh3">Tek yönlü bağlantılı liste, içinde kendisinden sonraki elemanın bellek adresini barından bir yapı sunar.</pre>
+
+        <pre id="preh3">Bu bağlantılı liste türündeki elemanlar bir sonrakinin bellek adresine tutuyor demiştik. Peki en sondaki neyi tutuyor? Bir elemanı tutamacağı için <code>nullptr</code> tutar. Böylelikle listenin sonuna geldiğimizi anlarız. Daha iyi anlaşılması için bir görsel örnek gösterelim;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/17 Cpp Dinamik Liste Yapımı.html/1.svg" alt="17.1" width="100%">
+        </div>
+
+        <pre id="codeh3">Gelin bir ekmek sırası programı yapalım. Şaka bir yana ekmek sıraları bir nevi tek yönlü bağlantılı liste gibi çalışır. Ekmek almak için bir önünüzde kişininde ekmek alması yani sıradan çıkması gerekir ki sıranız gelsin. Hadi fırın açalım!
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+class kisi
+{
+    private:
+        int alinicakEkmekSayisi = 0; // Tek yönlü bağlantılı listedeki elemanın içindeki veri
+
+        kisi* sonrakiKisi; // Bir sonraki elemanın bellek adresini tutacak olan değişken
+
+    public:
+        string kisiIsmi = ""; // Birde isim bilgisi yer alsın
+
+        int kacEkmekAlincak() // İçindeki veriyi almak için
+        {
+            return alinicakEkmekSayisi;
+        }
+        void ekmekAlincaSayisiAyarla(int sayi) // İçeriği ayarlama
+        {
+            alinicakEkmekSayisi = sayi;
+        }
+
+        kisi* sonrakineGec() // Sonraki elemana geçmek için
+        {
+            return sonrakiKisi;
+        }
+        void sonrakiniAyarla(kisi* snrkks) // Sonraki elemanı ayarlamak için
+        {
+            sonrakiKisi = snrkks;
+        }
+
+        kisi(string isim) // Yapıcı olarak da isimle yapıcı olsun
+        {
+            kisiIsmi = isim;
+        }
+};
+
+int main()
+{
+    // Şimdi kişileri oluşturalım. 5 adet
+    kisi ahmet("Ahmet");
+    ahmet.ekmekAlincaSayisiAyarla(3);
+    kisi mehmet("Mehmet");
+    mehmet.ekmekAlincaSayisiAyarla(5);
+    kisi ayse("Ayse");
+    ayse.ekmekAlincaSayisiAyarla(8);
+    kisi fatma("Fatma");
+    fatma.ekmekAlincaSayisiAyarla(1);
+    kisi remzi("Rezmi");
+    remzi.ekmekAlincaSayisiAyarla(6);
+
+    // İçerikleni ayarladık şimdi birbirlerine bağlıyalım. Sırası; ahmet -> mehmet -> ayse -> fatma -> remzi
+    ahmet.sonrakiniAyarla(&mehmet);
+    mehmet.sonrakiniAyarla(&ayse);
+    ayse.sonrakiniAyarla(&fatma);
+    fatma.sonrakiniAyarla(&remzi);
+    remzi.sonrakiniAyarla(nullptr);
+    // Liste tamam. Şimdi içeriğini görüntüleyelim
+
+    kisi* genelSira = &ahmet; // Genel tüm insanları tutacak olan nesne. Ahmet'ten başlıyoruz
+
+    while (genelSira != nullptr) // genelSira nullptr olmadığı süreççe
+    {
+        cout << &genelSira->kisiIsmi << " adresinden " << genelSira->kisiIsmi << " su kadar ekmek alicak; " << genelSira->kacEkmekAlincak() << endl << endl; // İçeriğini bellek adresi ile görüntüleyelim
+
+        genelSira = genelSira->sonrakineGec(); // Sonraki veriye geçelim
+    }
+    
+    return 0;
+}</code>
+
+Çıktısı ise;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/17 Cpp Dinamik Liste Yapımı.html/2.png" alt="17.2" width="100%">
+        </div>
+
+        <pre id="preh3">Fark etti iseniz kendisine "Liste" desekte RAM bu yapıları bir liste değil bir nesne gibi görüyor ki bellek adreslerinin Pointer aritmetiğinde anlıyabiliriz bunu. Bu sebeble diziler gibi *(i + 1) gibi bir mantık bağlantılı listelerde pek işe yaramazdır.</pre>
+
+        <h3>Çift Yönlü</h3>
+        <pre id="preh3">Çift yönlü bağlantılı liste ise kendisinden önceki ve sonraki elemanın bellek adresini tutan, dilendiği vakitde elemanlar arasında geçiş yapmamızı sağlayan bir başka türdür.</pre>
+
+        <pre id="preh3">Tek yönlülerde olduğu gibi çift yönlülerde de son eleman <code>nullptr</code> değeri tutar. Peki çift yönlü bağlantılı listede ilk eleman önceki elemanı tutmak için neyi tutuyor? Tabiki oda <code>nullptr</code> tutuyor. Daha iyi anlaşılması için bir görsel sunalım;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/17 Cpp Dinamik Liste Yapımı.html/3.svg" alt="17.3" width="100%">
+        </div>
+
+        <pre id="codeh3">Şimdi gelin bir delilik edelim ve ekmek sıramızda sondan başa ve baştan sona şeklinde gidip gelelim;
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+class kisi
+{
+    private:
+        int alinicakEkmekSayisi = 0; // Çift yönlü bağlantılı listedeki elemanın içindeki veri
+
+        kisi* oncekiKisi; // Bir önceki elemanın bellek adresini tutacak olan değişken
+        kisi* sonrakiKisi; // Bir sonraki elemanın bellek adresini tutacak olan değişken
+
+    public:
+        string kisiIsmi = "";
+
+        int kacEkmekAlincak()
+        {
+            return alinicakEkmekSayisi;
+        }
+        void ekmekAlincaSayisiAyarla(int sayi)
+        {
+            alinicakEkmekSayisi = sayi;
+        }
+
+        kisi* sonrakineGec()
+        {
+            return sonrakiKisi;
+        }
+        void sonrakiniAyarla(kisi* snrkks)
+        {
+            sonrakiKisi = snrkks;
+        }
+        kisi* oncekineGec() // Önceki elemana geçmek için
+        {
+            return oncekiKisi;
+        }
+        void oncekiniAyarla(kisi* nckks) // Önceki elemanı ayarlamak için
+        {
+            oncekiKisi = nckks;
+        }
+
+        kisi(string isim)
+        {
+            kisiIsmi = isim;
+        }
+};
+
+int main()
+{
+    kisi ahmet("Ahmet");
+    ahmet.ekmekAlincaSayisiAyarla(3);
+    kisi mehmet("Mehmet");
+    mehmet.ekmekAlincaSayisiAyarla(5);
+    kisi ayse("Ayse");
+    ayse.ekmekAlincaSayisiAyarla(8);
+    kisi fatma("Fatma");
+    fatma.ekmekAlincaSayisiAyarla(1);
+    kisi remzi("Rezmi");
+    remzi.ekmekAlincaSayisiAyarla(6);
+
+    // İçerikleni ayarladık şimdi birbirlerine bağlıyalım. Sırası; ahmet <-> mehmet <-> ayse <-> fatma <-> remzi
+    ahmet.oncekiniAyarla(nullptr);
+    ahmet.sonrakiniAyarla(&mehmet);
+    mehmet.oncekiniAyarla(&ahmet);
+    mehmet.sonrakiniAyarla(&ayse);
+    ayse.oncekiniAyarla(&mehmet);
+    ayse.sonrakiniAyarla(&fatma);
+    fatma.oncekiniAyarla(&ayse);
+    fatma.sonrakiniAyarla(&remzi);
+    remzi.oncekiniAyarla(&fatma);
+    remzi.sonrakiniAyarla(nullptr);
+    // Liste tamam. Şimdi içeriğini görüntüleyelim
+
+    kisi* genelSira = &ahmet; // Genel tüm insanları tutacak olan nesne. Ahmet'ten başlıyoruz
+
+    while (genelSira != nullptr) // genelSira nullptr olmadığı süreççe
+    {
+        cout << &genelSira->kisiIsmi << " adresinden " << genelSira->kisiIsmi << " su kadar ekmek alicak; " << genelSira->kacEkmekAlincak() << endl << endl; // İçeriğini bellek adresi ile görüntüleyelim
+
+        genelSira = genelSira->sonrakineGec(); // Sonraki veriye geçelim
+    }
+
+    cout << "------------------------------------------------------" << endl << endl; // Ayırma çizgisi
+
+    // Şimdi tam tersi gidelim
+    genelSira = &remzi;
+
+    while (genelSira != nullptr) // genelSira nullptr olmadığı süreççe
+    {
+        cout << &genelSira->kisiIsmi << " adresinden " << genelSira->kisiIsmi << " su kadar ekmek alicak; " << genelSira->kacEkmekAlincak() << endl << endl; // İçeriğini bellek adresi ile görüntüleyelim
+
+        genelSira = genelSira->oncekineGec(); // Önceki veriye geçelim
+    }
+    
+    return 0;
+}</code>
+
+Çıktı;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/17 Cpp Dinamik Liste Yapımı.html/4.png" alt="17.4" width="100%">
+        </div>
+
+        <h3>Dairesel</h3>
+        <pre id="preh3">Dairel bağlantılı listelerde de çift yönlüye benzer bir yapıya sahiptir. Tek farkı en sondaki eleman en baştaki, en baştaki elemanda en sondaki elemanın bellek adresini tutar. Yani bir nevi daire gibi bir yapı oluşur. Görsel ile destekliyelim;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/17 Cpp Dinamik Liste Yapımı.html/5.svg" alt="17.5" width="100%">
+        </div>
+
+        <pre id="preh3">Ancak dikkat dairsel bağlantılı listelerde kısır döngü riski çok fazladır. Bu sebeble durdurma noktaları için ilk ve son elemanın bellek adreslerini tutan "Geçici değişkenler" tanımlayalım.</pre>
+
+        <pre id="codeh3">Şimdi hayal gücümüzü zorlayalım... Biz öyle iyi ekmek yapıyoruz ki götürenler doyamıyor ve bir gün içinde dört kez geliyor olsunlar. Garip bri şekilde iki kere düz iki kere de ters sıra halinde geliyor. Hadi bu similasyonu kodluyalım;
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+class kisi
+{
+    private:
+        int alinicakEkmekSayisi = 0; // Dairesel bağlantılı listedeki elemanın içindeki veri
+
+        kisi* oncekiKisi; // Bir önceki elemanın bellek adresini tutacak olan değişken
+        kisi* sonrakiKisi; // Bir sonraki elemanın bellek adresini tutacak olan değişken
+
+    public:
+        string kisiIsmi = "";
+
+        int kacEkmekAlincak()
+        {
+            return alinicakEkmekSayisi;
+        }
+        void ekmekAlincaSayisiAyarla(int sayi)
+        {
+            alinicakEkmekSayisi = sayi;
+        }
+
+        kisi* sonrakineGec()
+        {
+            return sonrakiKisi;
+        }
+        void sonrakiniAyarla(kisi* snrkks)
+        {
+            sonrakiKisi = snrkks;
+        }
+        kisi* oncekineGec()
+        {
+            return oncekiKisi;
+        }
+        void oncekiniAyarla(kisi* nckks)
+        {
+            oncekiKisi = nckks;
+        }
+
+        kisi(string isim)
+        {
+            kisiIsmi = isim;
+        }
+};
+
+int main()
+{
+    kisi ahmet("Ahmet");
+    ahmet.ekmekAlincaSayisiAyarla(3);
+    kisi mehmet("Mehmet");
+    mehmet.ekmekAlincaSayisiAyarla(5);
+    kisi ayse("Ayse");
+    ayse.ekmekAlincaSayisiAyarla(8);
+    kisi fatma("Fatma");
+    fatma.ekmekAlincaSayisiAyarla(1);
+    kisi remzi("Rezmi");
+    remzi.ekmekAlincaSayisiAyarla(6);
+
+    // İçerikleni ayarladık şimdi birbirlerine bağlıyalım.
+    // Sırası; ahmet <-> mehmet <-> ayse <-> fatma <-> remzi
+    //           î                                       î
+    //           |                                       |
+    //           L_______________________________________J
+    ahmet.oncekiniAyarla(&remzi);
+    ahmet.sonrakiniAyarla(&mehmet);
+    mehmet.oncekiniAyarla(&ahmet);
+    mehmet.sonrakiniAyarla(&ayse);
+    ayse.oncekiniAyarla(&mehmet);
+    ayse.sonrakiniAyarla(&fatma);
+    fatma.oncekiniAyarla(&ayse);
+    fatma.sonrakiniAyarla(&remzi);
+    remzi.oncekiniAyarla(&fatma);
+    remzi.sonrakiniAyarla(&ahmet);
+    // Liste tamam. Şimdi içeriğini görüntüleyelim
+
+    kisi* genelSira = &ahmet; // Genel tüm insanları tutacak olan nesne. Ahmet'ten başlıyoruz
+
+    for (int i = 0; i < 10; i++) // For ile yapalım ki kısır döngü yaşamayalım
+    {
+        cout << &genelSira->kisiIsmi << " adresinden " << genelSira->kisiIsmi << " su kadar ekmek alicak; " << genelSira->kacEkmekAlincak() << endl << endl; // İçeriğini bellek adresi ile görüntüleyelim
+
+        genelSira = genelSira->sonrakineGec(); // Sonraki veriye geçelim
+    }
+    
+
+    cout << "------------------------------------------------------" << endl << endl;
+
+    // Şimdi tam tersi gidelim
+    genelSira = &remzi;
+
+    for (int i = 0; i < 10; i++)
+    {
+        cout << &genelSira->kisiIsmi << " adresinden " << genelSira->kisiIsmi << " su kadar ekmek alicak; " << genelSira->kacEkmekAlincak() << endl << endl; // İçeriğini bellek adresi ile görüntüleyelim
+
+        genelSira = genelSira->oncekineGec(); // Önceki veriye geçelim
+    }
+    
+    return 0;
+}</code>
+
+Çıktısı;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/17 Cpp Dinamik Liste Yapımı.html/6.png" alt="17.6" width="100%">
+        </div>
+
+        <h2>Stack</h2>
+        <pre id="codeh2">Stack, LIFO mantığı ile çalışan bir dinamik listedir ki sıkça bahsettik bu konudan. Bu sebeble direkt kodu verceğim;
+
+<code class="language-cpp"></code>
+</pre>
+
+        <h2>Kaynakça</h2>
+        <ul>
+            <li><a href="https://data35delete.github.io/Data-s-Book-on-C/Lessons/14%20C%20Dinamik%20Liste%20Yapımı.html">Data's Book on C - Dinamik Liste Yapımı</a></li>
+        </ul>
     </div>
 
     <div style="height: 100px;"></div>
