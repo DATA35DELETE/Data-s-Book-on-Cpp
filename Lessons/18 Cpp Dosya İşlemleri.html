@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data's Book on Cpp</title>
+
+    <link rel="icon" type="image/x-icon" href="../Sources/favicon.png">
+
+    <script src="../Sources/JS/setBackgroundMedia.js"></script>
+
+    <link rel="stylesheet" href="../Sources/JS/hljs/vs2015.css">
+    <script src="../Sources/JS/hljs/highlight.min.js"></script>
+    <script>
+        window.onload = function() {
+            hljs.highlightAll();
+        };
+    </script>
+
+    <link rel="stylesheet" href="../Sources/CSS/main.css">
+</head>
+<body>
+    <h1>Dosya İşlemleri</h1>
+
+    <div style="height: 100px;"></div>
+    
+    <div id="mainDiv">
+        <h2>Dosya İşlemleri</h2>
+        <pre id="preh2">Dosya işlemleri, dosya üzerinde yapılan değişikliklere denir.</pre>
+
+        <h2>Fstream Kütüphanesi</h2>
+        <pre id="preh2">Fstream kütüphanesi, C++ programlama dilinde dosya işlemleri için kullanılan bir kütüphanedir.</pre>
+
+        <h3>İfstream</h3>
+        <pre id="preh3">İfstream, fstream kütüphanesi altında dosyalardan veri okumak için kullanılan bir sınıftır.</pre>
+
+        <pre id="codeh3">Tahmin edebiliyorum ki bu dökümantasyonu okuyanları C programlama dili ile ilgili olan Data's Book on C dökümantasyonumu okumamıştır. Ama okuyanlar için bu komutlar bir yerlerden tanıdık gelicektir... Hadi "main.c" dosyasını ifstream ile okuyalım;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;fstream> // Kütüphanemiz
+
+using namespace std;
+
+int main()
+{
+    ifstream dosya1("main.c"); // Dosya okuma nesnemiz
+    string satir; // Okumada kullanılan satir değişkeni
+
+    while (getline(dosya1, satir)) // Getline, verilen dosya nesnedeki her bir satırı sırayla 2. parametredeki string ifadesine atar
+    {
+        cout << satir << endl; // Alınan satırları yazdırma
+    }
+    
+    dosya1.close(); // Serbest bırakma. Bellek yönetimi için gereklidir
+
+    return 0;
+}</code>
+
+Çıktısı ise;</pre>
+
+        <div id="divh3Img">
+        </div>
+    </div>
+
+    <div style="height: 100px;"></div>
+
+    <footer style="position: fixed; left: 0; bottom: 0; width: 100%; background: transparent; text-align: center; padding: 10px 0; z-index: 100;">
+        <div>
+            <a href="./17 Cpp Dinamik Liste Yapımı.html" style="margin-right: 20px; cursor:pointer;">
+                &larr; Önceki
+            </a>
+            <a href="" style="cursor:pointer;">
+                Sonraki &rarr;
+            </a>
+        </div>
+        <div>
+            <p>&copy; 2026 Data's Book</p>
+        </div>
+
+        <div style="position: absolute; right: 20px; bottom: 20px;">
+            <a href="./1 Cpp İçindekiler.html" style="text-decoration: none;">
+                İçindekiler
+            </a>
+        </div>
+    </footer>
+</body>
+</html>
+
+<!-- Muhammet Enes nam-ı diğer Data Delete tarafından sevgi ile yapıldı <3 -->
