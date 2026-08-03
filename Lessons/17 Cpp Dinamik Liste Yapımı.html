@@ -360,14 +360,269 @@ int main()
         </div>
 
         <h2>Stack</h2>
-        <pre id="codeh2">Stack, LIFO mantığı ile çalışan bir dinamik listedir ki sıkça bahsettik bu konudan. Bu sebeble direkt kodu verceğim;
+        <pre id="codeh2">Stack, LIFO mantığı ile çalışan bir dinamik listedir ki sıkça bahsettik bu konudan. Bu sebeble direkt kodu verceğim;</pre>
 
-<code class="language-cpp"></code>
-</pre>
+        <pre id="preh2">Hadi ekmek sıramız Stack ile yeniden şekillensin;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;vector>
+#include &lt;tuple>
+
+using namespace std;
+
+class stackEkmekSirasi
+{
+    private:
+        vector&lt;tuple&lt;string,int>> veriler; // Hadi biraz STL nimetlerinden faydalanalım. Ayrıca evet STL kapsayıcıların içeriğini başka kapsayıcılarla doldurabiliyoruz
+        // string; Müşteri ismi
+        // int; Alıcağı ekmek miktarı
+
+        int enUstdekiEleman; // Bu değişken ise Stack'deki Top yani en üstdeki elemanın Index numarası görevi görür
+
+    public:
+        stackEkmekSirasi() // Yapıcısı
+        {
+            enUstdekiEleman = -1; // -1 yaptık çünkü ilk oluşturulduğunda herhangi bir eleman olmucaktır. 0 değil çünkü 0'da bir Index karşılığı vardır
+        }
+
+        void ekle(tuple&lt;string, int> kisi) // Veri ekleme
+        {
+            veriler.emplace_back(kisi); // En arka kısma ekle
+
+            enUstdekiEleman++; // En üstdeki elemanın Index'sini tutacak olan değişkenide 1 arttır
+        }
+
+        tuple&lt;string, int> ustdekiVeriyiGetir() // En üstdeki veriyi getirme
+        {
+            if (enUstdekiEleman != -1) // Eğer Stack boş değil ise
+                return veriler.at(enUstdekiEleman); // En üstdeki elemanı getir
+            else
+                return {"", -1}; // Boş ise boş bir Tuple değeri gönder
+        }
+
+        void sil()
+        {
+            veriler.pop_back(); // En arkadaki veriyi sil
+
+            enUstdekiEleman--; // Üstdeki elemanın Index numarasını tutan değişkeni 1 eksilt. -- operatörü değişkenlerde 1 değer kadar eksiltir
+        }
+};
+
+int main()
+{
+    stackEkmekSirasi genelSira; // Nesnemiz
+    genelSira.ekle({"Ahmet", 3});
+    genelSira.ekle({"Mehmet", 5});
+    genelSira.ekle({"Ayse", 8});
+    genelSira.ekle({"Fatma", 1});
+    genelSira.ekle({"Remzi", 6});
+
+    // Liste Stack olduğu ve sınıf içerisinde sıra işi otomatik ayarlandığı için sıralamaya gerek yoktur
+
+    while (get&lt;1>(genelSira.ustdekiVeriyiGetir()) != -1) // Üstdeki veri boş değil ise
+    {
+        cout << get&lt;0>(genelSira.ustdekiVeriyiGetir()) << " adli kisi su kadar ekmek almak istiyor; " << get&lt;1>(genelSira.ustdekiVeriyiGetir()) << endl << endl; // Veriyi yazdır
+
+        genelSira.sil(); // En üstdeki veriyi sil
+    }
+    
+    return 0;
+}</code>
+
+Çıktısı ise;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/17 Cpp Dinamik Liste Yapımı.html/7.png" alt="17.7" width="100%">
+        </div>
+
+        <pre id="preh2">Görüceğiniz gibi LIFO mantığı ile veriler yazılmıştır.</pre>
+
+        <h2>Queue</h2>
+        <pre id="codeh2">Hadi Stack olan yapımızı Queue'e çevirelim;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;vector>
+#include &lt;tuple>
+
+using namespace std;
+
+class queueEkmekSirasi
+{
+    private:
+        vector&lt;tuple&lt;string,int>> veriler;
+
+        int sondakiEleman;
+        int ondekiEleman;
+
+    public:
+        queueEkmekSirasi() // Yapıcısı
+        {
+            ondekiEleman = -1; // Elemanları ayarlıyoruz
+            sondakiEleman = 0;
+        }
+
+        void ekle(tuple&lt;string, int> kisi) // Veri ekleme
+        {
+            veriler.emplace(veriler.begin().operator+(sondakiEleman), kisi);
+
+            sondakiEleman++;
+        }
+
+        tuple&lt;string, int> ustdekiVeriyiGetir() // Veriyi getirme
+        {
+            if (ondekiEleman != sondakiEleman - 1) // Eğer boş değil ise
+                return veriler.at(ondekiEleman + 1); // En öndeki elemanı getir
+            else
+                return {"", -1}; // Boş ise boş bir Tuple değeri gönder
+        }
+
+        void sil() // Silme işlemi
+        {
+            veriler[ondekiEleman + 1] = {"", -1};
+
+            ondekiEleman++;
+        }
+};
+
+int main()
+{
+    queueEkmekSirasi genelSira;
+    genelSira.ekle({"Ahmet", 3});
+    genelSira.ekle({"Mehmet", 5});
+    genelSira.ekle({"Ayse", 8});
+    genelSira.ekle({"Fatma", 1});
+    genelSira.ekle({"Remzi", 6});
+
+    while (get&lt;1>(genelSira.ustdekiVeriyiGetir()) != -1)
+    {
+        cout << get&lt;0>(genelSira.ustdekiVeriyiGetir()) << " adli kisi su kadar ekmek almak istiyor; " << get&lt;1>(genelSira.ustdekiVeriyiGetir()) << endl << endl;
+
+        genelSira.sil();
+    }
+    
+    return 0;
+}</code>
+
+FIFO'a göre çıktısı;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/17 Cpp Dinamik Liste Yapımı.html/8.png" alt="17.8" width="100%">
+        </div>
+
+        <h2>Generic Liste</h2>
+        <pre id="preh2">Generic veya genel liste, tür bağımsız bir şekilde tanımlanabilen ve kullanılabilen listelere denir.</pre>
+
+        <pre id="codeh2">Son bir çılgınlık yapalım ve ilk örneğimize Generic özelliğini kazandıralım. İlk olarak normal örneği yapalım daha sonra tam tersi olarak verileri yazdıralım. Ters dediğim ise sayıların insan isimleri ekmekleri istediği bir evren!
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+template&lt;typename t1, typename t2>
+class kisi
+{
+    private:
+        t1 alinicakEkmekSayisi;
+
+        kisi* sonrakiKisi;
+
+    public:
+    
+        t2 kisiIsmi;
+
+        t1 kacEkmekAlincak()
+        {
+            return alinicakEkmekSayisi;
+        }
+        void ekmekAlincaSayisiAyarla(t1 sayi)
+        {
+            alinicakEkmekSayisi = sayi;
+        }
+
+        kisi* sonrakineGec()
+        {
+            return sonrakiKisi;
+        }
+        void sonrakiniAyarla(kisi* snrkks)
+        {
+            sonrakiKisi = snrkks;
+        }
+
+        kisi(t2 isim)
+        {   
+            kisiIsmi = isim;
+        }
+};
+
+int main()
+{
+    kisi&lt;int, string> ahmet("Ahmet");
+    ahmet.ekmekAlincaSayisiAyarla(3);
+    kisi&lt;int, string> mehmet("Mehmet");
+    mehmet.ekmekAlincaSayisiAyarla(5);
+    kisi&lt;int, string> ayse("Ayse");
+    ayse.ekmekAlincaSayisiAyarla(8);
+    kisi&lt;int, string> fatma("Fatma");
+    fatma.ekmekAlincaSayisiAyarla(1);
+    kisi&lt;int, string> remzi("Rezmi");
+    remzi.ekmekAlincaSayisiAyarla(6);
+
+    ahmet.sonrakiniAyarla(&mehmet);
+    mehmet.sonrakiniAyarla(&ayse);
+    ayse.sonrakiniAyarla(&fatma);
+    fatma.sonrakiniAyarla(&remzi);
+    remzi.sonrakiniAyarla(nullptr);
+
+    kisi&lt;int, string>* genelSira = &ahmet;
+
+    while (genelSira != nullptr)
+    {
+        cout << &genelSira->kisiIsmi << " adresinden " << genelSira->kisiIsmi << " su kadar ekmek alicak; " << genelSira->kacEkmekAlincak() << endl << endl;
+
+        genelSira = genelSira->sonrakineGec();
+    }
+    
+    cout << "------------------------------------------------------" << endl << endl;
+
+    kisi&lt;string, int> ahmet2(3);
+    ahmet2.ekmekAlincaSayisiAyarla("Ahmet");
+    kisi&lt;string, int> mehmet2(5);
+    mehmet2.ekmekAlincaSayisiAyarla("Mehmet");
+    kisi&lt;string, int> ayse2(8);
+    ayse2.ekmekAlincaSayisiAyarla("Ayse");
+    kisi&lt;string, int> fatma2(1);
+    fatma2.ekmekAlincaSayisiAyarla("Fatma");
+    kisi&lt;string, int> remzi2(6);
+    remzi2.ekmekAlincaSayisiAyarla("Remzi");
+
+    ahmet2.sonrakiniAyarla(&mehmet2);
+    mehmet2.sonrakiniAyarla(&ayse2);
+    ayse2.sonrakiniAyarla(&fatma2);
+    fatma2.sonrakiniAyarla(&remzi2);
+    remzi2.sonrakiniAyarla(nullptr);
+
+    kisi&lt;string, int>* genelSira2 = &ahmet2;
+
+    while (genelSira2 != nullptr)
+    {
+        cout << &genelSira2->kisiIsmi << " adresinden " << genelSira2->kisiIsmi << " su kadar ekmek alicak; " << genelSira2->kacEkmekAlincak() << endl << endl;
+
+        genelSira2 = genelSira2->sonrakineGec();
+    }
+
+    return 0;
+}</code>
+
+Çıktısı ise;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/17 Cpp Dinamik Liste Yapımı.html/9.png" alt="17.9" width="100%">
+        </div>
 
         <h2>Kaynakça</h2>
         <ul>
             <li><a href="https://data35delete.github.io/Data-s-Book-on-C/Lessons/14%20C%20Dinamik%20Liste%20Yapımı.html">Data's Book on C - Dinamik Liste Yapımı</a></li>
+            <li><a href="https://data35delete.github.io/Data-s-Book-on-Cpp/Lessons/15%20Cpp%20STL.html">Data's Book on Cpp - STL</a></li>
         </ul>
     </div>
 
