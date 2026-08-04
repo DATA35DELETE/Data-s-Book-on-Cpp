@@ -25,16 +25,34 @@
     <div style="height: 100px;"></div>
     
     <div id="mainDiv">
-        <h2>Dosya İşlemleri</h2>
-        <pre id="preh2">Dosya işlemleri, dosya üzerinde yapılan değişikliklere denir.</pre>
+        <h2>Dosya İşlemleri Nedir?</h2>
+        <pre id="preh2">Dosya işlemleri, dosyalar üzerinde yapılan işlemlere; Oluşturma, değiştirme veya kaldırmaya eylemlerine denir.</pre>
+
+        <pre id="preh2">Peki neden dosya işlemlerine ihtiyaç duyarız? Bunun sebebi kalıcı veri ihtiyacıdır. Biz bu zamanda kadar hep RAM üzerinde verilerimizi depoladık. Yeri geldi program tarafından verilen alanı kullandık yeri geldi kod blokların verilerimizi silmesine karşın kendi alanlarımızı ayırdık. Fakat bu işlemler hep geçicidir. Evet RAM çok hızlı ama bir kadarda geçicidir. İşte dosya işlemleri ve SSD/HDD bu kısımda yardımıza koşarlar! Dosya işlemleri SSD/HDD üzerinde kalıcı veri saklamamızı sağlar. RAM bildiğiniz gibi bilgisayar kapandığı an RAM'in içi boşalır. Yani tüm alanlar RAM'e ait olur. RAM'i burada cimri bir arkadaş gibi düşünebilirsiniz. Ödünç aldığınız eşyaları işinizi bitirir bitirmez hemen elinizden alırlar. RAM'de işte bu arkadaş gibidir. Tüm sistem kapandığı an alanların hepsi RAM'e ait olur. Ama SSD/HDD öyle değildir. Dosya işlemleri sayesinde SSD/HDD üzerinde kendi özel kalıcı alanlarımızı oluşturabilir ve işlemlerimizi gerçekleştirebiliriz. Genelde de oyunlar oyuncuların ayarlarını kaydetmek için dosyalar kullanılırlar çünkü dosyalar teorik olarak bilgisayar kapanıp on bin yılın ardından açılsa bile silinmez veya zarar görmezler.</pre>
 
         <h2>Fstream Kütüphanesi</h2>
-        <pre id="preh2">Fstream kütüphanesi, C++ programlama dilinde dosya işlemleri için kullanılan bir kütüphanedir.</pre>
+        <pre id="preh2">Fstream kütüphanesi C++ programlama dilinin dosya işlemleri için yazılmış kütüphanesidir. üç adet dosya işlemleri için sınıfı vardır: Ifstream, Ofstream ve Fstream'dir.</pre>
 
-        <h3>İfstream</h3>
-        <pre id="preh3">İfstream, fstream kütüphanesi altında dosyalardan veri okumak için kullanılan bir sınıftır.</pre>
+        <h3>Ifstream Sınıfı</h3>
+        <pre id="preh3">Ifstream, Fstream kütüphanesindeki dosyaları okumak için kullanılan bir sınıftır.</pre>
 
-        <pre id="codeh3">Tahmin edebiliyorum ki bu dökümantasyonu okuyanları C programlama dili ile ilgili olan Data's Book on C dökümantasyonumu okumamıştır. Ama okuyanlar için bu komutlar bir yerlerden tanıdık gelicektir... Hadi "main.c" dosyasını ifstream ile okuyalım;
+        <pre id="codeh3">Hadi gelin bir örnek yapalım. Tahim edebiliyorum ki bu dökümantasyonun öncesi olan <a href="https://data35delete.github.io/Data-s-Book-on-C/">Data's Book on C</a> dökümantasyonumu okuyanlar pek yoktur. Ama okuyanlar için bu kodlar bir yerlerden tanıdık gelicektir;
+        
+İlk olarak okuyacağımız olan dosyayı hem kendimiz oluşturmalı hemde içini doldurmalıyız. İlerleyen satırlarda bunun programama yaptırtacağız. Fakat önce biz
+
+main.txt adlı bir dosya oluşturalım ve içerisine;
+
+<code class="language-c">#include &lt;stdio.h>
+
+int main(){
+    FILE* file = fopen("dosyaIsmi.dosyaUzantisi", "w"); // Klasörde bulunmayan bir dosya oluşturuyoruz. w, dosya yoksa oluşturma yeteneğine sahiptir
+
+    fclose(file); // Bellek yönetimi için gereklidir
+
+    return 0;
+}</code>
+
+Ardından main.cpp kod dosyamızı bu kodlar ile dolduralım;
 
 <code class="language-cpp">#include &lt;iostream>
 #include &lt;fstream> // Kütüphanemiz
@@ -43,7 +61,7 @@ using namespace std;
 
 int main()
 {
-    ifstream dosya1("main.c"); // Dosya okuma nesnemiz
+    ifstream dosya1("main.txt"); // Dosya okuma nesnemiz
     string satir; // Okumada kullanılan satir değişkeni
 
     while (getline(dosya1, satir)) // Getline, verilen dosya nesnedeki her bir satırı sırayla 2. parametredeki string ifadesine atar
@@ -56,10 +74,278 @@ int main()
     return 0;
 }</code>
 
+Aynı dinamik bellek açarken gibi dosya işlemlerinde de işimiz bittiğinde .close() ile dosyayı serbest bırakırız.
+
 Çıktısı ise;</pre>
 
         <div id="divh3Img">
+            <img src="../Bibliography/18 Cpp Dosya İşlemleri.html/1.png" alt="18.1" width="100%">
         </div>
+
+        <h3>Ofstream</h3>
+        <pre id="preh3">Ofstream, C++ programlama dilindeki Fstream kütüphanesindeki yazma işlemleri için kullanılan bir sınıftır.</pre>
+
+        <pre id="codeh3">Şimdi Ifstream ve Ofstream'in başka bir farkı ise Ofstream olmayan bir dosyayı oluşturabiliyor olmasıdır. Bu özellik ile bir örnek daha yapalım. Bir önceki örnekte bir dosyayın içerisindeki veriyi konsola yazdırmıştık. Bu sefer o dosyadaki verileri ilk olarak ekrana daha sonra bir dosyaya son olarak da o dosyadaki verileri ekrana yazdıralım;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;fstream>
+
+using namespace std;
+
+int main()
+{
+    ofstream yazma("main.c"); // Yazılıcak dolayısıyla yazılıcak olan dosya
+
+    ifstream okuma("main.txt"); // Okunucak dosya
+    string satir; // Satır için string değişken
+
+    cout << "main.txt dosyasinin icerigi;" << endl;
+    while (getline(okuma, satir))
+    {
+        yazma << satir << endl; // Tıpkı Cout gibi kaydırma işlemi ile dosyalar yazılabilir
+        cout << satir << endl; // Aynı zamanda konsola yazdırma
+    }
+    cout << endl;
+
+    okuma.close(); // Okuma nesnemizi serbest bıraktık
+    yazma.close(); // Yazma nesnemizi serbest bıraktık
+
+    okuma = ifstream("main.c"); // Aynı okuma nesnemize başka bir dosya okuması için görev verdik. Bellek yönetimi için sıkça kullanılır
+
+    cout << "main.c dosyasinin icerigi;" << endl;
+    while (getline(okuma, satir))
+    {
+        cout << satir << endl;
+    }
+    
+    okuma.close(); // Tekrardan serbest bıraktık
+
+    return 0;
+}</code>
+
+Çıktısı;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/18 Cpp Dosya İşlemleri.html/2.png" alt="18.2" width="100%">
+        </div>
+    
+        <h3>Fstream</h3>
+        <pre id="preh3">Fstream, Fstream kütüphanesinin ana dosya işlemleri sınıfıdır.</pre>
+
+        <pre id="codeh3">Fstream, hem okuma hemde yazma yeteneklerine sahip bir dosya işlemleri nesnedir. Bu sebeble C++ yazılımcıları genelde Fstream kullanılırlar. Bu mod geçişini ise "mod" denilen ve bir nevi yetki verme parametreleri ile yapılır.
+
+Gelin bir önceki örneği Fstream ile yeniden yazalım;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;fstream>
+
+using namespace std;
+
+int main()
+{
+    fstream hedefDosya("main.c", ios::in | ios::out);
+
+    fstream kaynakDosya("main.txt", ios::in); // Kaynak dosyamız. Okuma modunda
+    string satir;
+
+    cout << "main.txt dosyanin icerigi;" << endl;
+    while (getline(kaynakDosya, satir))
+    {
+        cout << satir << endl;
+        hedefDosya << satir << endl;
+    }
+    cout << endl;
+
+    kaynakDosya.close(); // Kaynak dosya ile işimiz bitti
+    hedefDosya.seekg(0); // Dosya konumlandırma yapıyoruz ki okuma işleminde tüm dosyayı okuyalım
+
+    cout << "main.c dosyanin icerigi;" << endl;
+    while (getline(hedefDosya, satir))
+    {
+        cout << satir << endl;
+    }
+    cout << endl;
+
+    hedefDosya.close(); // Hedef dosyamızı serbest bıraktık
+}</code>
+Çıktı değişmicektir fakat yöntemimiz değiştirmiş olduk.</pre>
+
+        <h3>Dosya Modları</h3>
+        <pre id="preh3">Dosya modları kodlarken de gördüğümüz yetkilendirme elemanlarıdır. <code>ios</code> kütüphanesinde bulunur ve bit işlemlerimde kullandığımız uzun çizgi(|) ile modlar birleştirilir.</pre>
+
+        <pre id="preh3">Gelin tablo şeklinde inceleyelim;</pre>
+
+        <table id="tableh3" border="1">
+            <thead>
+                <tr>
+                    <th>İsim</th>
+                    <th>Açıklaması</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>ios::in</td>
+                    <td>Dosyadan veri alabilmemizi sağlar.</td>
+                </tr>
+                <tr>
+                    <td>ios::out</td>
+                    <td>Dosyadan veri yazabilmemizi sağlar. Eğer dosya yoksa oluşturur, mevcut ise üzerine yazar.</td>
+                </tr>
+                <tr>
+                    <td>ios::binary</td>
+                    <td>Dosyada ikili kod şeklinde işlem yapabilmemizi sağlar.</td>
+                </tr>
+                </tr>
+                    <td>ios::ate</td>
+                    <td>Dosya işlem konumu en sondan başlatır. Ekleme modu diye de geçmektedir.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Dosya İşlem Noktasını Konumlandırma</h3>
+        <pre id="preh3">Dosya işlem noktası, dosya nesnelerinde işlemlerin kaçıncı harfinde yapıldığını belirten bir konum bilgisidir. Her işlem sonucudan dosya işlem noktası yapılan işlem kadar harf karf kaydılır. Bu bilgiyi değiştirebilir veya alabiliriz.</pre>
+
+        <pre id="codeh3"><code class="language-cpp">dosyaNesnesi.seekg(int x); // x bayt kadar okuma işleminin dosya işlem noktasını konumlandırır
+dosyaNesnesi.seekp(int x); // x bayt kadar yazma işleminin dosya işlem noktasını konumlandırır
+dosyaNesnesi.seekg(0, ios::end); // Okuma işleminin dosya işlem noktasını, dosyanın en sonuna konumlandırır
+dosyaNesnesi.seekp(0, ios::end); // Yazma işleminin dosya işlem noktasını, dosyanın en sonuna konumlandırır
+
+unsigned long long okumaKonum = dosyaNesnesi.tellg(); // Yazma işleminin dosya işlem noktasının konumunu verir
+unsigned long long okumaKonum = dosyaNesnesi.tellp(); // Okuma işleminin dosya işlem noktasının konumunu verir</code></pre>
+
+        <pre id="preh3">Peki harf biz harf mi sayıcağız bu noktayı konumlandırmak için? Tabiki hayır! Harf dediğim şey aslında sekiz bitlik olan karakterler yani bayt bilgisidir. Atıyorum dosya işlem noktası yüzüncü harfte ise yüzüncü baytta olduğunu anlarız veya yüzüncü baytta olması için yüz bayt ileri atarız dosya işlem noktasını... Ayrıca Türkçe karakterlerinde içerisinde bulunuğu UTF-8 karakterleri iki bayt olarak sayılır.</pre>
+
+        <pre id="codeh3">Hadi gelin bir main.c dosyasını sadece yarısına kadar okuyalım!
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;fstream>
+
+using namespace std;
+
+int main()
+{
+    fstream mainDotC("main.c", ios::in | ios::out); // main.c dosyamız için nesmemiz
+
+    mainDotC.seekg(0, ios::end); // Seekg ile dosyadaki dosya işlem noktasını dosyanın en sonuna geitrdik
+
+    cout << "main.c dosyasinin toplam karakterlerin sayisi; " << mainDotC.tellg() << endl << endl; // Ardından tellg ile de dosyanın dosya işlem noktasının bilgisini aldık. Bu karakterlerin sayısı vericektir
+
+    mainDotC.seekg(mainDotC.tellg() / 2); // mevcut konumu ikiye bölerek dosyanın yarısına dosya işlem noktasını konumlandırdık
+
+    // Şimdi okuyabiliriz
+    string satir;
+    cout << "main.c dosyasinin yarisi;" << endl;
+    while (getline(mainDotC, satir))
+    {
+        cout << satir << endl;
+    }
+    
+    mainDotC.close();
+
+    return 0;
+}</code>
+
+Çıktı;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/18 Cpp Dosya İşlemleri.html/3.png" alt="18.3" width="100%">
+        </div>
+
+        <h2>İkili(Binary) İşlemleri</h2>
+        <pre id="preh2">İkili işlemler, dosya işlemlerinde en düşük seviyeli işlemlerdir. İkili işlemler yapılırken Binary dosyaları ".dat" uzantısı ile kayıt edilir.</pre>
+
+        <pre id="preh2">İkili işlemler farklı bir işlem yapalım. Şimdi biz işaretçiler sayesinde tüm nesnelerin kaynak kodlarına istersek erişebiliyoruz. Erişebiliyorsak bir dosyayada yazabiliriz demektir. O zaman bir sınıf oluşturalım ve o sınıftan oluşturulmuş nesnemizin kaynak kodunu bir .dat dosyasına yazalım. Daha sonra başka bir programda o dosyayı okuyalım ve içi boş olan başka bir nesneyi o veri ile dolduralım;
+
+yazici.cpp
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;fstream>
+
+using namespace std;
+
+class birSinif // Sınıfımız
+{
+    public:
+        char charDizisiVerisi[100] = "birSinif'in char dizisi degeri"; // String nesnesi gönderemeyiz çünkü bu sistem low-level olduğu için OOP desteklemez. İlkel veri yapılarını destekler
+        int s1 = 123;
+        float f1 = 33.5f;
+};
+
+int main()
+{
+    birSinif nesne; // Bir nesne oluşturalım
+
+    fstream birSinifKaynakDosyasi("birSinif.dat", ios::out | ios::binary); // İkili kaynak kod dosyamızın nesnesi
+    birSinifKaynakDosyasi.write((char*)&nesne, sizeof(birSinif)); // İkili olarak yazmamızı sağlayan fonksiyon
+    // (char*)&nesne; Bu kısımda aslında oluşturulan nesninin bellek adresini alıyoruz. Daha sonra write bizden bir char işaretçisi istediği için C tarzı dönüşterme ile bir nesnemizin kaynak kodunu bir char dizisiymiş gibi görür
+    // sizeof(birSinif); Yazdırılıcak olan verinin boyutu.
+
+    birSinifKaynakDosyasi.close(); // Dosyamızı serbest bıraktık
+}</code>
+
+Yazıcı bizim için sınıfın kaynak kodunu yazıcak.
+
+alici.cpp
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;fstream>
+
+#include &lt;string.h> // memset için gerekli
+
+using namespace std;
+
+class birSinif // Okunucak olan sınıfın içi doldurulmamış hali. Buna ihtiyaç vardır çünkü veriler iletilir ama hangi verinin kime ait olduğu yani işaretçi gönderilmez. Bu tarz yapılara "Gövdesiz yapı" denir
+{
+    public:
+        char charDizisiVerisi[100];
+        int s1;
+        float f1;
+};
+
+int main()
+{
+    birSinif *nesne = new birSinif(); // Bir nesne oluşturalım
+    memset(nesne, 0, sizeof(birSinif)); // Nesnenin içini boşaltıyoruz ki yazdırıcağımız veriler için yer olsun
+
+    fstream birSinifKaynakDosyasi("birSinif.dat", ios::in | ios::binary); // İkili kaynak kod dosyamızın nesnesi
+    birSinifKaynakDosyasi.read((char*)nesne, sizeof(birSinif)); // Read ise ikili verileri okuyan bir fonksiyondur
+    // (char*)nesne; Normalde bizden bir Char işaretçisi ister ama biz write'da olduğu gibi manüpile ederek bizim kendi nesnemize yazdırmasını sağlıyoruz
+    // sizeof(birSinif); Okunucak alan
+
+    birSinifKaynakDosyasi.close(); // Dosyamızı serbest bıraktık
+
+    // Verilemiz geldi şimdi yazdıralım
+    cout << "Aktarilan siniftaki charDizisiVerisi: " << nesne->charDizisiVerisi << endl;
+    cout << "Aktarilan siniftaki s1: " << nesne->s1 << endl;
+    cout << "Aktarilan siniftaki f1: " << nesne->f1 << endl;
+
+    delete nesne; // Dinamik olarak ayrdığımız için serbest bıraktık
+}</code>
+
+Alıcıda yazıcının yazdığı kaynak kodları okur ve bir nesne haline getirir.
+
+Son olarak derleyip çalıştıralım;
+<code class="language-cmd">g++ yazici.cpp -o yazici
+g++ alici.cpp -o alici
+
+yazici
+alici</code>
+
+Çıktı ise;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/18 Cpp Dosya İşlemleri.html/4.png" alt="18.4" width="100%">
+        </div>
+
+        <pre id="preh2">Son olarak bu konu hakkında bilgi ise klasörünüzd oluşmuş olan birSinif.dat adlı dosyayı açmanız olucaktır. Anlamsız semboller veya karakterler görsenizde aslında onun bir sınıf olduğu artık biliyosunuz. Ayrıca çocukken benim gibi oyun oynarken bir yandan da oyun dosyalarını kurcalamış ve o zamanlar anlamadığınız karakterlerin ne alama geldiğini bilmiyosanız, artık biliyorsunuz.</pre>
+
+        <h2>Kaynakça</h2>
+        <ul>
+            <li><a href="https://www.w3schools.com/cpp/ref_fstream_ifstream.asp">https://www.w3schools.com/cpp/ref_fstream_ifstream.asp</a></li>
+            <li><a href="https://www.geeksforgeeks.org/cpp/file-handling-c-classes/">https://www.geeksforgeeks.org/cpp/file-handling-c-classes/</a></li>
+            <li><a href="https://stackoverflow.com/questions/31538554/fstream-how-to-seekg-to-position-x-from-end">https://stackoverflow.com/questions/31538554/fstream-how-to-seekg-to-position-x-from-end</a></li>
+            <li><a href="https://dev.to/alen_pythonista_bb/binary-file-handling-in-c-a-beginners-guide-148o">https://dev.to/alen_pythonista_bb/binary-file-handling-in-c-a-beginners-guide-148o</a></li>
+            <li><a href="https://www.tutorialspoint.com/article/read-write-class-objects-from-to-file-in-cplusplus">https://www.tutorialspoint.com/article/read-write-class-objects-from-to-file-in-cplusplus</a></li>
+            <li><a href="https://dev.to/alen_pythonista_bb/binary-file-handling-in-c-a-beginners-guide-148o">https://dev.to/alen_pythonista_bb/binary-file-handling-in-c-a-beginners-guide-148o</a></li>
+        </ul>
     </div>
 
     <div style="height: 100px;"></div>
