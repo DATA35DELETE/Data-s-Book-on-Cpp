@@ -337,6 +337,232 @@ alici</code>
 
         <pre id="preh2">Son olarak bu konu hakkında bilgi ise klasörünüzd oluşmuş olan birSinif.dat adlı dosyayı açmanız olucaktır. Anlamsız semboller veya karakterler görsenizde aslında onun bir sınıf olduğu artık biliyosunuz. Ayrıca çocukken benim gibi oyun oynarken bir yandan da oyun dosyalarını kurcalamış ve o zamanlar anlamadığınız karakterlerin ne alama geldiğini bilmiyosanız, artık biliyorsunuz.</pre>
 
+        <h2>Filesystem</h2>
+        <pre id="preh2">Filesystem, C++ programalama dilinde dosyalar üzerinde daha fazla kontrol sağlamamızı ve klasör işlemleri için kolaylık sağlayan bir kütüphanedir. C++17 ile standartlanlaştırılmıştır. <code>filesystem</code> kütüphane dosyasında yer alır.</pre>
+
+        <h3>Dosya Varlık Kontrolü</h3>
+        <pre id="preh3">Filesystem kütüphanesinde bulunan <code>path</code> sınıfıyla tanımlanan dosya yolunda herhangi bir veri olup olmadığını kontrolü ile varlık kontrolu yapılır.</pre>
+
+        <pre id="codeh3">Hadi gelin bir örnek yapalım;
+        
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;filesystem> // Kütüphanemiz
+
+using namespace std;
+
+int main()
+{
+    filesystem::path aliciDotCpp = "alici.cpp"; // String tanımlar gibi Path sınıfı tanımlayabiliriz
+
+    cout << "alici.cpp klasorde mevcut mu; ";
+    if (filesystem::exists(aliciDotCpp))
+    // filesystem::exists fonksiyonu filesystem kütüphanesindeki varlık kontrolu için kullanılır
+    {
+        cout << "evet";
+    }
+    else
+    {
+        cout << "hayir";
+    }
+    cout << endl << endl;
+
+    // Birde olmayan bir dosyayı kontrol edelim(Makarayız ya abi)
+
+    aliciDotCpp = "alici.c"; // Başka bir dosya yolu tanımlayabiliriz
+
+    cout << "alici.c klasorde mevcut mu; ";
+    if (filesystem::exists(aliciDotCpp))
+    {
+        cout << "evet";
+    }
+    else
+    {
+        cout << "hayir";
+    }
+    cout << endl << endl;
+    
+    // Son olarak klasör kontorlu yapalım
+    cout << "../DBoCpp klasoru mevcut mu; ";
+    filesystem::path denemeDizini = "../DBoCpp";
+    if (filesystem::exists(denemeDizini))
+    {
+        cout << "evet";
+    }
+    else
+    {
+        cout << "hayir";
+    }
+    cout << endl << endl;
+
+    return 0;
+}</code>
+
+Çıktı;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/18 Cpp Dosya İşlemleri.html/5.png" alt="18.5" width="100%">
+        </div>
+
+        <h3>Filesystem ile Dosya Yönetimi</h3>
+        <pre id="preh3">Filesystem, Path ile dosyaları kopyalabilir, yeniden adlandırabilir veya taşınabilir yapan fonksiyonlar sağlar.</pre>
+
+        <pre id="codeh3">Hadi bir örnek daha yapalım;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;fstream>
+#include &lt;filesystem>
+
+using namespace std;
+
+int main()
+{
+    // Kopyalama
+    filesystem::path kaynakDosya = "yazici.cpp"; // Hedef dosyamız
+    filesystem::path hedefDosya = "yazici.txt"; // Kaynok dosyamız veya yolumuz
+
+    filesystem::copy(kaynakDosya, hedefDosya); // Dosya kopyalamamızı sağlar
+
+    ifstream hedefDosyaNesnesi(hedefDosya); // Dosya nesnemiz
+    string satir;
+    
+    cout << "yazici.txt dosyasinin icerigi;" << endl;
+    while (getline(hedefDosyaNesnesi,satir))
+    {
+        cout << satir << endl;
+    }
+    cout << endl;
+
+    hedefDosyaNesnesi.close();
+
+    // Yeniden adlandırma
+    filesystem::rename(hedefDosya, "writer.cpp"); // Dosyaları yeniden adlandırmamızı sağlar
+    // hedefDosya; Orjinal dosyanın ismi
+    // "writer.cpp"; Değiştirlmek istenen isim
+
+    hedefDosyaNesnesi.open("writer.cpp"); // Tekrar okuyalım
+    cout << "writer.cpp dosyasinin icerigi;" << endl;
+    while (getline(hedefDosyaNesnesi,satir))
+    {
+        cout << satir << endl;
+    }
+    cout << endl;
+
+    hedefDosyaNesnesi.close();
+
+    // Silme
+    filesystem::remove("writer.cpp"); // Dosya yolu ile dosya siler
+
+    cout << "writer.cpp dosyasi mevcut mu; ";
+    if (filesystem::exists("writer.cpp")) // Dosya varlık kontrolu
+    {
+        cout << "evet";
+    }
+    else
+    {
+        cout << "hayir";
+    }
+    cout << endl;
+
+    return 0;
+}</code>
+
+Çıktı ise;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/18 Cpp Dosya İşlemleri.html/6.png" alt="18.6" width="100%">
+            <img src="../Bibliography/18 Cpp Dosya İşlemleri.html/7.png" alt="18.7" width="100%">
+        </div>
+
+        <h3>Klasör İşlemleri</h3>
+        <pre id="preh3">Klasör işlemleri, C programalam dilinde işletim sisteminde özgüydü ve kodlaması bir hayli uğraştırıcıydı. C++ programala dilinde Filesystem sayesinde bu işlemler platformanlar arası bir hal aldılar.</pre>
+
+        <pre id="codeh3">Hadi klasörleri işliyelim;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;filesystem>
+
+using namespace std;
+
+int main()
+{
+    filesystem::path bilgilerim = "bilgilerim"; // Klasör yolumuz
+
+    filesystem::create_directory(bilgilerim); // Klasörü oluşturduk
+
+    cout << "bilgilerim klasoru mevcut mu; ";
+    if (filesystem::exists(bilgilerim))
+    {
+        cout << "evet";
+    }
+    else
+    {
+        cout << "hayir";
+    }
+    cout << endl;
+
+    filesystem::copy(".", bilgilerim); // Bulunduğumuz klasörün içeriğini bilgilerim klasörüne kopyalayalım
+
+    return 0;
+}</code>
+
+Çıktısı ise;</pre>
+        
+        <div id="divh3Img">
+            <img src="../Bibliography/18 Cpp Dosya İşlemleri.html/8.png" alt="18.8" width="100%">
+        </div>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/18 Cpp Dosya İşlemleri.html/9.png" alt="18.9" width="100%">
+            <img src="../Bibliography/18 Cpp Dosya İşlemleri.html/10.png" alt="18.10" width="100%">
+        </div>
+
+        <pre id="codeh3">Silmek için ise;
+
+<code class="language-cpp">filesystem::remove_all()</code>
+        </pre>
+
+        <h3>Klasörlerin İçeriğini Yazdırma ve Dosyaların Bilgilerini Yazdırma</h3>
+        <pre id="preh3">Klasörlerin içeriğini yazdırmak için Range tabanlı For ile elemanlar arasında geçişler yapılır.</pre>
+
+        <pre id="codeh3">Hadi bir örnek daha yapalım;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;filesystem>
+
+#include &lt;format> // Tarih için gerekli olan format fonksiyonunu bulunduran kütüphane
+#include &lt;chrono> // Zaman damgası formatı için gerekli kütüphane
+
+using namespace std;
+
+int main()
+{
+    filesystem::path bilgilerim = "bilgilerim"; // Klasör yolumuz
+
+    cout << "bilgilerim klasorunun icerigi;" << endl;
+    for (auto i : filesystem::directory_iterator(bilgilerim))
+    // Bir klasör iteratörü ile Range tabanlı For ile her bir dosya teker teker nesne olarak i değişkenine atanır
+    {
+        cout << i.path() << ":" << endl // Elemanın yolunu alma
+            << "\tboyutu: " << i.file_size() << " b" << endl // Elemanın boyutu
+            << "\tDosya mi: " << i.is_regular_file() << endl // Eleman bir dosya mı
+            << "\tKlasor mu: " << i.is_directory() << endl // Eleman bir klasör mü
+            << "\tYazilma Damgasi: " << i.last_write_time().time_since_epoch().count() << endl // Elemanın Unix Zaman damgası ile yazılma vakti
+            << "\tYazilma Tarihigi: " << format("{}", i.last_write_time()) << endl; // Formatlı bir şekilde yazıma
+    }
+    cout << endl;
+
+    filesystem::remove_all(bilgilerim); // Klasörün içeriğini silme
+    filesystem::remove(bilgilerim); // Klasörü silme
+
+    return 0;
+}</code>
+
+Çıktısı;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/18 Cpp Dosya İşlemleri.html/11.png" alt="18.11" width="100%">
+        </div>
+
         <h2>Kaynakça</h2>
         <ul>
             <li><a href="https://www.w3schools.com/cpp/ref_fstream_ifstream.asp">https://www.w3schools.com/cpp/ref_fstream_ifstream.asp</a></li>
@@ -345,6 +571,9 @@ alici</code>
             <li><a href="https://dev.to/alen_pythonista_bb/binary-file-handling-in-c-a-beginners-guide-148o">https://dev.to/alen_pythonista_bb/binary-file-handling-in-c-a-beginners-guide-148o</a></li>
             <li><a href="https://www.tutorialspoint.com/article/read-write-class-objects-from-to-file-in-cplusplus">https://www.tutorialspoint.com/article/read-write-class-objects-from-to-file-in-cplusplus</a></li>
             <li><a href="https://dev.to/alen_pythonista_bb/binary-file-handling-in-c-a-beginners-guide-148o">https://dev.to/alen_pythonista_bb/binary-file-handling-in-c-a-beginners-guide-148o</a></li>
+            <li><a href="https://en.cppreference.com/cpp/filesystem">https://en.cppreference.com/cpp/filesystem</a></li>
+            <li><a href="https://www.geeksforgeeks.org/cpp/file-system-library-in-cpp-17/">https://www.geeksforgeeks.org/cpp/file-system-library-in-cpp-17/</a></li>
+            <li><a href="https://en.cppreference.com/cpp/filesystem/copy_file">https://en.cppreference.com/cpp/filesystem/copy_file</a></li>
         </ul>
     </div>
 
