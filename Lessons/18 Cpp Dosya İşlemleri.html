@@ -563,6 +563,722 @@ int main()
             <img src="../Bibliography/18 Cpp Dosya İşlemleri.html/11.png" alt="18.11" width="100%">
         </div>
 
+        <h2>Native Dosyalar</h2>
+        <pre id="preh2">Native dosyalar, kendi içerisinde çalıştırabilir kodları bulunduran fakat Main fonksiyonu bulunmayan dosyalardır.</pre>
+
+        <pre id="preh2">Yani bir nevi çalıştırılabilir kodları barındıran bir depo gibi çalışır. Siz o Native dosyasını kendi programınızda açarsınız veya uygun fonksiyonları tanımlarsınız. Ardından programınız o Native dosyasındaki fonksiyonları çağırabilir hale gelir. Native dosya aslında her yerdedir. ".dll" veya ".so" uzantılı dosyalar Native bir nevi kütüphane olarak kullanılır.</pre>
+
+        <pre id="preh2">Peki Native dosyalara neden ihtiyaç duyarız? Çünkü esneklik ve kod yönetimi! Esneklik sağlar çünkü ana programlama fonksiyonları birbirinde ayırır. Kod yönetimi sağlar çünkü kodları ayrı ayrı değerlendiririz ve gereken kısımları işlemlerimizi gerçekleştiririz. Native dosyasız bir programı geliştirirken, geliştirmede bütün kodlar incelenir. Native dosyalar bu durumda özellikle büyük projelerde zaman ve yönetim için sıklıkla kullanılır.</pre>
+
+        <pre id="preh2">Native dosyalar yapısı gereği platfrom bağımlıdır. Bu sebeble her Native dosya derlendiği platforma özgüdür. Ayrıca iki türdür. Dinamik ve statik olarka ikiye ayrılırlar.</pre>
+
+        <h3>Linux İşletim Sisteminde Native Dosya Yapımı</h3>
+        <pre id="preh3">Native dosyaların uzantısı ".so" ve ".a" uzantılarına sahiptir.</pre>
+
+        <pre id="codeh3">".so" dosyası dinamik Native dosyası türüne aittir. Dinamik Native dosyaları sadece çalışma zamanında, çalışan programın algılayabilceği bir klasörde yer aldığı sürece çalışan ve işlemler gerçekleştirebilceğimiz bir türdür. Dinamik olarak derlenen Native dosyalar ana programla fonksiyonları dosya şeklinde ayırırlar. Ayrıca ana program boyutundan tasaruf edilmiş olur. Hadi gelin bir tane dinamik derliyelim ve uygulayalım;
+
+İlk olarak dinamik Native dosya olucak olan kodları yazalım.
+
+Amacımız bu konuda bir (klişe olucak ama...) hesap makinesi olsun. Toplama, çıkarma, bölme ve çarpma için fonksiyonları bir dinamik Native dosyası aracığıyla ana programda kullanalım. İlk olarak dinamik dosyanın kaynak kodlarını yazalım;
+
+mat.cpp
+
+<code class="language-cpp">// Native dosyalarda, ana programa fonksiyonları tanımlamak için "extern" ifadesi kullanılır. Extern, fonksiyonları Native fonksiyonları ana programdaki tanımlı fonksiyonlara tanımlar
+extern int topla(int x, int y)
+{
+    return x + y;
+}
+
+extern int cikar(int x, int y)
+{
+    return x - y;
+}
+
+extern int bol(int x, int y)
+{
+    return x / y;
+}
+
+extern int carp(int x, int y)
+{
+    return x * y;
+}</code>
+
+Kodlarımız hazır. Şimdi kodlarımızı derliyelim. Bir tık farklı olucak ama şuanki derleme işlemi bağlamasız olucak. Yani kodlar sadece derlenmiş hallerini yapıcağız.
+
+<code class="language-bash">g++ -c -fPIC mat.cpp</code>
+
+Oluşan dosya "mat.o" adlı bir sadece derlenmiş bir dosyadır. Şimdi o derlenmiş dosyayı Native dosya haline getirelim.
+
+<code class="language-bash">g++ -shared mat.o -o libmat.so</code>
+
+Tebrikler! Artık "libmat.so" adlı bir dinamik Native dosyamız oldu. Native dosya yaparken çıktının isimlerinin her zaman başında "lib" yazılması mühimdir. G++ kuralları gereği yapmak zorundayız.
+
+Şimdi ana programımızı yazalım;
+main.cpp
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+extern int topla(int x, int y);
+extern int cikar(int x, int y);
+extern int bol(int x, int y);
+extern int carp(int x, int y);
+// Native dosyamızdaki fonksiyonların imzalarını yazdık
+
+int main()
+{
+    cout << "3 + 2 = " << topla(3, 2) << endl << endl; // Fonksiyonlarımızı sırayla kullandık
+
+    cout << "5 - 1 = " << cikar(5, 1) << endl << endl;
+
+    cout << "1 * 10 = " << carp(1, 10) << endl << endl;
+
+    cout << "7 / 7 = " << bol(7, 7) << endl << endl;
+
+    return 0;
+}</code>
+
+Kodlar hazır. Şimdi az önce oluşturduğumuz dinamik Native dosyasını ana programımız ile derliyelim;
+
+<code class="language-bash">g++ main.cpp -o main -L. -lmat</code>
+-L.; Native dosyalarının nerede olduğunu ayarlamamızı sağlayan bir parametre
+-lmat; libmat.so Native dosyamızı bağlar. "l" ifadesi "lib"e tekabul geldiği için ve bu kural olduğu için kütüphane yaparken dosyanın başına "lib" ifadesi konulur.
+
+Programımız derledik fakat çalıştıramayız. Linux Dünya'sı oluşturulduğu anda itibariyle dosya sistemi dolayısıyla kütüphane bulma sistemi ağaç benzeri bir yapıdır. Kütüphaneler "/lib" klasöründe bulunur. İstersek kütüphanemizi o klasöre taşıyarak programızın çalışmasını sağlayabiliriz. Ama bu bir test olduğu için ve Linux kolay bozulabildiği için ufak bir terminal üzerinden değişken ayarlıyarak bu durumu çözebiliriz. Değişken sisteme; "Kütüphaneleri bir de kendi klasöründe ara" der.
+
+<code class="language-bash">export export LD_LIBRARY_PATH=.:$LD_LIBRARY_PATH</code>
+
+Artık programız çalışabilir halde!
+
+Çıktısı;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/18 Cpp Dosya İşlemleri.html/12.png" alt="18.12" width="100%">
+        </div>
+
+        <pre id="preh3">Eğer dilersek bu kütüphane dizinini ayarlama işini kod tarafında yapabiliriz "Sembol Çözümleme" denilen ve dinamik Native dosyaların içerisindeki fonksiyonları kod tarafında erişebiliyoruz. Bu özelliği Linux'daki <code>#include &lt;dlfcn.h></code> kütüphanesindeki <code>dlopen</code>, <code>dlsym</code> ve <code>dlclose</code> ile yapılır.
+            
+Bu mantık ise "Sembol" mantığı ile yapılır. Biz fark etmesekte programlarımız ve Native dosyalarımız aslında birer sembol tablosu gibidir ki bir kod editörü ile bir çalıştırabilir dosyaları açmaya çalıştığınızda anlamsız semboller görürsünüz. Onlar bizim için bir anlam ifade etmez lakin bilgisayar için "Program Kullanım Klavuzu" gibi çalışır. Bilgisayar bu program için hangi kütüphaneleri getirceğini hangi fonksiyon hangi bellek adresine gibi hayati önem taşıyan bilgileri bu sembol mantığı ile çözer. İlk olarak çözüceğimiz olan sembolleri Native dosyadan bulalım. "Nm" komutu bizlere sembolleri gösteren bir araçtır;
+
+<code class="language-bash">nm libmat.so</code>
+
+Çıktısı;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/18 Cpp Dosya İşlemleri.html/13.png" alt="18.13" width="100%">
+        </div>
+
+        <pre id="preh3">Fark etti iseniz çıktısının en sonunda bizim tanımladığımız fonksiyonları isimleri yer almaktadır. Ekstra harfleri saymazsak o bizim tanımladığımız fonksiyonları ifade eder. Fakat sizlerde farklı bir şekilde gözükebilir, dikkat edelim. Şimdi bu sembol isimlerini ana programda kullanarak çağrıcağız!
+        
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;dlfcn.h> // Evet kendisi bir C kütüphanesidir
+
+using namespace std;
+
+int (*topla)(int x, int y); // Fonksiyonlarımızı işaretçi olarak tanımladık
+int (*cikar)(int x, int y);
+int (*bol)(int x, int y);
+int (*carp)(int x, int y);
+
+int main()
+{
+    void* matKutup = dlopen("./libmat.so", RTLD_LAZY); // Dinamik Native dosyası açtık.
+    // "./libmat.so"; Açılacak olan dosyanın ismi
+    // RTLD_LAZY; Modu. Fazla RAM yemesin diye LAZY yani "Çağrıldığında Çalış" dedik
+
+    *(void **)(&topla) = dlsym(matKutup, "_Z5toplaii"); // dlsym; Native dosyadan sembol çözümler ve o sembolün bellek adresini döndürür
+    // C kütüphaneleri C'e göre kodlandığı için ve C++'da C'e kıyasla fazla esnek olmadığı için böyle bir söz dizimi ortaya çıktı. Sırayla açıklayalım
+    // *(void **)(&topla); Bu kısımdaki olay dönüştürmedir. Bu kısımda dlsym'in döndüğü void* verisini fonksiyona uyucak şekilde dönüştürdük
+    // matKutup; Çözümlenecek olan Native dosyanın objesi
+    // "_Z5toplaii"; Çözümlenmesi gereken sembol
+
+    // Aynı işlemi diğerleri içinde yaptık
+
+    *(void **)(&cikar) = dlsym(matKutup, "_Z5cikarii");
+    *(void **)(&bol) = dlsym(matKutup, "_Z3bolii");
+    *(void **)(&carp) = dlsym(matKutup, "_Z4carpii");
+
+    cout << "3 + 2 = " << (*topla)(3, 2) << endl << endl; // Fonksiyonlarımızı sırayla kullandık
+
+    cout << "5 - 1 = " << cikar(5, 1) << endl << endl;
+
+    cout << "1 * 10 = " << carp(1, 10) << endl << endl;
+
+    cout << "7 / 7 = " << bol(7, 7) << endl << endl;
+
+    dlclose(matKutup); // Bellek yönetimi için serbest bıraktık
+
+    return 0;
+}</code>
+
+Çıktımız değişmicektir lakin yöntemimiz daha temiz bir hal almıştır.</pre>
+
+        <pre id="preh3">".a" dosyası statik Native dosyası türüne aittir. Statik Native dosyalar ile sadece derlenme zamanında, programın içerisine aktarılırlar. Bu işlem bağlama sırasında programın içerisine Native dosyanın direkt yazılımasıyla oluşur. Statik Native dosyalar dağıtımı kolaylaştırır fakat ana programın boyutu normalden daha fazla şişmiş olur.</pre>
+
+        <pre id="preh3">İlk olarak statik Native dosyamızın kaynak kodlarını yazalım. Dinamikdeki örneğimizi statikde de yazalım;
+
+mat.c
+<code class="language-cpp">extern int topla(int x, int y)
+{
+    return x + y;
+}
+
+extern int cikar(int x, int y)
+{
+    return x - y;
+}
+
+extern int bol(int x, int y)
+{
+    return x / y;
+}
+
+extern int carp(int x, int y)
+{
+    return x * y;
+}</code>
+
+Kodlar hazır. Şimdi ise kodları derlenmiş hallerine çevirelim;
+
+<code class="language-cpp">g++ -c -fPIC mat.cpp</code>
+
+oluşan mat.o dosyasını bir arşive dönüştürelim ki sembol tablosu için gereklidir;
+
+<code class="language-cpp">ar -cvq libmat.a mat.o</code>
+
+libmat.a dosyamızı bir sembol tablosuno dönüştürelim ki derleme sürecinde kodların nereye bağlanıcağını derliyici bilmelidir;
+
+<code class="language-bash">ranlib libmat.a</code>
+
+Artık kodlarımız bir statik Native dosyası!
+
+Şimdi ise ana programı yazalım;
+main.cpp
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+extern int topla(int x, int y);
+extern int cikar(int x, int y);
+extern int bol(int x, int y);
+extern int carp(int x, int y);
+
+int main()
+{
+    cout << "3 + 2 = " << topla(3, 2) << endl << endl;
+
+    cout << "5 - 1 = " << cikar(5, 1) << endl << endl;
+
+    cout << "1 * 10 = " << carp(1, 10) << endl << endl;
+
+    cout << "7 / 7 = " << bol(7, 7) << endl << endl;
+
+    return 0;
+}</code>
+
+Derlemeden, önceden kalma bir dimamik Native dosya kaldı ise silelim. Ardından derliyelim;
+
+<code class="language-cpp">g++ main.cpp -o main -L. -lmat</code>
+
+Çalıştırdığımız çıkıtımızın değişmediğini görürüz ama yapı olarak programızın çokça değiştiğini ifade edebiliriz.</pre>
+
+        <pre id="preh3">Son olarak programların hangi Native dosyalarına ihtiyaç duyduğunu çıktı olarak veren bir komut olan <code>ldd</code> komutunu ele alalım. Hadi <code>ldd</code> kendi programızı analiz edelim;</pre>
+     
+<pre><code class="language-bash">ldd main</code>
+
+Çıktısı;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/18 Cpp Dosya İşlemleri.html/14.png" alt="18.14" width="100%">
+        </div>
+
+        <h3>Windows İşletim Sisteminde Native Dosya Yapımı</h3>
+        <pre id="preh3">Windows işletim sisteminde tıpkı Linux'da olduğu gibi Native dosyalar ikiye ayrılırlar. Dinamik ve statik olmak üzere ikiye ayrılmışlardır.</pre>
+
+        <pre id="preh3">Dinamik dosyalar, ".dll" ismiyle oluşturulur ve sadece çalışma zamanında dizinde olması gerekir.</pre>
+
+        <pre id="preh3">Şimdi gelin Windows'da dinamik Native dosya derliyelip kullanalım;
+
+İlk olarak Native dosyanın kaynak kodu
+mat.cpp
+
+<code class="language-cpp">extern int topla(int x, int y)
+{
+    return x + y;
+}
+
+extern int cikar(int x, int y)
+{
+    return x - y;
+}
+
+extern int bol(int x, int y)
+{
+    return x / y;
+}
+
+extern int carp(int x, int y)
+{
+    return x * y;
+}</code>
+
+Ardından;
+
+<code class="language-bash">g++ -c -fPIC mat.cpp
+g++ -shared mat.o -o libmat.dll</code>
+
+Ana programın kaynak kodu;
+main.cpp
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+extern int topla(int x, int y);
+extern int cikar(int x, int y);
+extern int bol(int x, int y);
+extern int carp(int x, int y);
+// Native dosyamızdaki fonksiyonların imzalarını yazdık
+
+int main()
+{
+    cout << "3 + 2 = " << topla(3, 2) << endl << endl; // Fonksiyonlarımızı sırayla kullandık
+
+    cout << "5 - 1 = " << cikar(5, 1) << endl << endl;
+
+    cout << "1 * 10 = " << carp(1, 10) << endl << endl;
+
+    cout << "7 / 7 = " << bol(7, 7) << endl << endl;
+
+    return 0;
+}</code>
+
+Derliyelim;
+
+<code class="language-cpp">g++ main.cpp -o main -L. -lmat</code>
+
+Çıktı değişmicektir. Ayrıca Linux'da olduğu gibi dinamik Native dosyalarda terimal üzerinden ekstra değişken girilemden programlar çalıştırılır. Çünkü Windows yapısı geriği kütüphaneleri uygulamanın kendi klasöründe arar.
+
+Sembol çözümlemeden önce bakalım bizim fonksiyonlarımızın ismi neymiş;
+
+<code class="language-bash">nm libmat.dll</code>
+
+Uzun bir çıktının biraz yukarsında fonksiyonlarımızın "_Z3bolii", "_Z4carpii", "_Z5cikarii" ve "_Z5toplaii" olduğunu öğrendim.
+
+Şimdi ise sembol çözümleme ile ana programandan kütüphane fonksiyonlarını çekelim. Windows'da diğer her işlem gibi bu işlemde <code>#include &lt;windows.h></code> kütüphane ile yapılır.
+
+main.cpp
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;windows.h>
+
+using namespace std;
+
+int (*topla)(int, int);
+int (*cikar)(int, int);
+int (*bol)(int, int);
+int (*carp)(int, int);
+
+int main()
+{
+    HMODULE matKutup = LoadLibraryA("./libmat.dll"); // dlopen karşılığı
+
+    topla = (int (*)(int, int))GetProcAddress(matKutup, "_Z5toplaii"); // dlsym karşılığı
+    cikar = (int (*)(int, int))GetProcAddress(matKutup, "_Z5cikarii");
+    bol = (int (*)(int, int))GetProcAddress(matKutup, "_Z3bolii");
+    carp = (int (*)(int, int))GetProcAddress(matKutup, "_Z4carpii");
+
+    cout << "3 + 2 = " << topla(3, 2) << endl << endl; // Fonksiyonlarımızı sırayla kullandık
+
+    cout << "5 - 1 = " << cikar(5, 1) << endl << endl;
+
+    cout << "1 * 10 = " << carp(1, 10) << endl << endl;
+
+    cout << "7 / 7 = " << bol(7, 7) << endl << endl;
+
+    FreeLibrary(matKutup); // dlclose karşılığı
+
+    return 0;
+}</code>
+
+Çıktımız değişmicektir.</pre>
+
+        <pre id="preh3">Şimdi ise dinamik Native dosya örneğimizi statik Native dosya versiyonunu yazalım. Statik dosyalar Windows'da ".lib" uzantısı ile var olurlar.
+
+İlk olarak kütüphane kaynak kodu;
+mat.cpp
+
+<code class="language-cpp">extern int topla(int x, int y)
+{
+    return x + y;
+}
+
+extern int cikar(int x, int y)
+{
+    return x - y;
+}
+
+extern int bol(int x, int y)
+{
+    return x / y;
+}
+
+extern int carp(int x, int y)
+{
+    return x * y;
+}</code>
+
+Derliyelim ve sembol tablosu haline getirelim;
+
+<code class="language-bash">g++ -c -fPIC mat.cpp
+ar -cvq libmat.a mat.o
+ranlib libmat.a</code>
+
+Ardından ana programın kaynak kodu;
+main.cpp
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+extern int topla(int x, int y);
+extern int cikar(int x, int y);
+extern int bol(int x, int y);
+extern int carp(int x, int y);
+
+int main()
+{
+    cout << "3 + 2 = " << topla(3, 2) << endl << endl; // Fonksiyonlarımızı sırayla kullandık
+
+    cout << "5 - 1 = " << cikar(5, 1) << endl << endl;
+
+    cout << "1 * 10 = " << carp(1, 10) << endl << endl;
+
+    cout << "7 / 7 = " << bol(7, 7) << endl << endl;
+
+    return 0;
+}</code>
+
+Ardından derliyelim(Varsa önceki dinamik dosyayı silin);
+
+<code class="language-bash">g++ main.cpp -o main -L. -lmat</code>
+
+Çıktımız değişmicektir.</pre>
+
+        <pre id="preh3">Son olarak Windows'daki <code>ldd</code> komutuna karşılık gelen komut ise <code>dumpbin</code> adında bir uygulamadır. <a href="https://github.com/Delphier/dumpbin">Uygulamanın Github Link'nin</a> verdim. Dilerseniz inceleyebilirsiniz...</pre>
+
+        <h2>Json Dosyaları</h2>
+        <pre id="preh2">Json, verileri Json formatlı ile beraber dosyalara serilizasyonla aktarmamızı ve kullanmamızı sağlayan özel bir formattır. Json dosyaları ".json" uzantısına sahiptir.</pre>
+
+        <h3>Json Mantığı</h3>
+        <pre id="preh3">Json mantığı aslında çok basittir. Dizi veya değişken tanımlamalar ile veriler çekilir veya yazılır. Üstedelik sözdizimi oldukça basittir. Genellikle toplu veri kayıt etme gibi işlemlerde sıklıkla kullanılır. Ayrıca herhangi bir Native dosyaya ihtiyaç duymaz. Tüm kodlar tek bir kütüphane dosyasında toplanmıştır. Taşınabilirliği maksimumdur.</pre>
+
+        <h3>nlohmann Kütüphanesinin Kurulumu</h3>
+        <pre id="preh3">C++ programlama dilinde sade ve öz bir Json dosyalarını yönetme kütüphanesi sunar.</pre>
+
+        <pre id="codeh3">Windows;
+<code class="language-bash">pacman -S mingw-w64-x86_64-nlohmann-json</code>
+
+Linux;
+<code class="language-bash">sudo apt install nlohmann-json3-dev</code></pre>
+
+        <h3>Json Kullanımı</h3>
+        <pre id="codeh3"> Json dosyalar ile bir "bilgiler" sistemi yapalım;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;fstream>
+#include &lt;nlohmann/json.hpp> // Kütüphaneyi ekliyoruz
+
+using namespace std;
+
+int main()
+{
+    nlohmann::json verilerim; // verilerim adlı bir json objesi oluşturduk
+
+    // Verilerimizi tanımlayalım
+    verilerim["Isim"] = "Data"; // nlohmann kütüphanesi Json objelerine veri gönderirken tıpkı bir Map STL koyteynırına veri atıyormuş gibi veri göndermemizi sağlar
+    verilerim["Soyisim"] = "Delete"; // Ki Json mantığıda bir nevi Map mantığına benzer
+    verilerim["Yasim"] = 15; // Sayı da atıyabiliriz
+    verilerim["En sevdigim sayi"] = 3.14f;
+    verilerim["Adresim"]["Turkiye"] = "Izmir"; // Şeklinde Json dizi verebiliriz
+    verilerim["Becerilerim"] = {"C", "C++", "Java"}; // Şeklinde C++ diziside tanımlamak mümkün
+
+    // Verilerimiz tamam şimdi bu yapıyı bir String'e dönüştürelim ki dosya yazmak daha kolay olsun
+
+    string verilerimStr = verilerim.dump(); // .dump() ile Json objesi bir String ifadeye dönüştürdük
+
+    std::ofstream bilgilerimDotJson("bilgilerim.json"); // Json verisinin bir dosyaya yazdıralım
+
+    bilgilerimDotJson << verilerimStr; // Yazdırık
+
+    bilgilerimDotJson.close();
+
+    /* bilgilerim.json dosyasının içeriği;
+    {
+    "Adresim":
+    {
+        "Turkiye":"Izmir"
+    },
+    "Becerilerim":["C","C++","Java"],
+    "En sevdigim sayi":3.140000104904175,
+    "Isim":"Data",
+    "Soyisim":"Delete",
+    "Yasim":15
+}*/
+
+    // Şimdi yazdırdığımız bilgilerim.json dosyasını okuyalım
+
+    ifstream bilgilerimDotJsonOkuma("bilgilerim.json"); // Dosya nesnemiz
+
+    nlohmann::json bilgilerimiOkuma = nlohmann::json::parse(bilgilerimDotJsonOkuma); // Parse komutu ile yazdığımız veriler Json objesine dönüştü
+
+    bilgilerimDotJsonOkuma.close();
+
+    // Verileri okuyalım
+
+    cout << "Bilgilerim;" << endl;
+    cout << "Isim: " << verilerim["Isim"] << endl;
+    cout << "Soyisim: " << verilerim["Soyisim"] << endl;
+    cout << "Yasim: " << verilerim["Yasim"] << endl;
+    cout << "En sevdigim sayi: " << verilerim["En sevdigim sayi"] << endl;
+    cout << "Ev Adresim: " << verilerim["Adresim"]["Turkiye"] << endl;
+    cout << "Becerilerim: " << verilerim["Becerilerim"] << endl;
+
+    return 0;
+}</code>
+
+Çıktısı;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/18 Cpp Dosya İşlemleri.html/15.png" alt="18.15" width="100%">
+        </div>
+
+        <h2>Xml Dosyaları</h2>
+        <pre id="preh3">Xml dosyaları, hem insanlar hemde bilgi tabanlı sistemlerde kolaylıkla veri alış-alışverişini sağlayan bir standarttır. W3C(World Wide Web Consortium) tarafından 1996 yılında yayımlanmıştır.</pre>
+
+        <h3>Xml Mantığı</h3>
+        <pre id="preh3">Xml, tıpkı Json gibi verileri belirli bir formatta depolamamızı veya paylaşabilmemizi sağlayan, etiket ve özellik denilen özellikleriyle veri saklıyan bir dosya formatıdır.</pre>
+        
+        <pre id="preh3">Json'dan daha gelişmiştir. Genellikle Json'dan daha karmaşık işlerde kullanılır. Örneğin bir bir verinin ismini etiketler içerisinde yazılır iken, özellikler ile daha fazla bilgiyi tutabilir.</pre>
+
+        <h3>pugixml Kütüphanesi Kurulumu</h3>
+        <pre id="preh3">Pugixml, C++ programlama dilinde Xml dosya kullanımları için bir kütüphanedir.</pre>
+
+        <pre id="codeh3">Windows;
+
+<a href="https://github.com/zeux/pugixml/releases/download/v1.16/pugixml-1.16.zip">Kaynak dosyaları</a>
+
+Linux;
+
+<a href="https://github.com/zeux/pugixml/releases/download/v1.16/pugixml-1.16.tar.gz">https://github.com/zeux/pugixml/releases/download/v1.16/pugixml-1.16.tar.gz</a>
+
+Dosyayı indirelim. İnen arşiv dosyasını ayıklayalım. Daha sonra projemizin (veya C++ kaynak kodunun bulunduğu klasörün) içerisine atalım. Json gibi Pugixml'de tek bir kütüphane dosyası ve kaynak dosyası ile gelir. Herhangi Native dosya ile gelmez. Derlemede "-l" ile bir isim belirtilmez.
+
+Sadece Pugixml kaynak dosyaları derlenmeye yazılır.</pre>
+
+        <h3>Xml Dosyası Kullanımı</h3>
+        <pre id="codeh3">Json dosyalarındaki örneğimizi Xml'de tekrar yazalım;
+        
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;fstream>
+#include "pugixml.hpp" // Kütüphanemizi 
+
+using namespace std;
+
+int main()
+{
+    pugi::xml_document bilgilerimXml; // Xml nesnesini oluşturduk
+    
+    pugi::xml_node ismim = bilgilerimXml.append_child("ismim"); // Etiket ekleme için append_child kullanılır. Parantezlerindeki String değeri etiketin ismi olur. Bu fonksiyon bizlere dönüş olarak etiketin objesini döndürür. Böylelikle daha fazla kontrole sahip oluruz
+    ismim.append_child(pugi::node_pcdata).set_value("Data"); // Etikete değer eklemek için set_value yazılır
+    
+    pugi::xml_node soyismim = bilgilerimXml.append_child("soyismim");
+    soyismim.append_child(pugi::node_pcdata).set_value("Delete");
+    soyismim.append_attribute("Yas") = 15; // Etiketlere özellik eklemek için append_attribute kullanılır. Parantezlerdeki String ifadesi özelliğin ismi, eşittirin solundaki değer ise özelliğe atanacak değerdir
+
+    pugi::xml_node kisiselBilgilerim = bilgilerimXml.append_child("kisiselBilgilerim");
+    pugi::xml_node kisiselBilgilerimEnSevdigimSayi = kisiselBilgilerim.append_child("enSevidigimSayi"); // Etiketlerin içerisine etiket eklemek
+    kisiselBilgilerimEnSevdigimSayi.append_child(pugi::node_pcdata).set_value("3.14");
+
+    pugi::xml_node kisiselBilgilerimEnSevdigimRenk = kisiselBilgilerim.append_child(pugi::node_pcdata).append_child("enSevdigimRenk");
+    kisiselBilgilerim.remove_child("enSevdigimRenk"); // Etiketleri silmek için
+
+    pugi::xml_node becerilerim = kisiselBilgilerim.append_child("becerilerim");
+
+    pugi::xml_node becerilerim1 = becerilerim.append_child("C");
+    pugi::xml_node becerilerim2 = becerilerim.append_child("Cpp");
+    pugi::xml_node becerilerim3 = becerilerim.append_child("Java");
+
+    bilgilerimXml.save_file("bilgilerim.xml"); // Kayıt edilen Xml verilerini bir dosyaya yazdırmak için kullanılır
+
+/* Klasörde oluşan bilgilerim.xml dosyasının içeriği;
+
+&lt;?xml version="1.0"?>
+&lt;ismim>Data&lt;/ismim>
+&lt;soyismim Yas="15">Delete&lt;/soyismim>
+&lt;kisiselBilgilerim>
+	&lt;enSevidigimSayi>3.14&lt;/enSevidigimSayi>
+	&lt;becerilerim>
+		&lt;C />
+		&lt;Cpp />
+		&lt;Java />
+	&lt;/becerilerim>
+&lt;/kisiselBilgilerim>
+
+Şimdi kayıt ettirdiğimiz dosyayı okuyalım*/
+
+    pugi::xml_document bilgilerimXmlOkuma;
+    bilgilerimXmlOkuma.load_file("bilgilerim.xml"); // Klasörde olağan olan bir Xml dosyasını okumak için load_file kullanılır
+
+    cout << "Ismim: " << bilgilerimXmlOkuma.child("ismim").child_value() << endl; // Okunan bir Xml dosyasında bir etikete erişmek için child fonksiyonu kullanılır. Etiketin içerisindeki değerde child_value ile ulaşılır
+    cout << "Soyismim: " << bilgilerimXmlOkuma.child("soyismim").child_value() << endl;
+    cout << "Yasim: " << bilgilerimXmlOkuma.child("soyismim").attribute("Yas").as_int() << endl; // Bir etiketin içerisindeki özellikleğe erişmek için attribute kullanılır. Dönen özelliğin değerini delirnise as_... ile ... olarak belirtilen kısma değeri yazılarak uygun formata sahip değer alınabilir
+    cout << "Kisisel Bilgilerim;" << endl;
+    cout << "    En Sevdigim Sayi: " << bilgilerimXmlOkuma.child("kisiselBilgilerim").child("enSevidigimSayi").child_value() << endl;
+    cout << "    Becerilerim;" << endl;
+
+    pugi::xml_node becerilerimNode = bilgilerimXmlOkuma.child("kisiselBilgilerim").child("becerilerim");
+
+    for (pugi::xml_node_iterator beceri = becerilerimNode.begin(); beceri != becerilerimNode.end(); ++beceri) // Pugixml kütüphanesinde aynı STl gibi yeniliyiciler bulunmaktadır. Böylelikle bir etiketin içerisindeki etiketlere sırayla ve kolaylıkla erişebilinir
+    {
+        cout << "        " << beceri->name() << endl; // Sıradaki elemanın etiket ismini alma
+    }
+    
+    return 0;
+}</code>
+
+Çıktısı ise;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/18 Cpp Dosya İşlemleri.html/16.png" alt="18.16" width="100%">
+        </div>
+
+        <h2>Zstandart ile Sıkıştırılmış Dosyalar</h2>
+        <pre id="preh2">Zstandart veya kısaca zstd, Facebook tarafından 2015 yılında geliştirmiş ve veri sıkıştırmak için kullanılan bir C kütüphanesidir. Zstandart ile sıkıştırılan dosyaların uzantısı ".zst" uzantısıdır.</pre>
+
+        <pre id="preh2">Zstd, genel olarak diğer sıkıştırma araçlarına nazaran(Rar, zip veya gzip gibi) çok daha hızlı ve performanslı bir şekilde sıkıştırma sağlayan, yaklaşık 100 mb/s kadar sıkıştırma ve 400 mb/s kadarda açma hızı sağlar.</pre>
+
+        <h3>Kurulum</h3>
+        <pre id="codeh3">Windows;
+
+<code class="language-bash">pacman -S mingw-w64-x86_64-zstd</code>
+
+Linux;
+
+<code class="language-bash">sudo apt install libzstd-dev</code></pre>
+
+        <h3>Kullanım</h3>
+        <pre id="codeh3">Şimdi ise "bilgilerim.xml" dosyasını Zstd ile sıkıştıralım, ardından sıkıştırılan veriyi tekrar açalım.
+
+İlk olarak sıkıştırıcı programın kaynak kodu;
+compresser.cpp
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;fstream>
+
+#include &lt;zstd.h> // Zstd kütüphanemiz
+
+using namespace std;
+
+int main()
+{
+    ifstream bilgilerimDotXml("bilgilerim.xml"); // bilgilerim.xml dosyamızın nesnesi
+    string kaynakVeri = ""; // bilgilerim.xml dosyasının verisi
+
+    string *satir = new string(); // Bellek yönetimi için RAM'den alan telap ettik
+    while(getline(bilgilerimDotXml, *satir)) // Okuma
+    { 
+        kaynakVeri += *satir + "\n"; // Okuduğumuz verileri kayıt ediyoruz
+    }
+    delete satir;
+    bilgilerimDotXml.close();
+
+    unsigned long long kaynakBoyutu = kaynakVeri.size() + 1; // Kaynağın yani sıkıştırılacak olan verinin boyutunu aldık. Bir attırdık çünkü String boyutu hesaplarken sondaki "\0" saymaz. Zstd'da C tabanlı olduğu için ve Zstd'da String ifadelerde her zaman sonda "\0" olduğu için verinin sonuna 1 ekliyerek yer açmış oluruz
+
+    size_t hedefBoyutu = ZSTD_compressBound(kaynakBoyutu); // Hedef verinin yani sıkıştırılmış verinin kayıt edilceği miktardır. Mantıksal olarak sıkıştırılan veri kaynaktan az olduğundan kaynak verinin boyutu kadar yer kaplıyabilir. ZSTD_compressBound boyutu 64 değerini ekliyerek en zorlu sıkıştırmalarda bile sorunsuz geçmesini sağlar
+
+    char hedefVeri[hedefBoyutu]; // Sıkıştırılacak olan verinin kayıt edilceği alan.
+
+    size_t compresSize = ZSTD_compress(hedefVeri, hedefBoyutu, kaynakVeri.c_str(), kaynakBoyutu, 19); // Sıkıştırma fonksiyonu. Dönüş olarak sıkıştırılmış olan verinin boyutunu döner
+    // hedefVeri; Sıkıştırılmış verinin işaretçi ile alanı
+    // hedefBoyutu; Sıkıştırılmış verinin yazılma miktarı
+    // kaynakVeri.c_str(); Sıkıştırılacak olan verinin başlangıç işaretçisi
+    // kaynakBoyutu; Sıkıştırılacak olan verinin boyutu
+    // 19; Sıkıştırma seviyesi. Maksimum 19 iken minimum 1'dir. Seviye ne kadar düşükse o kadar sıkıştırma performansı düşük fakat sıkıştırma hızı yüksektir. Seviye ne kadar yüksekse o kadar sıkıştırma performansı yüksek fakat sıkıştırma hızı düşüktür
+
+    ofstream bilgilerimDotZst("bilgilerim.zst"); // Sıkıştırılmış verinin kayıt edilceği dosya nesnesi
+
+    for (size_t i = 0; i < compresSize; i++) // For ile kayıt edilir. Çünkü sıkıştırılmış veriler bolca Null yani "\0" içererir. C++ programlama dilindeki yazma fonksiyonları; "Null görene kadar yaz" şeklinde çalıştığı için verimiz yarım kalabilir
+    {
+        bilgilerimDotZst << hedefVeri[i]; // Kayıt ettik
+    }
+    
+    bilgilerimDotZst.close();
+
+    return 0;
+}</code>
+
+Ardından sıkıştırılmış dosyayı açan programın kaynak kodları;
+decompresser.cpp
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;fstream>
+
+#include &lt;zstd.h>
+
+using namespace std;
+
+int main()
+{
+    ifstream bilgilerimDotZst("bilgilerim.zst"); // bilgilerim.zst dosyamızın nesnesi
+    string kaynakVeri = ""; // bilgilerim.zst dosyasının verisi
+
+    string *satir = new string; // Bellek yönetimi için RAM'den alan telap ettik
+    while(getline(bilgilerimDotZst, *satir)) // Okuma
+    { 
+        kaynakVeri += *satir + "\n"; // Okuduğumuz verileri kayıt ediyoruz
+    }
+    delete satir;
+    bilgilerimDotZst.close();
+    
+    unsigned long long kaynakBoyutu = kaynakVeri.size() + 1;
+    
+    unsigned long long hedefBoyutu = ZSTD_getFrameContentSize(kaynakVeri.c_str(), kaynakVeri.size() + 1); // Hedefin boyutunu yani açılacak olan verinin açılmış halinin boyutunu verir
+    char hedefVeri[hedefBoyutu]; // Açılmış verinin kayıt edilceği alan
+
+    ZSTD_decompress(hedefVeri, hedefBoyutu, kaynakVeri.c_str(), kaynakBoyutu); // Sıkıştırılan verilerin tekrar açılmasını sağlayan fonksiyondur
+    // hedefVeri; Açılmış verinin işaretçi ile alanı
+    // hedefBoyutu; Açılmış verinin yazılma miktarı
+    // kaynakVeri.c_str(); Açılacak olan verinin başlangıç işaretçisi
+    // kaynakBoyutu; Açılacak olan verinin boyutu
+
+    for (size_t i = 0; i < hedefBoyutu; i++) // For ile yazdırıyoruz. Çünkü sıkıştırılmış veriler bolca Null yani "\0" içererir. C++ programlama dilindeki yazma fonksiyonları; "Null görene kadar yaz" şeklinde çalıştığı için verimiz yarım kalabilir
+    {
+        cout << hedefVeri[i]; // Yazdırdık
+    }
+
+    return 0;
+}</code>
+
+Kodlar hazır. Şimdi derliyelim;
+
+<code class="language-bash">g++ compresser.cpp -o compresser -lzstd
+g++ decompresser.cpp -o decompresser -lzstd</code>
+
+Ardından çalıştıralım;
+
+<code class="language-bash">compress
+decompresser</code>
+
+Çıktılar;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/18 Cpp Dosya İşlemleri.html/17.png" alt="18.17" width="100%">
+            <img src="../Bibliography/18 Cpp Dosya İşlemleri.html/18.png" alt="18.18" width="100%">
+        </div>
+
         <h2>Kaynakça</h2>
         <ul>
             <li><a href="https://www.w3schools.com/cpp/ref_fstream_ifstream.asp">https://www.w3schools.com/cpp/ref_fstream_ifstream.asp</a></li>
@@ -574,6 +1290,34 @@ int main()
             <li><a href="https://en.cppreference.com/cpp/filesystem">https://en.cppreference.com/cpp/filesystem</a></li>
             <li><a href="https://www.geeksforgeeks.org/cpp/file-system-library-in-cpp-17/">https://www.geeksforgeeks.org/cpp/file-system-library-in-cpp-17/</a></li>
             <li><a href="https://en.cppreference.com/cpp/filesystem/copy_file">https://en.cppreference.com/cpp/filesystem/copy_file</a></li>
+            <li><a href="https://data35delete.github.io/Data-s-Book-on-C/Lessons/15%20C%20Dosya%20İşlemleri.html">Data's Book on C - Dosya İşlemleri</a></li>
+            <li><a href="https://docs.oracle.com/cd/E23824_01/html/819-0690/chapter2-90421.html#chapter2-93321">https://docs.oracle.com/cd/E23824_01/html/819-0690/chapter2-90421.html#chapter2-93321</a></li>
+            <li><a href="https://chessman7.substack.com/p/the-linkers-detective-work-how-symbol">https://chessman7.substack.com/p/the-linkers-detective-work-how-symbol</a></li>
+            <li><a href="https://stackoverflow.com/questions/23654120/usage-of-dlsym-dlopen">https://stackoverflow.com/questions/23654120/usage-of-dlsym-dlopen</a></li>
+            <li><a href="https://stackoverflow.com/questions/1354537/dlsym-dlopen-with-runtime-arguments">https://stackoverflow.com/questions/1354537/dlsym-dlopen-with-runtime-arguments</a></li>
+            <li><a href="https://pubs.opengroup.org/onlinepubs/009604299/functions/dlsym.html">https://pubs.opengroup.org/onlinepubs/009604299/functions/dlsym.html</a></li>
+            <li><a href="https://www.reddit.com/r/cpp_questions/comments/1290fk7/dlsym_for_so_linking/">https://www.reddit.com/r/cpp_questions/comments/1290fk7/dlsym_for_so_linking/</a></li>
+            <li><a href="https://stackoverflow.com/questions/1067346/alternatives-to-dlsym-and-dlopen-in-c">https://stackoverflow.com/questions/1067346/alternatives-to-dlsym-and-dlopen-in-c</a></li>
+            <li><a href="https://cplusplus.com/forum/unices/184342/">https://cplusplus.com/forum/unices/184342/</a></li>
+            <li><a href="https://learn.microsoft.com/en-us/cpp/build/getprocaddress?view=msvc-170">https://learn.microsoft.com/en-us/cpp/build/getprocaddress?view=msvc-170</a></li>
+            <li><a href="https://github.com/Delphier/dumpbin">https://github.com/Delphier/dumpbin</a></li>
+            <li><a href="https://deepwiki.com/nlohmann/json/5.1-installation-methods">https://deepwiki.com/nlohmann/json/5.1-installation-methods</a></li>
+            <li><a href="https://inforetrieved.com/blogs/info/how-to-install-nlohmann-json-in-linux">https://inforetrieved.com/blogs/info/how-to-install-nlohmann-json-in-linux</a></li>
+            <li><a href="https://json.nlohmann.me/home/architecture/#details-namespace">https://json.nlohmann.me/home/architecture/#details-namespace</a></li>
+            <li><a href="https://deepwiki.com/nlohmann/json/2-core-library-architecture">https://deepwiki.com/nlohmann/json/2-core-library-architecture</a></li>
+            <li><a href="https://nlohmannjson.com/">https://nlohmannjson.com/</a></li>
+            <li><a href="https://tr.wikipedia.org/wiki/XML">https://tr.wikipedia.org/wiki/XML</a></li>
+            <li><a href="https://tr.wikipedia.org/wiki/World_Wide_Web_Consortium">https://tr.wikipedia.org/wiki/World_Wide_Web_Consortium</a></li>
+            <li><a href="https://pugixml.org/docs/manual.html">https://pugixml.org/docs/manual.html</a></li>
+            <li><a href="https://pugixml.org/docs/manual.html">https://pugixml.org/docs/manual.html</a></li>
+            <li><a href="https://pugixml.org/docs/quickstart.html">https://pugixml.org/docs/quickstart.html</a></li>
+            <li><a href="https://facebook.github.io/zstd/zstd_manual.html">https://facebook.github.io/zstd/zstd_manual.html</a></li>
+            <li><a href="https://github.com/facebook/zstd/blob/dev/examples/simple_compression.c">https://github.com/facebook/zstd/blob/dev/examples/simple_compression.c</a></li>
+            <li><a href="https://en.wikipedia.org/wiki/Zstd">https://en.wikipedia.org/wiki/Zstd</a></li>
+            <li><a href="https://www.tutorialspoint.com/article/lossless-real-time-data-compression-with-zstandard-zstd">https://www.tutorialspoint.com/article/lossless-real-time-data-compression-with-zstandard-zstd</a></li>
+            <li><a href="https://github.com/facebook/zstd/blob/dev/examples/simple_compression.c">https://github.com/facebook/zstd/blob/dev/examples/simple_compression.c</a></li>
+            <li><a href="https://github.com/facebook/zstd/blob/dev/examples/simple_decompression.c">https://github.com/facebook/zstd/blob/dev/examples/simple_decompression.c</a></li>
+            <li><a href="https://github.com/facebook/zstd/blob/dev/examples/common.h">https://github.com/facebook/zstd/blob/dev/examples/common.h</a></li>
         </ul>
     </div>
 
