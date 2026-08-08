@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data's Book on Cpp</title>
+
+    <link rel="icon" type="image/x-icon" href="../Sources/favicon.png">
+
+    <script src="../Sources/JS/setBackgroundMedia.js"></script>
+
+    <link rel="stylesheet" href="../Sources/JS/hljs/vs2015.css">
+    <script src="../Sources/JS/hljs/highlight.min.js"></script>
+    <script>
+        window.onload = function() {
+            hljs.highlightAll();
+        };
+    </script>
+
+    <link rel="stylesheet" href="../Sources/CSS/main.css">
+</head>
+<body>
+    <h1>Önişlemciler</h1>
+
+    <div style="height: 100px;"></div>
+    
+    <div id="mainDiv">
+        <h2>Önişlemciler Nedir?</h2>
+        <pre id="preh2">Önişlemciler, programın derleme zamanından önceki zamanında kaynak kodunun programıcının tanımladığı şeklinde düzenlenmesi ve düzenlenmiş bir şekilde derlenmesine sağlıyan bir araçlar bütünüdür.</pre>
+
+        <pre id="preh2">"Giriş" sayfasında bahsedilen ve "Derlenme Süreci" ana başlığı altında "Önişlemci" alt başlığında anlatılan konuya gelmiş bulunmaktayız. Bu konu aslında daha çok koşullu derleme, kodlama kolaylığı veya kütüphane ekleme gibi işlemlerde kullanılır. Koşullu derlemelerde veya işletim sistemine özel derleme sürecinde, işletim sistemlerinde özel olarak tanımlanan ve "Makro" olarak nitelendirilen elemanlar ile yapılır. Kodlama kolaylığı ise "Makrolar" ile var olur. Kütüphane ekleme ise "Başlık" dosyaların <code>#include</code></pre>
+
+        <h2>#define</h2>
+        <pre id="preh2"><code>#define</code>, programamızda makro tanımlamamızı sağlayan bir elemandır. Makrolar, önişlemci aşamasında kaynak kodda, makroda belirtilen veriyi direkt olarak kendi yerine yazan araçlara denir.</pre>
+
+        <pre id="codeh2">Örnek olması açısından Pi sayısını makro olarak tanımlayalım ve kullanalım;
+
+<code class="language-cpp">#include &lt;iostream>
+
+#define PI 3.14f // Makromuzu tanımladık
+//      |    |
+//      v    v
+//    İsmi Değeri
+
+using namespace std;
+
+int main()
+{
+    cout << "Pi = " << PI << endl; // Kullandık
+
+    return 0;
+}</code>
+
+Çıktısı ise;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/19 Cpp Önişlemciler.html/1.png" alt="19.1" width="100%">
+        </div>
+
+        <pre id="preh2">Makro tanımlamak bir nevi sabit bir değişken tanımlamaya benzer... Fakat tek sıkıntısı tür kontrolünün olmamasıdır. Yani tür bağımsız tanımlı olan değeri direkt yazdırır. Bu durum bazı durumlarda programın çökmesine kadar varan hatalarla sonuçlanabilir.</pre>
+
+        <pre id="preh2">Aslında önişlemcileri daha iyi anlamak şöyle bir görsel sunabiliriz;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/19 Cpp Önişlemciler.html/2.svg" alt="19.2" width="100%">
+        </div>
+
+        <h2>#ifdef / #ifndef / #endif / #else</h2>
+        <pre id="preh2">Bu elemanlar ise makroların varlığı üzerine bazı önişlemci işlemleri yapmamızı sağlayan araçlardır. <code>#ifdef</code> eğer makro tanımlı ise kodları dahil et, <code>#ifndef</code> eğer makro tanımlı değil ise kodları dahil et, <code>#else</code> eğer yukarıdaki <code>#ifdef</code> veya <code>#ifndef</code> makro kontrolcüleri kodlarını dahil etmezler ise bu kodları dahil et ve <code>#endif</code> dahil edilicek kodların sonu olarak kullanılır.</pre>
+
+        <pre id="preh2">Giriş kısmında bahsettiğimiz gibi bu önişlemci araçları koşullu derleme yapabilmemizi sağlarlar. Bunuda işletim sisteminde özel tanımlı makrolar ile yaptıklarını söz etmiştik. Şimdi ise bir program yazalım. Program eğer Windows'da derlendi ise "Windows'da derlendim" yazsın, Windows'da derlenmediyse "Windows'da derlenmedim" yazsın;
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main()
+{
+#ifdef WIN32 // Eğer WIN32 adlı bir makro tanımlı ise ki bu Widows'a özel bir makrodur
+
+    cout << "Windows'da derlendim" << endl;
+
+#else // Eğer WIN32 adlı makro tanımlı değilse. Koşullu derleme genelde Windows üzerinden yürür. "Windows'da isek bu değilse bu" gibi bir mantık yürütülür
+ 
+    cout << "Windows'da derlenmedim" << endl;
+
+#endif
+
+// Şimdi tam tersini yazalım
+
+#ifndef WIN32
+
+    cout << "Dolayısıyla POSIX kütüphanesini kullanabilirim!" << endl;
+
+#else
+ 
+    cout << "Dolayisiyla 'windows.h' kutuphanesini kullanabilirim!" << endl;
+
+#endif
+    return 0;
+}</code>
+
+Şimdi ise derliyelim ve çıktıları gözlemleyelim;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/19 Cpp Önişlemciler.html/3.png" alt="19.3" width="100%">
+            <img src="../Bibliography/19 Cpp Önişlemciler.html/4.png" alt="19.4" width="100%">
+        </div>
+
+        <pre id="preh2">Daha iyi anlamak için bir görsel sunalım;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/19 Cpp Önişlemciler.html/5.svg" alt="19.5" width="100%">
+        </div>
+
+        <h2>#include</h2>
+        <pre id="preh2"><code>#include</code> önişlemcilerde kütüphane eklemizi sağlayan bir elemandır. Aslında yaptığı işlem belirtilen dosyayı kaynak dosyasının içerisine yerleştirmektir. Bir nevi "kütüphane" veya "eklenti" görevi görür. Bu ekleme işlemi önişlemci zamanında gerçekliştirilir. Amacı ise kodları ayrı olarak yönetmek ve kullanım kolaylığı sağlamaktır.</pre>
+
+        <pre id="codeh2">İlerleyen sayfalarda daha net göreceğiz fakat şimdilik bir C++ başlık dosyası ".hpp" (".h" C programlama diline aittir fakat C++ programlama dilinde de kullanılabilir) oluşturalım ve ana programamıza ekliyerek kullanalım. Basit bir toplama fonksiyonu yazalım;
+
+topla.hpp
+
+<code class="language-cpp">#ifndef _TOPLA_H_P_P_ // Eğer _TOPLA_H_P_P_ adlı bir makro yoksa. Bu kontrol yapılır çünkü aynı başlık dosyası birden fazla çağrılırsa koddaa fonksiyon karmaşası yaşanır ve program çöker
+#define _TOPLA_H_P_P_ // _TOPLA_H_P_P_
+
+int toplaFunc(int x, int y) // Fonksiyonumuz
+{
+    return x + y;
+}
+
+#endif // topla.hpp dosyasının sonu</code>
+
+Şimdi ana program;
+main.cpp
+
+<code class="language-cpp">#include &lt;iostream>
+#include "topla.hpp" // Programamıza dahil ediyoruz
+
+/*
+#include'un 2 adet modu vardır.
+
+&lt;>
+    Küçüktür ve büyüktür işaretleri ile yapılan bu mod, başlık dosyalarını ana kütüphane dizininde aramasını sağlatır.
+
+""
+    Çift tırnak işaretleri ile yapılan bu mod, başlık dosyalarını ana programın dizininde aramasını sağlatır.
+*/
+
+using namespace std;
+
+int main()
+{
+    cout << "4 + 6 = " << toplaFunc(4, 6) << endl; // Başlık dosyamızdan gelen fonksiyonu kullanıyoruz
+
+    return 0;
+}</code>
+
+Şimdi derliyelim;
+
+<code class="language-bash">g++ main.cpp topla.hpp -o main</code>
+
+Çıktısı;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/19 Cpp Önişlemciler.html/6.png" alt="19.6" width="100%">
+        </div>
+
+        <pre id="preh2"><code>#include</code> için başka bir görsel daha gösterelim;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/19 Cpp Önişlemciler.html/7.svg" alt="19.7" width="100%">
+        </div>
+
+        <h2>Makrolu Fonksiyonlar</h2>
+        <pre id="preh2">Makroulu fonksiyonlar, tıpkı makrolar gibi önişlemci zamanında koda yazdırılan fonksiyonların içeriğidir. Bu yöntem genellikle bellek yönetimi için kullanılır. Çünkü makrolar RAM'de tutulmaz.</pre>
+
+        <pre id="codeh2">Örnek olması açısından "topla" fonksiyonunu makrolu bir şekilde kullanalım. Ayrıca bu bir kural değil fakat yazılımcılar tarafından kabul görmüş bir yazılış biçimi olan "Makro ise BÜYÜK YAZ" yöntemi kullanılır. Anlam açısından oldukça faydalıdır;
+
+<code class="language-cpp">#include &lt;iostream>
+
+#define TOPLAFUNC(x,y) \ 
+x + y
+// Bu şekilde tanımladık. Gördüğünüz gibi tür kontrolu yapılmaz
+
+// Makro tek satırda tanımlamaya izin verirler. Ancak "\" karateri ile diğer satırlarıda eklenmesini sağlayabiliriz
+
+using namespace std;
+
+int main()
+{
+    cout << "4 + 6 = " << TOPLAFUNC(4, 6) << endl; // Kullandık
+
+    return 0;
+}</code>
+
+Çıktımız değişmicektir</pre>
+
+        <pre id="preh2">Makrolu fonksiyonlar içinde bir görsel sunalım;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/19 Cpp Önişlemciler.html/8.svg" alt="19.8" width="100%">
+        </div>
+
+        <h2>Önceden Tanımlı Makrolar</h2>
+        <pre id="preh2">Önceden tanımlı makrolar, C++ içerisinde bulunan ve programın bazı meta verilerini içeren makrolardır. C++ programlama dilinin önceden tanımlı makroları aşağıdaki tabloda verilmiştir;</pre>
+
+        <table id="tableh2" border="1">
+            <thead>
+                <tr>
+                    <th>İsim</th>
+                    <th>Açıklama</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>__FILE__</td>
+                    <td>Kaynak dosyasının ismini verir.</td>
+                </tr>
+                <tr>
+                    <td>__LINE__</td>
+                    <td>Kullanıldığı satırın numarasını verir.</td>
+                </tr>
+                <tr>
+                    <td>__DATE__</td>
+                    <td>Derlenme tarihini verir.</td>
+                </tr>
+                <tr>
+                    <td>__TIME__</td>
+                    <td>Derlenme zamanını verir.</td>
+                </tr>
+                <tr>
+                    <td>__cplusplus</td>
+                    <td>C++ kodunun hangi standart ile derlendiğini; Yılı + sürümü numarası olarak verir.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <pre id="codeh3">Örnek olarak hepsini kullandığımız bir program yazalım;
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int main()
+{
+    cout << "Programin kaynak kodunu iceren dosya adi: " << __FILE__ << endl << endl;
+    cout << "Bu cikti " << __LINE__ << ". satirdan gelmistir" << endl << endl;
+    cout << "Bu program " << __DATE__ << " tarihinde derlenmistir" << endl << endl;
+    cout << "Bu program " << __TIME__ << " saatinde derlenmistir" << endl << endl;
+
+    cout << "Bu program " << __cplusplus << " tarihi + surum numarasi seklindeki standartta derlenmistir" << endl << endl;
+}</code>
+
+Tamamdır şimdi C++23 standartı ile derliyelim;
+
+<code class="language-bash">g++ main.cpp -o main --std=c++23</code>
+
+Çıktısı;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/19 Cpp Önişlemciler.html/9.png" alt="19.9" width="100%">
+        </div>
+
+        <h2>Kaynakça</h2>
+        <ul>
+            <li><a href="https://data35delete.github.io/Data-s-Book-on-C/Lessons/16%20C%20Önişlemciler.html">Data's Book on C - Önişlemciler</a></li>
+            <li><a href="https://stackoverflow.com/questions/49915424/what-does-the-cplusplus-macro-expand-to">https://stackoverflow.com/questions/49915424/what-does-the-cplusplus-macro-expand-to</a></li>
+        </ul>
+
+    </div>
+
+    <div style="height: 100px;"></div>
+
+    <footer style="position: fixed; left: 0; bottom: 0; width: 100%; background: transparent; text-align: center; padding: 10px 0; z-index: 100;">
+        <div>
+            <a href="./18 Cpp Dosya İşlemleri.html" style="margin-right: 20px; cursor:pointer;">
+                &larr; Önceki
+            </a>
+            <a href="" style="cursor:pointer;">
+                Sonraki &rarr;
+            </a>
+        </div>
+        <div>
+            <p>&copy; 2026 Data's Book</p>
+        </div>
+
+        <div style="position: absolute; right: 20px; bottom: 20px;">
+            <a href="./1 Cpp İçindekiler.html" style="text-decoration: none;">
+                İçindekiler
+            </a>
+        </div>
+    </footer>
+</body>
+</html>
+
+<!-- Muhammet Enes nam-ı diğer Data Delete tarafından sevgi ile yapıldı <3 -->
