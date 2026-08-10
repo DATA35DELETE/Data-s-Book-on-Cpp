@@ -370,13 +370,6 @@
   - **Mutex**: Tanım. Race Condition. `std::mutex`. `std::lock_guard`. Örnek.
   - **Condition Variable**: `std::condition_variable`. Tanım. Örnek.
   - **std::atomic**: Tanım. Lock-Free Programlama. Örnek.
-- **POSIX Threads (pthread)** *(Ek Bilgi)*:
-  - **Thread Oluşturma**: `pthread_create`. Örnek.
-  - **Thread Bekleme**: `pthread_join`. Örnek.
-  - **Mutex**: `pthread_mutex`. Örnek.
-- **Windows Threads** *(Ek Bilgi)*:
-  - **Thread Oluşturma**: CreateThread. Örnek.
-  - **Thread Bekleme**: WaitForSingleObject. Örnek.
 - **std::async ve std::future**: Tanım. Asenkron Görev. Örnek. (C++11)
 - **std::promise**: Tanım. future ile İlişkisi. Örnek.
  

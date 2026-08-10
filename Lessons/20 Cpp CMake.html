@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data's Book on Cpp</title>
+
+    <link rel="icon" type="image/x-icon" href="../Sources/favicon.png">
+
+    <script src="../Sources/JS/setBackgroundMedia.js"></script>
+
+    <link rel="stylesheet" href="../Sources/JS/hljs/vs2015.css">
+    <script src="../Sources/JS/hljs/highlight.min.js"></script>
+    <script>
+        window.onload = function() {
+            hljs.highlightAll();
+        };
+    </script>
+
+    <link rel="stylesheet" href="../Sources/CSS/main.css">
+</head>
+<body>
+    <h1>CMake</h1>
+
+    <div style="height: 100px;"></div>
+    
+    <div id="mainDiv">
+        <h2>CMake Nedir?</h2>
+        <pre id="preh2">CMake; C, C++ ve vb. dillerin derleme otomasyon aracıdır.</pre>
+
+        <pre id="preh2">Peki nedir bu "Derleme Otomasyon" aracı? Derleme otomasyonu; Bir komutla tanımlı bütün kaynak kodları ve kütüphaneleri derliyen ve kullanım kolaylığı sağlayan araçlara denir? Yani sizin projenizde yüz adet kaynak kod varsa, derlerken yüz adet kaynak kod dosyalarının isimlerini teker teker girmek yerine bir komuta bağlayıp tek seferde derliyebiliyorsunuz.</pre>
+
+        <pre id="preh2">Peki neden CMake? C ve C++ programlama dillerin derleme otomasyonları küçük büyük proje fark etmez her zaman gereklidir. Çünkü doğası bir çok kütüphane ve kodların ayrı şekilde yazılması gereken bir dildir. Biz bu yazdığımız bütün kodları teker teker yazmak yerine bir derleme otomasyonuna tanımlayıp tek bir komutla derlemimizi kolaylaştırabiliriz. Eski zamanlarda bu tarz sistemler işletim sisteminin ve bilimum hangi derliyiciye göre değişiklik gösteren Bash komutları yazılırdı. Bu Bash komutları derlemek kodları derlemek istiyenler için yazılır ve tek bir komutla iş çözülürdü. Lakin sistemler geliştikçe farklı ihtiyaçlar doğruldu ve bu sistem artık hantal ve hatta kendimiz uğraşsak daha kolay olucak bir durum aldı. O zamanlarda Make denilen ve bilgisayarın saf diline çevirlen yani derlenen yazılım dilleri için bir kurtarıcı oldu. Bash benzeri bir sözdizime sahipti ve ayarlamalar ile tüm işletim ve derleyici sistemlerine uyumlu olucak şekilde kodları derliyebiliyordu. Lakin Bash'te yapılan kolaylıkların başına gelen durum Make'inde başına geldi ve oda bir işkenceye dönüştü. Yapısı gereği sözdizimi karmaşıktı ve yeni başlıyanlar zorlanmaya başladı. Bu duruma son noktayı koyan programda ki sayfamızın konusu olan CMake'tır. CMake hem çapraz işletim ve derleyici sistemini hemde sözdizimi sorunlarını "Fonksiyon Tabanlı" bir şekilde çözmüştü.</pre>
+
+        <pre id="preh2">CMake; 1999 yılında Kitware tarafından geliştirilmiş ve 2000 yılında ilk sürümü çıkartılmış bu derleme otomasyon aracı; C ve C++ programlama dillerini ondan fazla derliyici ile derleme otomasyonunu mümkün kılan derleme otomasyon aracıdır.</pre>
+
+        <h2>CMake Kurulumu</h2>
+        <pre id="codeh2">Windows;
+
+<code class="language-bash">pacman -S mingw-w64-x86_64-cmake</code>
+
+Linux
+
+<code class="language-bash">sudo apt install cmake</code></pre>
+
+        <h2>Proje Oluşturma</h2>
+        <pre id="preh2">CMake ile bir proje oluşturma için ilk olarak boş bir klasör içerisinde "source" ve "build" adlı iki adet klasör oluşturalım. "source" klasörü kaynak kodlarımızın buluncağı, "build" klasörü ise kaynak kodlarının derlenmiş hallerini ve çalıştırabilir dosyalarını barındırcağı klasördür</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/20 Cpp CMake.html/1.png" alt="20.1" width="100%">
+        </div>
+
+        <pre id="preh2">Ardından "source" klasörüne girelim ve CMake projemiz için gerekli olan "CMakeLists.txt" dosyasını oluşturalım. Bu dosya önemlidir çünkü CMake projemizin kalbı burasıdır. Tüm kaynak kodları ve bağlanması gereken kütüphaneleri bu dosyada tanımlıyoruz.</pre>
+
+        <h3>CMakeLists.txt</h3>
+        <pre id="preh3">Projemiz klasiklerden bir hesap makinesi olsun ki birden fazla dosyaya ihtiyaç duyalım. CMakeLists.txt'de istediklerimizi belirtmek için şu şekilde dolduralım;</pre>
+
+        <pre id="codeh3"><code class="language-cmake">cmake_minimum_required(VERSION 3.11) 
+# Projemizin minimum sürümünü ayarlıyoruz. 3.11 sürümünden sonraki sürümler kararlı sürümledir
+
+project(hesapMakinesi)
+# Projemizin ismini yazdık
+
+set(CMAKE_CXX_STANDARD 23)
+# Set komutu bir çok ayarı ayarlamamızı sağlayan bir komuttur. Bu komutta C++ standartlarından C++23 kullanmayı tercih ettim
+
+add_executable(main) 
+# Bu kısımda çalıştırabilir dosya ekledim. İsmi "main" olsun
+
+target_sources(main PRIVATE main.cpp mat.hpp mat.cpp)
+# Target_sources, eklediğimiz "main" adlı çalıştırılabilir dosyanın kaynak kod dosyalarını ayarlamamızı sağlar. PRIVATE'ın sağındaki dosya isimleri "main" uygulamasına katılıcak olan kaynak kodları temsil eder. Dolayısıyla "source" klasörümüze bu kaynak dosyalarını oluşturalım</code>
+
+CMakeLists.txt dosyamızı oluşturduk. Ardından bu CMakeLists.txt ile CMake'e tanıtmamız lazım. Bunun için bir üst dizine çıkıp "build" klasörüne girelim. Ardından CMake'e bu CMakeLists.txt dosyamızı tanıtalım;
+
+Windows;
+
+<code class="language-bash">cmake -G "MinGW Makefiles" ../build</code>
+
+Linux;
+
+<code class="language-bash">cmake -G "Unix Makefiles" ../build</code>
+
+Ayarlama işleminden sonra artık projemizi derleme otomasyonuyla derliyelibiliriz.
+
+Son olarak CMake'e tanıtırken "-G-" ile tanımlanan "MinGW Makefiles" veya "Unix Makefiles" parametresi dikkatinizi çekmiş olabilir. Bu parametre CMake'deki Generater veya üretici ayarlamamızı sağlar. CMake'te üretici; Derleme otomasyonunda kullanılan derliyicidir. Biz tüm dökümantasyon boyunca GNU G++ kullandığımız için, Windows'daki G++ derliyicisi CMake'de "MinGW Makefiles", Linux'da G++ derliyicisi ise "Unix Makefiles" olarak geçmektedir. Bu sebeble böyle bir ayarlama söz konusu olmuştur. Dilerseniz diğer oluşturucuları gözlemlemek için şu komutu çalıştırabilirsiniz;
+
+<code class="language-bash">cmake -G</code></pre>
+
+        <h2>Proje İçeriği</h2>
+        <pre id="preh2">Proje içeriğimiz aşağıdaki kodlarla dolduralım;</pre>
+
+        <pre id="codeh2">main.cpp
+
+<code class="language-cpp">#include &lt;iostream>
+
+#include "mat.hpp"
+
+using namespace std;
+
+int main()
+{
+    cout << "4 + 3 = " << topla(4,3) << endl;
+    cout << "1 - 5 = " << cikar(1,5) << endl;
+    cout << "6 * 5 = " << carp(6,5) << endl;
+    cout << "8 / 2 = " << bol(8,2) << endl;
+
+    return 0;
+}</code>
+
+mat.hpp
+
+<code class="language-cpp">#ifndef _MAT_H_P_P_
+#define _MAT_H_P_P_
+ 
+int topla(int x,int y);
+int cikar(int x,int y);
+int carp(int x,int y);
+int bol(int x,int y);
+
+#endif</code>
+
+mat.cpp
+
+<code class="language-cpp">int topla(int x,int y)
+{
+    return x + y;
+}
+int cikar(int x,int y)
+{
+    return x - y;
+}
+int carp(int x,int y)
+{
+    return x * y;
+}
+int bol(int x,int y)
+{
+    return x / y;
+}</code>
+
+Projemizin içeriği bu şekildedir.</pre>
+
+        <h2>Projeyi Derleme</h2>
+        <pre id="codeh2">Tüm kodlar hazır. Şimdi "build" klasöründe projemizi derlemek için şu komutu çalıştıralim;
+
+<code class="language-bash">cmake --build .</code>
+
+Ardından
+
+<code class="language-bash">main</code>
+
+Çıktısı;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/20 Cpp CMake.html/2.png" alt="20.2" width="100%">
+        </div>
+
+        <h2>Kütüphane Oluşturma</h2>
+        <pre id="preh2">Kütüphane oluşturmak için CMakeLists.txt dosyamızın içeriğini bu komutlarla değiştirelim;</pre>
+
+        <pre><code class="language-cmake">cmake_minimum_required(VERSION 3.11) 
+
+project(hesapMakinesi)
+
+set(CMAKE_CXX_STANDARD 23)
+
+include_directories(.)
+# Başlık dosyalarının dizini
+
+add_library(mat SHARED mat.cpp)
+# Kütüphanemizi oluşturduk. İsmi "mat" olsun. SHARED ifadesi bu kütüphanenin bir dinamik Native dosya olucağını belirtir fakt standartlar gereği statik Native dosyasıda yanında oluşturulur
+
+# Projemizden main.cpp dosyasını silelim ki artık ihtiyacımız yok</code>
+
+Ardından ayarlama komutunu girelim ki kütüphanemiz olsun;
+
+Windows;
+
+<code class="language-bash">cmake -G "MinGW Makefiles" ../build</code>
+
+Linux;
+
+<code class="language-bash">cmake -G "Unix Makefiles" ../build</code>
+
+Ardından
+
+<code class="language-bash">cmake --build .</code>
+
+Kütüphanemiz oluşturulmuştur!</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/20 Cpp CMake.html/3.png" alt="20.3" width="100%">
+            <img src="../Bibliography/20 Cpp CMake.html/4.png" alt="20.4" width="100%">
+        </div>
+
+        <h2>Dış Kütüphane Bağlama</h2>
+        <pre id="preh2">CMake'de dış kütüphane bağlamak için CMakeLists.txt dosyamızın içeriğini şu şekilde değiştirelim;</pre>
+
+        <pre id="codeh2"><code class="language-cmake">cmake_minimum_required(VERSION 3.11) 
+
+project(hesapMakinesi)
+
+set(CMAKE_CXX_STANDARD 23)
+
+link_directories(${PROJECT_SOURCE_DIR})
+# Projemizi "source" klasöründe ara
+
+add_executable(main)
+
+target_link_libraries(main PRIVATE libmat.dll)
+# Main'e libmat.dll kütüphanesini bağladık
+
+# Son olarak mat.hpp ve mat.cpp dosyalarını silelim. Çünkü onlar şuan libmat.dll dosyalarında
+# Ayrıca libmat.dll dosyamızı hem source hemde build klasörüne kopyalayalım
+
+target_sources(main PRIVATE main.cpp)</code>
+
+Ardından main.cpp dosyamız;
+
+<code class="language-cpp">#include &lt;iostream>
+
+using namespace std;
+
+int topla(int x,int y);
+int cikar(int x,int y);
+int carp(int x,int y);
+int bol(int x,int y);
+
+int main()
+{
+    cout << "4 + 3 = " << topla(4,3) << endl;
+    cout << "1 - 5 = " << cikar(1,5) << endl;
+    cout << "6 * 5 = " << carp(6,5) << endl;
+    cout << "8 / 2 = " << bol(8,2) << endl;
+
+    return 0;
+}</code>
+
+Çıktısı değişmicektir.</pre>
+
+        <h3>Paket Bağlama</h3>
+        <pre id="preh3">Paket bağlama, CMake'de nlohmann Json kütüphanesi gibi büyük çaplı kütüphaneleri bağlamamızı sağlayan bir komuttur.</pre>
+
+        <pre id="preh3">Şimdi ise Json konusundaki kodları CMake ile yeniden derliyelim;
+
+CMakeLists.txt
+
+<code class="language-cmake">cmake_minimum_required(VERSION 3.11) 
+
+project(hesapMakinesi)
+
+set(CMAKE_CXX_STANDARD 23)
+
+add_executable(main)
+
+find_package(nlohmann_json 3.12.0 REQUIRED)
+# nlohmann_json kütüphanesini buldurduk
+
+target_link_libraries(main PRIVATE nlohmann_json::nlohmann_json)
+# Bağlıyoruz
+
+target_sources(main PRIVATE main.cpp)</code>
+
+main.cpp;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;fstream>
+#include &lt;nlohmann/json.hpp>
+
+using namespace std;
+
+int main()
+{
+    nlohmann::json verilerim; 
+
+    verilerim["Isim"] = "Data";
+    verilerim["Soyisim"] = "Delete";
+    verilerim["Yasim"] = 15;
+    verilerim["En sevdigim sayi"] = 3.14f;
+    verilerim["Adresim"]["Turkiye"] = "Izmir";
+    verilerim["Becerilerim"] = {"C", "C++", "Java"};
+
+    string verilerimStr = verilerim.dump();
+
+    std::ofstream bilgilerimDotJson("bilgilerim.json");
+
+    bilgilerimDotJson << verilerimStr;
+
+    bilgilerimDotJson.close();
+
+    ifstream bilgilerimDotJsonOkuma("bilgilerim.json");
+
+    nlohmann::json bilgilerimiOkuma = nlohmann::json::parse(bilgilerimDotJsonOkuma);
+
+    bilgilerimDotJsonOkuma.close();
+
+    cout << "Bilgilerim;" << endl;
+    cout << "Isim: " << verilerim["Isim"] << endl;
+    cout << "Soyisim: " << verilerim["Soyisim"] << endl;
+    cout << "Yasim: " << verilerim["Yasim"] << endl;
+    cout << "En sevdigim sayi: " << verilerim["En sevdigim sayi"] << endl;
+    cout << "Ev Adresim: " << verilerim["Adresim"]["Turkiye"] << endl;
+    cout << "Becerilerim: " << verilerim["Becerilerim"] << endl;
+
+    return 0;
+}</code>
+
+Çıktımız değişmicektir.</pre>
+
+        <h2>Kaynakça</h2>
+        <ul>
+            <li><a href="https://data35delete.github.io/Data-s-Book-on-C/Lessons/17%20C%20CMake.html">Data's Book on C - CMake</a></li>
+            <li><a href="https://en.wikipedia.org/wiki/CMake">https://en.wikipedia.org/wiki/CMake</a></li>
+            <li><a href="https://stackoverflow.com/questions/72587721/different-ways-of-setting-cxx-standard">https://stackoverflow.com/questions/72587721/different-ways-of-setting-cxx-standard</a></li>
+            <li><a href="https://cmake.org/cmake/help/latest/command/target_sources.html">https://cmake.org/cmake/help/latest/command/target_sources.html</a></li>
+            <li><a href="https://cmake.org/cmake/help/latest/command/add_executable.html">https://cmake.org/cmake/help/latest/command/add_executable.html</a></li>
+            <li><a href="https://json.nlohmann.me/integration/cmake/#nlohmann_json_build_modules">https://json.nlohmann.me/integration/cmake/#nlohmann_json_build_modules</a></li>
+        </ul>
+    </div>
+
+    <div style="height: 100px;"></div>
+
+    <footer style="position: fixed; left: 0; bottom: 0; width: 100%; background: transparent; text-align: center; padding: 10px 0; z-index: 100;">
+        <div>
+            <a href="./19 Cpp Önişlemciler.html" style="margin-right: 20px; cursor:pointer;">
+                &larr; Önceki
+            </a>
+            <a href="" style="cursor:pointer;">
+                Sonraki &rarr;
+            </a>
+        </div>
+        <div>
+            <p>&copy; 2026 Data's Book</p>
+        </div>
+
+        <div style="position: absolute; right: 20px; bottom: 20px;">
+            <a href="./1 Cpp İçindekiler.html" style="text-decoration: none;">
+                İçindekiler
+            </a>
+        </div>
+    </footer>
+</body>
+</html>
+
+<!-- Muhammet Enes nam-ı diğer Data Delete tarafından sevgi ile yapıldı <3 -->
