@@ -371,7 +371,6 @@
   - **Condition Variable**: `std::condition_variable`. Tanım. Örnek.
   - **std::atomic**: Tanım. Lock-Free Programlama. Örnek.
 - **std::async ve std::future**: Tanım. Asenkron Görev. Örnek. (C++11)
-- **std::promise**: Tanım. future ile İlişkisi. Örnek.
  
 ---
  

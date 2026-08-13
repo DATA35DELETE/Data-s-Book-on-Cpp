@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data's Book on Cpp</title>
+
+    <link rel="icon" type="image/x-icon" href="../Sources/favicon.png">
+
+    <script src="../Sources/JS/setBackgroundMedia.js"></script>
+
+    <link rel="stylesheet" href="../Sources/JS/hljs/vs2015.css">
+    <script src="../Sources/JS/hljs/highlight.min.js"></script>
+    <script>
+        window.onload = function() {
+            hljs.highlightAll();
+        };
+    </script>
+
+    <link rel="stylesheet" href="../Sources/CSS/main.css">
+</head>
+<body>
+    <h1>Asenkron Programlama</h1>
+
+    <div style="height: 100px;"></div>
+    
+    <div id="mainDiv">
+        <h2>Asenkron Nedir?</h2>
+        <pre id="preh2">Asenkron, aynı zamanda birden fazla işi yapabilme yeteneğine denir. Asenkron programlama ise bu eylemin yazılımsal karşılığıdır. Asenkronun tersi ise senkrondur. Senkron ise aynı anda bir çok işi sırayla yapabilme yeteneğidir.</pre>
+
+        <pre id="preh2">Peki neden Asenkron programlama? Şuan ki uygulamalarda pek ihtiyacımız olmasa gelecek sayfalarda sıklıkla danışıcağımız olan bu kavram, bir yandan pencereleri görüntülerken bir yanda da ağ alışverişlerini yapabilmemizi sağlar. Çünkü programlar doğaları gereği birden fazla işi sırayla yaparlar ki program akışı bu sebeble var olmuştur. Fakat bazenler aynı zaman içerisinde birden fazla iş yapmamız gerekir. Örnek olarak verdiğim uygulama ise bir mesajlaşma uygulaması örneğidir. İlk "pencere" dediğimiz şey aslında bilgisayar veya telefonlarımızdaki uygulamaların görünümleridir. Her uygulamanın bir penceresi yoktur ama her pencerenin arkasında bir uygulama vardır. İşte bu pencereleri görüntülemek veya işlemek için kullanılan sistemler senkrondur. Yani pencere görüntülernirken başka bir iş yapamayız. Tabi senkron bir sistemde... Eğer uygulamda hem pencere hemde ağ işlemleri olucaksa asenkron olarak tasarlanırlar. Bir kısım pencereyi işlerken diğer kısım ise ağ işlemlerini halleder gibi gibi. Yani Asenkron programlama biz insanlar için ikinci veya üçüncü kol gibidir.</pre>
+
+        <h2>Thread Nedir?</h2>
+        <pre id="preh2">Thread veya iş parçacığı, bir işlem yani Process içerisindeki program akışlarına denir. Process ise bir veya birden fazla program akışı içeren ve Thread topluğudur. Process çoğu zaman bir uygulamadır.</pre>
+
+        <h2>C++ Asenkron Programlama</h2>
+        <pre id="preh2">C++ programlama dilinde asenkron programlama işlemleri <code>std::thread</code> kütüphanesi üzerinden yapılmaktadır. C programlama dilinde işletim sistemlerine özel koldar yazılırken C++ bu konuda tamamiyle platformlar arasıdır.</pre>
+
+        <h3>Thread Oluşturma</h3>
+        <pre id="codeh3">Şimdi örnek olarak bir Thread oluşturalım;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;thread> // Thread kütüphanemiz
+
+using namespace std;
+
+void asenkronBirFonksiyon(int x) // Asenkron fonksiyonumuz
+{
+    cout << "Asenkron program akisinde su parametre girildi: " << x << endl << endl;
+}
+
+int main()
+{
+    cout << "Asenkron fonksiyon baslatildi" << endl << endl;
+
+    thread asenkronFonk(asenkronBirFonksiyon, 12); // Nesne üzerinden başlatılır. Fonksiyon parametre içeriyorsa virgülden sonra yazılır
+
+    asenkronFonk.join(); // Bitmesini bekle. Normal şartlarda beklenmez lakin kurallar gereği uygulamalarda ana Thread olan Main fonksiyonu bittiği an o Process'deki tüm Thread'ler kapatılır
+    // asenkronFonk.detach(); istersekde ayırabiliriz ama bahsettiğim kurallardan dolayı bu durum pekde işe yaramaz
+
+    cout << "Asenkron fonksiyon bitti" << endl;
+
+    return 0;
+}</code>
+
+Çıktısı;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/21 Cpp Asenkron Programlama.html/1.png" alt="21.1" width="100%">
+        </div>
+
+        <h3>Thread Bekletmek</h3>
+        <pre id="preh3">Thread bekletmek, belirli bir sürede Thread'i durdurmak için kullanılan bir metodtur. C++ programlama dilinde bunun için <code>this_thread::sleep_for</code> kullanılır.</pre>
+
+        <pre id="codeh3">Kodumuzu geliştirmek adına gecikmeli biten iki adet Thread yapalım;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;thread>
+
+using namespace std;
+
+void birinciThread()
+{
+    cout << "1. Thread basladi!" << endl << endl;
+
+    this_thread::sleep_for(500ms);// 500 milisaniye beklettik. Saniye karşılığı 0.5 saniyedir
+
+    cout << "1. Thread bitti!" << endl << endl;
+}
+
+void ikinciThread()
+{
+    cout << "2. Thread basladi!" << endl << endl;
+
+    this_thread::sleep_for(2s); // 2 saniye beklettik
+
+    cout << "2. Thread bitti!" << endl << endl;
+}
+
+int main()
+{
+    cout << "Ana Thread basladi" << endl << endl;
+
+    this_thread::sleep_for(2s); // 2 saniye ana Thread'i beklettik
+
+    thread birinciT(birinciThread);
+    thread ikinciT(ikinciThread);
+    // Thread'leri başlattık
+
+    birinciT.join();
+    ikinciT.join();
+    // Thread'leri bekle
+
+    cout << "Ana Thread bitti" << endl << endl;
+
+    return 0;
+}</code>
+
+Çıktımızı video olarak gözlemleyelim;</pre>
+
+        <div id="divh3Vid">
+            <video controls src="../Bibliography/21 Cpp Asenkron Programlama.html/2.mp4" alt="21.2" width="100%">
+        </div>
+
+        <h3>Veri Yarışı Hatası</h3>
+        <pre id="preh3">Bu hata genelde eş zamanlı olarak iki veya ikiden fazla Thread'in aynı anda bir bellek alanına yani değişkene erişmeye çalışması sonucunda oluşan ve programın kararsız hareket etmesiyle sonuçlanan bir durumdur.</pre>
+
+        <pre id="codeh3">Şimdi veri yarışı sorunu olan bir program yazalım;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;thread>
+
+using namespace std;
+
+int* veri; // Veri işaretçisi
+
+void thread1()
+{
+    for (int i = 0; i < 1000; i++)
+    {
+        ++(*veri);
+
+        this_thread::sleep_for(1ms); // Zaman faktörü
+    }
+}
+
+int main()
+{
+    veri = new int(10); // Veriyi oluşturduk
+
+    thread birinciT(thread1);
+    thread ikinciT(thread1);
+
+    birinciT.join();
+    ikinciT.join();
+
+    cout << "*veri = " << *veri << endl; // Her çalıştırmada farklı veriler gelir
+
+    delete veri;
+
+    return 0;
+}</code>
+
+Bu sorunu düzeltmek için C++ programlama dilinde <code>std::mutex</code> ve <code>std::lock_guard</code> kullanılır.
+
+Hadi veri yarışını bitirelim;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;thread>
+#include &lt;mutex> // Mevzu bahis kütüphanemiz
+
+using namespace std;
+
+mutex erisimKontrol; // Aynı andaki erişimleri kontrol edecek genel bir Mutex nesnesi
+int* veri; // Veri işaretçisi
+
+void thread1()
+{
+    erisimKontrol.lock(); // Erişim kontrolunu açıyoruz. Lock ifasesi bu kısımda "Aynı andaki erişimleri kitle" anlamına gelir
+
+    for (int i = 0; i < 1000; i++)
+    {
+        ++(*veri);
+
+        this_thread::sleep_for(1ms);
+    }
+
+    erisimKontrol.unlock(); // Kilidi açıyoruz
+}
+
+int main()
+{
+    veri = new int(10);
+
+    thread birinciT(thread1);
+    thread ikinciT(thread1);
+
+    birinciT.join();
+    ikinciT.join();
+
+    cout << "*veri = " << *veri << endl; // Her çalıştırmada artık sabit bir değer geliyor
+
+    delete veri;
+
+    return 0;
+}</code>
+
+Artık yarışımız bitmiştir.</pre>
+
+        <h3>Koşullu Thread Bekletme</h3>
+        <pre id="preh3">Belirli bir koşula bağlı olarak bir Thread'leri bekletebiliriz. Bu yöntem için C++ programlama dilindeki <code>std::condition_variable</code> kullanılır.</pre>
+
+        <pre id="codeh3">Hadi bir örnek daha yapalım;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;thread>
+#include &lt;mutex>
+#include &lt;condition_variable> // Koşullu bekletmek için kütüphanemiz
+
+using namespace std;
+
+// Klasik ama bir zamanlayıcı örneği yapabiliriz
+
+mutex mtx; // Veriyi yarışı için
+condition_variable genelBekletme; // Bekletme nesnemiz
+
+bool ikinciAsamaKosulu = false;
+
+void birinciAsama()
+{
+    lock_guard&lt;mutex> kitlemeHatti(mtx); // Lock sistemi ile kitlemeler üzerinden iletişim kurulur
+
+    this_thread::sleep_for(2s); // 2 saniye bekle
+
+    ikinciAsamaKosulu = true; // İkinci aşama için true yap
+
+    genelBekletme.notify_one(); // Bildirimde bulun. Eğer bekliyenler varsa(ki bekliyorlar) Callback tarzı bir uyarımda bulunur
+}
+
+void ikinciAsama()
+{
+    unique_lock&lt;mutex> kitlemeHatti(mtx); // Benzersiz kitleme hattı kur
+
+    genelBekletme.wait(kitlemeHatti, [] {return ikinciAsamaKosulu;}); // Kosulu bekle
+
+    cout << "Ikinci asamaya gecildi" << endl << endl;
+}
+
+int main()
+{
+    thread t1(birinciAsama);
+    thread t2(ikinciAsama);
+
+    t1.join();
+    t2.join();
+
+    return 0;
+}</code>
+    
+Böylelikle fonksiyonlar birbirlerini beklerler.</pre>
+
+        <h3>Atomik Değişkenler</h3>
+        <pre id="preh3">Son olarak atomik değişkenler ise veri yarışını değişken tarafında engelliyen araçlardır. <code>atomic</code> kütüphanesinde yer alırlar.</pre>
+
+        <pre id="codeh3">Şimdi atomik bir değişken ile örnek yapalım;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;thread>
+#include &lt;atomic> // Kütüphanemiz
+
+using namespace std;
+
+atomic&lt;int> *veri; // Template ile atomik değişkenler oluşturulur
+
+void thread1()
+{
+    for (int i = 0; i < 1000; i++)
+    {
+        ++(*veri);
+
+        this_thread::sleep_for(1ms);
+    }
+}
+
+int main()
+{
+    veri = new atomic&lt;int>;
+
+    thread birinciT(thread1);
+    thread ikinciT(thread1);
+
+    birinciT.join();
+    ikinciT.join();
+
+    cout << "*veri = " << *veri << endl; // Her çalıştırmada stabildir
+
+    delete veri;
+
+    return 0;
+}</code>
+
+Çıktımız değişmicektir.</pre>
+
+        <h2>Async ve Future</h2>
+        <pre id="preh2">Async ve Future, C++11 standartı ile bir Thread oluşturmayı son derece kolay ve basitleştiren iki araçtır. Async asenkron olarak fonksiyonları çalıştırdığında bir Future türü döner. Futur üzerinden oluşturulan asenkron fonksiyon yönetilir hatta döndürdüğü değer alınabilir. Kütüphanesi <code>future</code>'dır.</pre>
+
+        <pre id="codeh2">Şimdi kullanımlarını görmek için bir örnek yazalım;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;thread>
+#include &lt;future> // Kütüphanemiz
+
+using namespace std;
+
+void ikiArtiIki() // Düz fonksiyonumuz
+{
+    cout << "2 + 2 = " << 4 << endl;
+}
+
+float cikar(float x, float y) // Hem parametreli hemde dönüşlü fonksiyonumuz
+{
+    return x - y;
+}
+
+int main()
+{
+    future&lt;void> asenkronIslem1 = async(launch::async, ikiArtiIki); // Normal ve bağımsız çağrı
+//     |  |-> İşlemin dönüş tipi   |     |        |-> Fonksiyon ismi
+//     v                           v     |-> Bağımsız Çalıştır
+// Sınıfımız                     Fonksiyon
+
+    this_thread::sleep_for(1s); // Aralarında 1 saniyelik fark olsun. Çünkü hepsi asenkron olduğu için çıktılar karışırlar
+
+    future&lt;float> asenkronIslem2 = async(launch::async, cikar, 4.2f, 3.12f);
+//                                                         |-> Fonksiyon isminden sonrakinler paramtrelerdir
+
+    cout << "4.2f - 3.12f = " << asenkronIslem2.get() << endl; // Dönen değeri alıyoruz.
+// asenkronIslem2.get(); Fakat ikinci kez alamayız
+
+    // Lambda işlemler
+
+    this_thread::sleep_for(1s);
+
+    future&lt;void> asenkronIslem3 = async(launch::async,
+    [] () 
+    {
+        cout << "54 / 6 = " << 9 << endl;
+    });
+
+    this_thread::sleep_for(1s);
+
+    future&lt;int> asenkronIslem4 = async(launch::async,
+    [] (int x, int y) 
+    {
+        return x, y;
+    },
+    12, 4); // Aynı şekilde Lambda ifadelerde de parametreler bu şekilde yazılır
+
+    cout << "12 * 4 = " << asenkronIslem4.get() << endl;
+
+    return 0;
+}</code>
+
+Çıktımızın videosu;</pre>
+
+        <div id="divh2Vid">
+            <video src="../Bibliography/21 Cpp Asenkron Programlama.html/3.mp4" alt="21.3" width="100%"></video>
+        </div>
+
+        <h2>Kaynakça</h2>
+        <ul>
+            <li><a href="https://www.geeksforgeeks.org/cpp/multithreading-in-cpp/">https://www.geeksforgeeks.org/cpp/multithreading-in-cpp/</a></li>
+            <li><a href="https://en.cppreference.com/cpp/thread/thread">https://en.cppreference.com/cpp/thread/thread</a></li>
+            <li><a href="https://www.geeksforgeeks.org/cpp/data-races-in-cpp/">https://www.geeksforgeeks.org/cpp/data-races-in-cpp/</a></li>
+            <li><a href="https://www.geeksforgeeks.org/cpp/use-stdthis_threadsleep_for-method-to-sleep-in-cpp/">https://www.geeksforgeeks.org/cpp/use-stdthis_threadsleep_for-method-to-sleep-in-cpp/</a></li>
+            <li><a href="https://www.geeksforgeeks.org/cpp/std-mutex-in-cpp/">https://www.geeksforgeeks.org/cpp/std-mutex-in-cpp/</a></li>
+            <li><a href="https://www.geeksforgeeks.org/cpp/cpp-multithreading-condition-variables/">https://www.geeksforgeeks.org/cpp/cpp-multithreading-condition-variables/</a></li>
+            <li><a href="https://en.cppreference.com/cpp/thread/condition_variable">https://en.cppreference.com/cpp/thread/condition_variable</a></li>
+            <li><a href="https://en.cppreference.com/cpp/atomic/atomic">https://en.cppreference.com/cpp/atomic/atomic</a></li>
+            <li><a href="https://en.cppreference.com/cpp/thread/async">https://en.cppreference.com/cpp/thread/async</a></li>
+            <li><a href="https://en.cppreference.com/cpp/thread/future">https://en.cppreference.com/cpp/thread/future</a></li>
+            <li><a href="https://stackoverflow.com/questions/17963172/why-should-i-use-stdasync">https://stackoverflow.com/questions/17963172/why-should-i-use-stdasync</a></li>
+            <li><a href="https://www.geeksforgeeks.org/cpp/std-future-in-cpp/">https://www.geeksforgeeks.org/cpp/std-future-in-cpp/</a></li>
+        </ul>
+    </div>
+
+    <div style="height: 100px;"></div>
+
+    <footer style="position: fixed; left: 0; bottom: 0; width: 100%; background: transparent; text-align: center; padding: 10px 0; z-index: 100;">
+        <div>
+            <a href="./20 Cpp CMake.html" style="margin-right: 20px; cursor:pointer;">
+                &larr; Önceki
+            </a>
+            <a href="" style="cursor:pointer;">
+                Sonraki &rarr;
+            </a>
+        </div>
+        <div>
+            <p>&copy; 2026 Data's Book</p>
+        </div>
+
+        <div style="position: absolute; right: 20px; bottom: 20px;">
+            <a href="./1 Cpp İçindekiler.html" style="text-decoration: none;">
+                İçindekiler
+            </a>
+        </div>
+    </footer>
+</body>
+</html>
+
+<!-- Muhammet Enes nam-ı diğer Data Delete tarafından sevgi ile yapıldı <3 -->
