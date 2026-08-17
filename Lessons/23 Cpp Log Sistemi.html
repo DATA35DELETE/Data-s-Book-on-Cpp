@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data's Book on Cpp</title>
+
+    <link rel="icon" type="image/x-icon" href="../Sources/favicon.png">
+
+    <script src="../Sources/JS/setBackgroundMedia.js"></script>
+
+    <link rel="stylesheet" href="../Sources/JS/hljs/vs2015.css">
+    <script src="../Sources/JS/hljs/highlight.min.js"></script>
+    <script>
+        window.onload = function() {
+            hljs.highlightAll();
+        };
+    </script>
+
+    <link rel="stylesheet" href="../Sources/CSS/main.css">
+</head>
+<body>
+    <h1>Log Sistemi</h1>
+
+    <div style="height: 100px;"></div>
+    
+    <div id="mainDiv">
+        <h2>Log Nedir?</h2>
+        <pre id="preh2">Log veya Türkçesiyle günlük; bir sistemde veya uygulamada, hangi aşamda olduğunu veya hangi kısımda hatalar çıktığını bir formatta yapımcıya bildirme sistemine denir.</pre>
+
+        <pre id="preh2">Yani Log sistemi bizim için bir uygulamada neler olup bittiğini ayni bir günlük defteri gibi incelememizi sağlar. Böylelikle herhangi bir beklenmedik bir durumda program çöktüğünde neden çöktüğünü Log sayesinde nedenini anlamamıza yardımcı olur.</pre>
+
+        <h2>Log Seviyeleri</h2>
+        <pre id="preh2">Birden fazla olduğu için birden fazla Log seviyesi vardır. Log seviyeleri bizim için çıktıların önemini ve anlamını bizlere bildirir. Aşağıdaki Log seviyelerinin anlamlarıyla beraber tabloda verilmiştir;</pre>
+
+        <table id="tableh2" border="1">
+            <thead>
+                <tr>
+                    <th>Seviye</th>
+                    <th>Anlamı</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>INFO</td>
+                    <td>Normal durumlar için kullanılır. Örnek olarak bir fonksiyonun başarılı bir şekilde çalışıp bittiğini bu şekilde bildirebiliriz.</td>
+                </tr>
+                <tr>
+                    <td>DEBUG</td>
+                    <td>INFO'dan daha detaylıdır. Örnek olarak bir fonksiyona verilen parametreleri ve sonucunda ne döndüğünü belirtir.</td>
+                </tr>
+                <tr>
+                    <td>TRACE</td>
+                    <td>Bir işlevi adım adım hangi işlemlerin gerçekleştirildiğinden tutunda API Key'lere kadar detaylı bir şekilde anlatan bir Log seviyesidir. Kapalı kaynak uygulamarında bu seviyenin çıktılanması ana uygulamada olmaması tavsiye edilir.</td>
+                </tr>
+                <tr>
+                    <td>WARNING</td>
+                    <td>Bir fonksiyonun çalışmadığına veya istenen çıktı elde edilmediğinde kullanılır. Örnek olarak yolu yanlış verilen bir dosyayı açmak gibi...</td>
+                </tr>
+                <tr>
+                    <td>ERROR</td>
+                    <td>Çoğu durumda program çökmez ama çökmesine yol açıkcak olan hataları Loglamak için kullanılır. Örnek olarak Buffer Overflow verilebilir.</td>
+                </tr>
+                <tr>
+                    <td>FATAL</td>
+                    <td>Programın çöktüğü zamanlarda kullanılır. Örnek olarak işlemlerde nullptr kullanılması gibi.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Log Formatı</h2>
+        <pre id="preh2">Log formatı, Loglamada kullanılıcak olan bir veri sırasıdır. Genel kabul görmüş bir format olmasada genelde saati, dakikası, tarih, satır numarası, seviyesi ve içeriği şekilinde bir formatta Loglama gerçekleştirilir.</pre>
+
+        <pre id="codeh2"><code>2026/08/17 14:08:13, 102 [LOG SEVİYESİ] Log icerigi</code></pre>
+
+        <h2>Konsola Loglama</h2>
+        <pre id="codeh2">Konsola Loglamak için aşağıdaki kodlar kullanılır;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;time.h> // Güncel zamanı almak için gerekli C kütüphanesi
+#include &lt;string.h> // Güncel zamanı ayarlamak için gerekli C kütüphanesi(strlen için)
+
+using namespace std;
+
+void konsolaLogla(int satirNumarasi, char* seviyesi, char* icerigi) // Konsola Loglamak için kullanıcağımız fonksiyon
+{
+    time_t guncelZaman = time(0); // Güncel zamanı alıyoruz
+    char* guncelZamanStr = ctime(&guncelZaman); // ctime ile zamanı bizim okuyabilceğimiz şekilde çeviririz
+
+    for (int i = 0; i < strlen(guncelZamanStr); i++) // String'e çevirme sırasında gereksiz \n karakterini siliyoruz
+        if (guncelZamanStr[i] == '\n')
+            guncelZamanStr[i] = '\0';
+    
+
+    cout << guncelZamanStr <<
+    ", " << satirNumarasi <<
+    " [" << seviyesi << "] " <<
+    icerigi; // Ardında yazdıroruz
+}
+
+int main()
+{
+    konsolaLogla(__LINE__,"ERROR","Beklenmeyen bir durum yasandi!");
+
+    return 0;
+}</code>
+
+Çıktımız ise;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/23 Cpp Log Sistemi.html/1.png" alt="23.1" width="100%">
+        </div>
+
+        <h2>Dosyaya Loglama</h2>
+        <pre id="codeh2">Konsola Loglama örneğimizin dosya versiyonu;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;fstream>
+#include &lt;time.h>
+#include &lt;string.h>
+
+using namespace std;
+
+void dosyayaLogla(ofstream *loglanacakDosya ,int satirNumarasi, char* seviyesi, char* icerigi)
+{
+    time_t guncelZaman = time(0);
+    char* guncelZamanStr = ctime(&guncelZaman);
+
+    for (int i = 0; i < strlen(guncelZamanStr); i++)
+        if (guncelZamanStr[i] == '\n')
+            guncelZamanStr[i] = '\0';
+    
+
+    (*loglanacakDosya) << guncelZamanStr <<
+    ", " << satirNumarasi <<
+    " [" << seviyesi << "] " <<
+    icerigi; // Dosyamıza Logluyoruz
+}
+
+int main()
+{
+    ofstream sistemLog(".log"); // Log dosyamız
+
+    dosyayaLogla(&sistemLog,__LINE__,"INFO","Her şey yolunda!"); // Fonksiyonu çalıştırdık
+
+    sistemLog.close();
+
+    return 0;
+}</code>
+
+Klasörümüzde oluşan .log dosyasının içeriği ise;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/23 Cpp Log Sistemi.html/2.png" alt="23.2" width="100%">
+        </div>
+
+        
+
+        <h2>Kaynakça</h2>
+        <ul>
+            <li><a href="https://data35delete.github.io/Data-s-Book-on-C/Lessons/20%20C%20Log%20Sistemi.html">Data's Book on C - Log Sistemi</a></li>
+        </ul>
+    </div>
+
+    <div style="height: 100px;"></div>
+
+    <footer style="position: fixed; left: 0; bottom: 0; width: 100%; background: transparent; text-align: center; padding: 10px 0; z-index: 100;">
+        <div>
+            <a href="./22 Cpp Güvenlik ve Şifreleme.html" style="margin-right: 20px; cursor:pointer;">
+                &larr; Önceki
+            </a>
+            <a href="" style="cursor:pointer;">
+                Sonraki &rarr;
+            </a>
+        </div>
+        <div>
+            <p>&copy; 2026 Data's Book</p>
+        </div>
+
+        <div style="position: absolute; right: 20px; bottom: 20px;">
+            <a href="./1 Cpp İçindekiler.html" style="text-decoration: none;">
+                İçindekiler
+            </a>
+        </div>
+    </footer>
+</body>
+</html>
+
+<!-- Muhammet Enes nam-ı diğer Data Delete tarafından sevgi ile yapıldı <3 -->
