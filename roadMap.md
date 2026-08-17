@@ -394,7 +394,6 @@
 - **Konsola Loglama**: Tanım. Örnek.
 - **Dosyaya Loglama**: Tanım. Örnek.
 - **Basit Log Kütüphanesi Yazma**: Tanım. Örnek.
-- **spdlog Kütüphanesi**: Kurulum. Tanım. Örnek.
  
 ---
  

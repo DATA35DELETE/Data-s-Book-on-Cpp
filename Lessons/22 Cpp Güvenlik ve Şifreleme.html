@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data's Book on Cpp</title>
+
+    <link rel="icon" type="image/x-icon" href="../Sources/favicon.png">
+
+    <script src="../Sources/JS/setBackgroundMedia.js"></script>
+
+    <link rel="stylesheet" href="../Sources/JS/hljs/vs2015.css">
+    <script src="../Sources/JS/hljs/highlight.min.js"></script>
+    <script>
+        window.onload = function() {
+            hljs.highlightAll();
+        };
+    </script>
+
+    <link rel="stylesheet" href="../Sources/CSS/main.css">
+</head>
+<body>
+    <h1>Güvenlik ve Şifreleme</h1>
+
+    <div style="height: 100px;"></div>
+    
+    <div id="mainDiv">
+        <h2>Güvenlik Nedir?</h2>
+        <pre id="preh2">Güvenlik; bir yazılım sisteminde kötü niyetli veya izinsiz veri alışverişi engellemek için alınan önemler bütünüdür.</pre>
+
+        <pre id="preh2">C++ programlama dilinde C'de olduğu gibi OpenSSL üzerinden anlatıcağız....</pre>
+
+        <h2>Buffer Overflow Koruması</h2>
+        <pre id="preh2">Bir önceki sayfalardan bildiğimiz üzere Buffer Overflow, bellek alanlarının işgali sonucu oluşan bir hatadır. Bazı durumlarda diğer programların işliyişini baltalayabilirken, bazı durumlarda direkt olarak işletim sistemini bozabilmeye kadar uzanan geniş çaplı ve sonucu belirsiz olan bir çok zararı olur. Bu sebeble Buffer Overflow özellikle güvenlikte sıklıkla göz önünde bulundurulur.</pre>
+
+        <pre id="codeh2">Buffer Overflow hatasını belkide en çok çıkartan işlemlerden biriside Char dizisi işlemleridir. C++'daki String sınıfı her ne kadar işimizi görsede düşük seviyeli ve C üzerinde kurulmuş sistemlerde Char dizisi kullanmalıyız. Aksi takdirse sistem bizi anlıyamaz. Şimdi gelin hata yönetimiyle beraber bir Char dizisi atama kontrol yapalım!
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;string.h>
+
+using namespace std;
+
+#define SORUNSUZ_ISLEM 0 // Sorunsuz işlem makromuz
+#define BUFFER_OVERFLOW 1 // İşlemde Buffer Overflow yaşandığına dair makro
+
+// Kontrol fonksiyonumuz
+int charDizisiEkleme(char* hedef, int hedefUzunluk, char* kaynak)
+{
+    if (strlen(hedef) + strlen(kaynak) > hedefUzunluk) // Toplamları hedef uzunluğu geçiyorsa 
+        return BUFFER_OVERFLOW; // Buffer Overflow riski
+    
+    strcat(hedef, kaynak); // Char dizilerini birleştirdik
+
+    return SORUNSUZ_ISLEM; // Ardındından sorunsuz olduğuyla ilgili bir değer döndürdük
+}
+
+int main()
+{
+    char hedef1[100] = "Selam sana C"; // 1. Hedef
+    char kaynak1[] = "++!"; // 1. Kaynak
+//              |-> 4
+
+    int islemSonucu = charDizisiEkleme(hedef1, 100, kaynak1);
+
+    if (islemSonucu == SORUNSUZ_ISLEM) // İşlem sorunsuz ise
+    {
+        cout << "Islem sorunsuz gecti!" << endl << "Cikti; " << hedef1 << endl << endl;
+    }
+    else if (islemSonucu == BUFFER_OVERFLOW) // Buffer Overflow yaşandı ise
+    {
+        cout << "BUFFER OVERFLOW YASANDI!" << endl << "\"" << hedef1 << "\" <-x- \"" << kaynak1 << "\"" << endl << endl;
+    }
+    
+    // Buffer Overflow'lu işlem
+
+    char hedef2[30] = "C++, C'nin gelismisidir."; // 2. Hedef
+    char kaynak2[] = " Bu sebeble ++ eki almistir.";
+
+    islemSonucu = charDizisiEkleme(hedef2, 30, kaynak2);
+
+    if (islemSonucu == SORUNSUZ_ISLEM) // İşlem sorunsuz ise
+    {
+        cout << "Islem sorunsuz gecti!" << endl << "Cikti; " << hedef2 << endl << endl;
+    }
+    else if (islemSonucu == BUFFER_OVERFLOW) // Buffer Overflow yaşandı ise
+    {
+        cout << "BUFFER OVERFLOW YASANDI!" << endl << "\"" << hedef2 << "\" <-x- \"" << kaynak2 << "\"" << endl << endl;
+    }
+
+}</code>
+
+Çıktısı;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/22 Cpp Güvenlik ve Şifreleme.html/1.png" alt="22.1" width="100%"/>
+        </div>
+
+        <h2>Girdi Doğrulama(Input Validation)</h2>
+        <pre id="preh2">Bu kavram bir tık daha soyut kavramdır. Girdi doğrulama, kullanıcının girmiş olduğu verilerin ana işleme katılıp katılmacağını doğrulayan, stilinden yazım şekline kadar pek çok niteliğini incelenen kodlardır. İki ana kolda incelenir. Syntactic ve Semantic'dir. Syntactic yazım şekilleri gibi yazı için somut kısımları inceleme yapılırken, Semantic ise girdinin anlamını yani soyut kısmını inceler. Örnek olarak telefon numarası verilebilir. Kullanıcı yanlış telefon numarasını girmediğini anlamak için ilk önce Syntactic ile yazının kurallara uyduğunu kontrol ederiz, ardından Semantic ile gerçek bir telefon numarasımı diye bir arama gerçekleştiririz.</pre>
+
+        <h2>OpenSSL</h2>
+        <pre id="preh2">OpenSSL kütüphanesi, C++ ve C programlarının güçlü şifre bilimi(Cryptography) kütüphanesidir. SHA256'tan RSA şifreleme gibi geniş bir yelpazede fonksiyonlar sağlar.</pre>
+
+        <h3>Kurulum</h3>
+        <pre id="codeh3">   OpenSSL kütüphanesini kurmak için direkt bir indirme sunmaz. Hangi akla hizmet bilinmez ama kütüphaneyi kullanmak için ilk önce kendi bilgisayarımızda derleyip, kendi kütüphanemize eklememiz gerekir. Yapılan işlemleri iki kısım hariç platformlar arasıdır.
+
+İlk olarak derleme aracını indirelim;
+
+Windows; <code class="language-cpp">pacman -S mingw-w64-x86_64-make</code>
+Linux; <code class="language-cpp">sudo apt install make</code>
+
+Ardından OpenSSL kütüphanesinin kaynak kodunu çekelim;
+
+<code class="language-bash">git clone https://github.com/openssl/openssl.git
+
+cd openssl</code>
+
+Windows; <code class="language-bash">./Configure mingw64 --prefix=/mingw64</code>
+Linux; <code class="language-bash">./config --prefix=/usr</code>
+
+Make için ayarlama yapıyoruz. "--prefix" ile ayarladığımız dizin ise bizim kütüphanemizin derlenmiş dosyalarının durucağı klasördür.
+
+Ardında uzun bir derleme için
+
+<code class="language-bash">make</code>
+
+Uzun süren bir derleme ardından kütüphaneyi kütüphanelerimize ekliyelim;
+
+Windows; <code class="language-bash">make install</code>
+Linux; <code class="language-bash">sudo make install</code>
+
+Gerekirse;
+Linux; <code class="language-bash">sudo cp -r /usr/lib64/*.* /usr/lib/</code>
+
+Artık OpenSSL kütüphanesini kullanabiliriz.</pre>
+
+        <h3>Hashing Algoritmaları</h3>
+        <pre id="codeh3">Hashing algoritmaları, veriyi geri dönülemez şeklinde şifreleyen ve şifreninde bir eşinin yani benzersiz olarak bir sayı karşılığını alabildiğimiz algoritmalara denir. En çok kullanılan algoritmalarda SHA256 ve MD5'dir.
+
+Şimdi bu iki algoritma ile bir program yazalım;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;openssl/sha.h> // SHA256 için
+#include &lt;openssl/md5.h> // MD5 için
+
+using namespace std;
+
+int main()
+{
+    string orjinalVeri = "Data Delete"; // Orjinal veri
+    unsigned char sha256Verisi[SHA256_DIGEST_LENGTH]; // Hash verisini tutacak olan değişken
+
+    SHA256_CTX sha; // SHA256 nesnemiz
+
+    SHA256_Init(&sha); // SHA256 nesnemizi başlattık
+    SHA256_Update(&sha, orjinalVeri.c_str(), orjinalVeri.length()); // Update ile nesnemize verimizi verdik. OpenSSL bellek yönetimi için güncelleme tabanlı bir Hashing sağlar
+
+    SHA256_Final(sha256Verisi, &sha); // Final diyerek nesmizdeki verinin Hash'ini birinci parametredeki başlangıç işaretçisine kayıt eder
+
+    cout << orjinalVeri << " -SHA256-> ";
+
+    for (size_t i = 0; i < SHA256_DIGEST_LENGTH; i++) // SHA256 verisini bu şekilde yazdırıyoruz. Yoksa anlamsız karakterler görebiliriz
+    {
+        printf("%x", sha256Verisi[i]);
+    }
+    
+    // Aynı şekilde MD5 içinde yapıyoruz
+
+    unsigned char MD5Verisi[MD5_DIGEST_LENGTH];
+
+    MD5_CTX mda;
+
+    MD5_Init(&mda);
+    MD5_Update(&mda, orjinalVeri.c_str(), orjinalVeri.length());
+
+    MD5_Final(MD5Verisi, &mda);
+
+    cout << endl << endl << orjinalVeri << " -MD5-> ";
+
+    for (size_t i = 0; i < MD5_DIGEST_LENGTH; i++)
+    {
+        printf("%x", MD5Verisi[i]);
+    }
+
+}</code>
+
+Derlemek için;
+<code class="language-bash">g++ main.cpp -o main -lssl -lcrypto</code>
+
+Çıktısı;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/22 Cpp Güvenlik ve Şifreleme.html/2.png" alt="22.2" width="100%"/>
+        </div>
+
+        <h3>Simetrik Şifreleme (AES)</h3>
+        <pre id="preh3">Simetrik şifreleme, bir veriyi tek bir Key yani anahtar ile şifreleyip aynı anahatar ile şifreyi çözebilceğimiz bir şifrelemedir. Bu anahtara'a Public Key yani herkese açık anahatar denir.</pre>
+
+        <pre id="codeh3">Şimdi bir mesajlaşma örneği yapalım! Mantık basit, bir taraf Public Key'i oluşturucak ve mesaj içeriğini onunla şifreleyip, bir dosyaya mesajı bir dosyayada oluşturulan anahatarı yazıcak. Diğer tarafta o anahtarı alıp mesaj içeriğini çözüp ekrana bastırıcak.
+
+İlk olarak şifreliyici;
+sifreleyici.cpp
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;fstream>
+#include &lt;openssl/aes.h> // Simetrik şifreleme için kütüphanemiz
+#include &lt;openssl/sha.h> // Şifremiz için SHA256 kütüphane. SHA256 ile şifreliyip çözüceğiz
+
+using namespace std;
+
+int main()
+{
+    string orjinalVerimiz = "Selam sana C++!";
+
+    unsigned char hashVeri[SHA256_DIGEST_LENGTH];
+
+    SHA256_CTX sha;
+
+    SHA256_Init(&sha);
+    SHA256_Update(&sha, orjinalVerimiz.c_str(), orjinalVerimiz.length());
+
+    SHA256_Final(hashVeri, &sha);
+
+    // Anahtarımız hazır. Şimdi veriyi anahtar ile şifreleyelim
+
+    unsigned char sifreliVeri[orjinalVerimiz.length()]; // Aynı boyut ile şifrelenmiş verinin kayıt edilceği değişken
+
+    AES_KEY sifreliyici; // Şifreliyicimiz
+
+    AES_set_encrypt_key(hashVeri, 256, &sifreliyici); // Şifreliyici oluştur
+    // hashVeri; Şifreliyicinin anahtarı
+    // 256; Bit değeri
+    // &sifreliyici; Şifreleyici nesnesi
+
+    AES_encrypt((unsigned char*)orjinalVerimiz.c_str(), sifreliVeri, &sifreliyici); // Şifreleme işlemi
+    // (unsigned char*)orjinalVerimiz.c_str(); Orjinal veri
+    // sifreliVeri; Şifrelenmiş verinin kayıt edilceği başlangıç işaretçisi
+    // &sifreliyici; Şifreleyici nesnesi
+
+    ofstream sifreDotSifre("sifre.sifre");
+    sifreDotSifre << sifreliVeri;
+    sifreDotSifre.close();
+
+    ofstream sifreDotKey("sifre.key");
+    sifreDotKey << hashVeri;
+    sifreDotKey.close();
+}</code>
+
+Tamamdır şimdi çözücü taraf;
+cozucu.cpp
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;fstream>
+#include &lt;openssl/aes.h>
+
+using namespace std;
+
+int main()
+{
+    string sifreleriVeri;
+
+    ifstream sifreDotSifre("sifre.sifre");
+    getline(sifreDotSifre, sifreleriVeri);
+    sifreDotSifre.close();
+
+    string key;
+
+    ifstream sifreDotKey("sifre.key");
+    getline(sifreDotKey, key);
+    sifreDotKey.close();
+
+    // Veriler hazır. Şimdi şifreyi çözelim;
+
+    AES_KEY cozucu; // Çözücü nesne
+
+    AES_set_decrypt_key((unsigned char*)key.c_str(), 256, &cozucu); // Çözücü ayarlama
+    // (unsigned char*)key.c_str(); Anahtar
+    // 256; Bit değeri
+    // &cozucu; Çözücü nesnein bellek adresi
+
+    unsigned char cozulmusVeri[32]; // Çözülmüş verinin kayıt edilceği değişken
+
+    AES_decrypt((unsigned char*)sifreleriVeri.c_str(), cozulmusVeri, &cozucu); // Çözmek
+    // (unsigned char*)sifreleriVeri.c_str(); Şifreli verinin başlangıç işaretçisi
+    // cozulmusVeri; Çözülmüş verinin kayıt edilceği başlangıç işaretçisi
+    // &cozucu; Çözücü nesnesinin bellek adresi
+
+    cout << cozulmusVeri << endl; // ekrana yazdırıyoruz
+
+    return 0;
+}</code>
+
+Kodlarımız hazır. Şimdi derliyelim ve çalıştıralım;
+
+<code class="language-bash">g++ sifreleyici.cpp -o sifreleyici -lssl -lcrypto
+g++ cozucu.cpp -o cozucu -lssl -lcrypto
+
+sifreliyici
+cozucu</code>
+
+Çıktısı ise;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/22 Cpp Güvenlik ve Şifreleme.html/3.png" alt="22.3" width="100%"/>
+        </div>
+
+        <h3>Asimetrik Şifreleme</h3>
+        <pre id="preh3">Asimetrik şifreleme, simetrik şifrelemenin gelişmiş versiyonudur. Simetrikde bulunan anahtar, verileri hem şifreler hemde şifreyi çözer. Asimetrikde ise iki adet anahtar bulunur.</pre>
+
+        <pre id="preh3">Public Key, bu anahtar asimetrik şifrelemelede verileri şifrelemek için kullanılır. Private Key ise Public Key ile şifrelenen veriyi çözmek için kullanılır.</pre>
+
+        <pre id="preh3">Asimetrik şifreleme; Whatapps, Telegram, Signal ve Discord gibi mesajlaşma uygulamalarda endüstiri standartıdır. Çünkü bu uygulamalarda kullanılan bu şifreleme sistemi Dünya üzerindeki en güçlü şifreleme sistemidir. Gücü kendisinden ziyade bilgisayarların sınırlarından gelir. Düşün; Bu sistem ile şifrelenmiş bir veriyi elenizde Private Key olmadan çözmek isterseniz, en güçlü bilgisayarla bile asırlarca sürecek bir çözme işlemi gerçekleştirirsiniz. Yani siz çözene kadar veri çoktan önemini kaybetmiş olucaktır. Bu sebeble Hacker bu sistemi kırmaya tesebbüs bile etmezler. İşte bu yüzden asimetrik şifreleme endüstiri standartıdır.</pre>
+
+        <pre id="preh3">Asimetrik şifreleme ile beraber kullanılan bir başka sistem ise uçtan uca şifreleme kısaca E2EE(End-to-End Encryption)'dir. E2EE ise iki kullanıcı arasında oluşturulan Private ve Public Key'leri, sadece Public Key'leri aralarında paylaşarak sadece kendi aralarında konuşmasını sağlayana basit bir yöntemdir. Kendisi basit ama kırması imkansız bir yöntem... Daha anlaşılır olması için bir görsel sunalım;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/22 Cpp Güvenlik ve Şifreleme.html/4.svg" alt="22.4" width="100%"/>
+        </div>
+
+        <pre id="codeh3">Hadi şimdi asimetrik ve E2EE ile haberleşen iki program oluşturalım. Görselde olduğu gibi aşama aşam çalışçaklar. Bu aşama sistemini ise parametreli program özelliği ile yapıcağız. Ayrıca proje yapısı olarak şu şekil bir klasör yapısı oluşturalım;
+
+proje
+|
+|taraf1
+||
+||-> taraf1.cpp
+|
+|taraf2
+||
+||-> taraf2.cpp
+
+Şimdi taraf1.cpp kodluyalım;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;fstream>
+#include &lt;filesystem>
+#include &lt;string.h> // Aşama kontrol için
+#include &lt;openssl/rsa.h> // RSA şifreleme için
+#include &lt;openssl/pem.h> // Anahtar oluşturmak için
+
+using namespace std;
+
+int main(int argc, char* argv[])
+{
+    if (!strcmp(argv[1], "asama1")) // 1. Aşama, Key'lerin oluşturulması
+    {
+        RSA* rsaAnahtarOlusturucu = RSA_new(); // Yeni bir RSA nesnesi oluşturduk. Aynı nesneden hem Public hemde Private Key oluşturucağız ki matematiksel olarak birbirlerinin şifreleyicisi-çözücüsü olsunlar
+
+        RSA_generate_key_ex(rsaAnahtarOlusturucu, 2048, NULL, NULL); // RSA nesnesini başlatır
+        // rsaAnahtarOlusturucu; RSA nesnesi
+        // 2048; Bit derinliği. Ne kadar çok olursa o kadar Private Key uzun ve karmaşık olur
+
+        FILE* taraf1PrivateDotPem = fopen("taraf1Private.pem", "w"); // taraf1 Private Key dosyası
+        PEM_write_RSAPrivateKey(taraf1PrivateDotPem, rsaAnahtarOlusturucu, NULL, NULL, 0, NULL, NULL); // RSA nesnesinden Private Key oluşturur ve onu C dosya nesnesine yazdırır
+        // taraf1PrivateDotPem; Yazdırılıcak olan C dosya nesnesi
+        // rsaAnahtarOlusturucu; RSA nesnesi
+        // NULL, NULL, 0, NULL, NULL; Boş parametreler
+        fclose(taraf1PrivateDotPem);
+
+        FILE* taraf1PublicDotPem = fopen("taraf1Public.pem", "w"); // taraf1 Public Key dosyası
+        PEM_write_RSAPublicKey(taraf1PublicDotPem, rsaAnahtarOlusturucu); // RSA nesnesinden Public Key oluşturur ve onu C dosya nesnesine yazdırır
+        // taraf1PublicDotPem; Yazdırılıcak olan C dosya nesnesi
+        // rsaAnahtarOlusturucu; RSA nesnesi
+        // NULL, NULL, 0, NULL, NULL; Boş parametreler
+        fclose(taraf1PublicDotPem);
+
+        RSA_free(rsaAnahtarOlusturucu); // Bellek yönetimi için serbest bıraktık
+
+        /*
+        İşlem sonucu taraf1 klasöründe taraf1Private.pem ve taraf1Public.pem olmak üzere iki adet dosya oluşur. İşte bunlar Private ve Public Key'lerdir
+        */
+    }
+    else if (!strcmp(argv[1], "asama2")) // 2. Aşama, Public Key'lerin paylaşımı
+    {
+        filesystem::copy("../taraf2/taraf2Public.pem","taraf2Public.pem"); // Normal şartlarda bu paylaşma internet üzerinden olur. Ama şuan aynı bilgisayarda olduğumuz için basit bir kopyalama işlemi bize yeticektir
+    }
+    else if (!strcmp(argv[1], "asama3")) // 3. aşama, Public Key'ler elimizde olduğu için karşı tarafa mesaj yazabiliriz
+    {
+        RSA *rsaPublicKey = RSA_new(); // Veriyi şifreleyiceğimiz olan RSA nesnesi
+
+        FILE* taraf2PublicDotPem = fopen("taraf2Public.pem", "rb"); // Taraf2'nin Public Key nesnemiz
+        rsaPublicKey = PEM_read_RSAPublicKey(taraf2PublicDotPem, &rsaPublicKey, NULL, NULL); // Dosya üzerinden Public Key'i okuyoruz
+        // rsaPublicKey = ; Sonucunda çıkartılan RSA nesnesi
+        // taraf2PublicDotPem; Okunan RSA Public Key Pem dosyası
+        // &rsaPublicKey; Üzerinde işlem yapılan RSA nesnesi
+        
+        fclose(taraf2PublicDotPem);
+        
+        string taraf2YeVeri = "Selam!"; // Taraf2'ye verimiz
+        unsigned char sifreliVeri[4096]; // Şifrelenmiş verinini kayıt edilceği değişken
+
+        int sifreninUzunlugu = RSA_public_encrypt(taraf2YeVeri.length() + 1, (unsigned char*)taraf2YeVeri.c_str(), sifreliVeri, rsaPublicKey, 1); // Public Key ile veriyi şifreler
+        // int sifreninUzunlugu = ; Şifrenin uzunluğunu değişken olarak verir
+        // taraf2YeVeri.length() + 1; Şifrenelecek olan verinin uzunluğu
+        // (unsigned char*)taraf2YeVeri.c_str(); Şifrelenecek olan verinin başlangıç işaretçisi
+        // sifreliVeri; Şifrelenmiş verinin kayıt edilceği başlangıç işaretçisi
+        // rsaPublicKey; RSA Public Key nesnesi
+        // 1; Veri bozulmasın diye içine konulan boşluk.
+
+        RSA_free(rsaPublicKey);
+
+        // Şifreleme işlemi tamamlandı şimdi o şifrelenmiş veriyi gönderme vakti
+
+        ofstream msg("../taraf2/msg"); // Normal şartlarda gönderme işlemi internet aracığıyla olur. Ama bu kısımda basit bir "Karşı taraf klasörüne oluştur" mantığı iş görür
+        for (size_t i = 0; i < sifreninUzunlugu; i++) // Dönen şifre boyutu kadar
+        {
+            msg << sifreliVeri[i]; // Her harfi teker teker yazdırıyoruz
+        }
+    }
+    else if(!strcmp(argv[1], "asama4")) 
+    {
+        RSA* rsaPrivateKey = RSA_new();
+
+        FILE* taraf1PrivateDotPem = fopen("taraf1Private.pem", "rb");
+        rsaPrivateKey = PEM_read_RSAPrivateKey(taraf1PrivateDotPem, &rsaPrivateKey, NULL, NULL);
+
+        fclose(taraf1PrivateDotPem);
+
+        ifstream msgFile("msg");
+
+        char msg[256];
+
+        msgFile.read(msg, 256);
+
+        msgFile.close();
+
+        unsigned char cozulmusVeri[4096];
+
+        RSA_private_decrypt(256, (unsigned char*)msg, cozulmusVeri, rsaPrivateKey, 1);
+
+        cout << cozulmusVeri;
+
+        RSA_free(rsaPrivateKey);
+    }
+    
+}</code>
+
+
+taraf1 tamam. Şimdi taraf2'yi kodluyalayım;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;fstream>
+#include &lt;filesystem>
+#include &lt;string.h>
+#include &lt;openssl/rsa.h>
+#include &lt;openssl/pem.h>
+
+using namespace std;
+
+int main(int argc, char* argv[])
+{
+    if (!strcmp(argv[1], "asama1")) // 1. Aşama, Key'lerin oluşturulması
+    {
+        RSA* rsaAnahtarOlusturucu = RSA_new(); // Yeni bir RSA nesnesi oluşturduk. Aynı nesneden hem Public hemde Private Key oluşturucağız ki matematiksel olarak birbirlerinin şifreleyicisi-çözücüsü olsunlar
+
+        RSA_generate_key_ex(rsaAnahtarOlusturucu, 2048, NULL, NULL); // RSA nesnesini başlatır
+        // rsaAnahtarOlusturucu; RSA nesnesi
+        // 2048; Bit derinliği. Ne kadar çok olursa o kadar Private Key uzun ve karmaşık olur
+
+        FILE* taraf2PrivateDotPem = fopen("taraf2Private.pem", "w"); // taraf1 Private Key dosyası
+        PEM_write_RSAPrivateKey(taraf2PrivateDotPem, rsaAnahtarOlusturucu, NULL, NULL, 0, NULL, NULL); // RSA nesnesinden Private Key oluşturur ve onu C dosya nesnesine yazdırır
+        // taraf1PrivateDotPem; Yazdırılıcak olan C dosya nesnesi
+        // rsaAnahtarOlusturucu; RSA nesnesi
+        // NULL, NULL, 0, NULL, NULL; Boş parametreler
+        fclose(taraf2PrivateDotPem);
+
+        FILE* taraf2PublicDotPem = fopen("taraf2Public.pem", "w"); // taraf1 Public Key dosyası
+        PEM_write_RSAPublicKey(taraf2PublicDotPem, rsaAnahtarOlusturucu); // RSA nesnesinden Public Key oluşturur ve onu C dosya nesnesine yazdırır
+        // taraf1PublicDotPem; Yazdırılıcak olan C dosya nesnesi
+        // rsaAnahtarOlusturucu; RSA nesnesi
+        // NULL, NULL, 0, NULL, NULL; Boş parametreler
+        fclose(taraf2PublicDotPem);
+
+        RSA_free(rsaAnahtarOlusturucu); // Bellek yönetimi için serbest bıraktık
+
+        /*
+        İşlem sonucu taraf2 klasöründe taraf2Private.pem ve taraf2Public.pem olmak üzere iki adet dosya oluşur. İşte bunlar Private ve Public Key'lerdir
+        */
+    }
+    else if (!strcmp(argv[1], "asama2")) // 2. Aşama, Public Key'lerin paylaşımı
+    {
+        filesystem::copy("../taraf1/taraf1Public.pem","taraf1Public.pem"); // Normal şartlarda bu paylaşma internet üzerinden olur. Ama şuan aynı bilgisayarda olduğumuz için basit bir kopyalama işlemi bize yeticektir
+    }
+    else if (!strcmp(argv[1], "asama3")) // 3. Aşama, taraf1'den gelen mesajı çözme zamanı
+    {
+        RSA* rsaPrivateKey = RSA_new(); // Kendi Private Key'imiz için RSA nesnemiz
+
+        FILE* taraf2PrivateDotPem = fopen("taraf2Private.pem", "rb"); // taraf2Private.pem nesnesi
+        rsaPrivateKey = PEM_read_RSAPrivateKey(taraf2PrivateDotPem, &rsaPrivateKey, NULL, NULL); // RSA Private Key dosyasını okur ve RSA Private Key döndürür
+        // rsaPrivateKey = ; İşlem sonucunda çıkartılıcak olan RSA Private Key nesnesi
+        // taraf2PrivateDotPem; Okunan dosya nesnesi
+        // &rsaPrivateKey; Üzerinde işlem yapılan RSA nesnesi
+        // NULL, NULL; Boş parametreler
+        fclose(taraf2PrivateDotPem);
+
+        // RSA Private Key'imiz hazır. Şimdi taraf1'den şifreli mesajı okuyalım
+
+        ifstream msgFile("msg"); // taraf1'den gelen şifreli mesajın dosyası
+
+        char msg[256]; // Şifrenin kayıt edilceği değişken
+
+        msgFile.read(msg, 256); // Dosyadan veriyi okuyoruz
+
+        msgFile.close();
+
+        unsigned char cozulmusVeri[4096]; // Çözülmüş veri için değişken
+
+        RSA_private_decrypt(256, (unsigned char*)msg, cozulmusVeri, rsaPrivateKey, 1); // RSA Private Key ile taraf1'denki taraf2'deki RSA Public Key işe şifrelenmiş olna veriyi çözer
+
+        cout << cozulmusVeri; // Veriyi yazdırır
+
+        RSA_free(rsaPrivateKey);
+    }
+    if (!strcmp(argv[1], "asama4")) // 4. aşama, taraf2'den taraf1'de mesaj atma
+    {
+        RSA *rsaPublicKey = RSA_new();
+
+        FILE* taraf1PublicDotPem = fopen("taraf1Public.pem", "rb");
+        rsaPublicKey = PEM_read_RSAPublicKey(taraf1PublicDotPem, &rsaPublicKey, NULL, NULL);
+        fclose(taraf1PublicDotPem);
+
+        string taraf1YeVeri = "Selam!";
+        unsigned char sifreliVeri[4096];
+
+        int sifreninUzunlugu = RSA_public_encrypt(taraf1YeVeri.length() + 1, (unsigned char*)taraf1YeVeri.c_str(), sifreliVeri, rsaPublicKey, 1);
+
+        RSA_free(rsaPublicKey);
+
+        ofstream msg("../taraf1/msg");
+        for (size_t i = 0; i < sifreninUzunlugu; i++)
+        {
+            msg << sifreliVeri[i];
+        }
+    }
+    
+}</code>
+
+Kodlarımız hazır şimdi derlemek için ana dizine çıkalım ve şu komutları girelim;
+
+<code class="language-bash">g++ taraf1/taraf1.cpp -o taraf1/taraf1.exe -lssl -lcrypto
+g++ taraf2/taraf2.cpp -o taraf2/taraf2.exe -lssl -lcrypto</code>
+
+Ardından görselde gösterildiği gibi çalıştıralım ve çıktıları gözlemleyelim;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/22 Cpp Güvenlik ve Şifreleme.html/5.png" alt="22.5" width="100%"/>
+            <img src="../Bibliography/22 Cpp Güvenlik ve Şifreleme.html/6.png" alt="22.6" width="100%"/>
+        </div>
+
+        <pre id="preh3">Gördüğünüz gibi iki dosya arasında şifreli bir şekilde mesajlaşmasını sağlamış olduk.</pre>
+
+        <h2>Rastgele Sayı Üretme</h2>
+        <pre>Rastgele sayı, çoğu durumda oyunlarda veya etkinliklerde kullanılan ve kullanıcıya "Bilinmezlik" duygusunu veren bir olaydır. C programlama dilinde gerçekten rastgele bir sayı üretmek için "sodium" adlı bir kütüphaneye ihtiyaç duyardık. Ama C++ programlama dilinde bizler için kendi yerel algoritmalarıyla bize rastgele sayı sağlar. Bu kütüphane adındanda anlaşılcağı üzere <code class="language-cpp">random</code> kütüphanesinde bulunur.</pre>
+
+        <pre id="preh2">Random kütüphanesiyle rastgele sayı üretmek için iki ana nesne kullanılır. Oluşturucu ve dağıtıcılar. Oluşturucu rastgele sayı üretmek amacıyla kullanılan algoritma, dağıtımcı ise oluşturucuların algoritmalarını çalıştırarak verdiğimiz aralıkta bizlere rastgele sayı üretmemizi sağlayan nesnelerdir.</pre>
+
+        <pre id="preh2">Bir çok algoritma bulunsada aralarında kriptofik olmayan sistemlerde başarılı ve yaygın olarak kullanılan algoritmaların başında ise mt19937 gelir ki biz bu konuda mt19937 ile rastgele sayı üretmeyi göstereceğiz.</pre>
+
+        <pre id="codeh2">Gelin beraber her çalıştırmada farklı bir sayı üreten bir program yazalım;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;random> // Kütüphanemiz
+
+using namespace std;
+
+int main()
+{
+    random_device mtCihaz; // mtCihaz, Cihazlar denilen bir nesne ile algoritmalara ortam sağlanır
+    mt19937 mtOlusuturucu(mtCihaz()); // Oluşturucu nesnesini tanımladık. İçerisine cihazımızı yerleştirdik ki algoritmaya ortam sağlasın
+
+    uniform_int_distribution&lt;int> mtDagitici(1,10); // Dağıtıcımız. İçerisine 1,10 yazdık ki 1 ila 10 arasında 10'da dağil olması şartıyla bir aralık sunduk. Template'deki tür ise üretilen sayının türüdür
+
+    cout << mtDagitici(mtOlusuturucu); // Ardında dağtıcımıza oluşturucumuzu ilave ettik ve bize sonucunda rastgele bir sayı üretti
+
+    return 0;
+}</code>
+
+Çıktımız ise;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/22 Cpp Güvenlik ve Şifreleme.html/7.png" alt="22.7" width="100%"/>
+        </div>
+
+        <h2>Bellek Temizleme</h2>
+        <pre id="preh2">Bellek temizleme, C++ programala dilinde C'den beri olduğu gibi <code>memset</code> ile sağlanır.</pre>
+
+        <pre id="codeh2"><code class="language-cpp">memset(degiskeninBaslangiçIsaretcisi, temizlemeSonucuYazilcakVeriGeneldeSifirYazilir, temizlenicekOlanAlaninBoyutu)</code>
+        
+Şeklinde yazılır. Kütüphanesi <code>string.h</code>'tır.</pre>
+
+        <h2>Kaynakça</h2>
+        <ul>
+            <li><a href="https://data35delete.github.io/Data-s-Book-on-C/Lessons/19%20C%20Güvenlik%20ve%20Şifreleme.html">Data's Book on C - Güvenlik ve Şifreleme</a></li>
+            <li><a href="https://linuxvox.com/blog/install-openssl-linux/">https://linuxvox.com/blog/install-openssl-linux/</a></li>
+            <li><a href="https://github.com/openssl/openssl/blob/master/NOTES-WINDOWS.md">https://github.com/openssl/openssl/blob/master/NOTES-WINDOWS.md</a></li>
+            <li><a href="https://mojoauth.com/keypair-generation/generate-keypair-using-rsa-with-cpp#3-storing-and-retrieving-keys">https://mojoauth.com/keypair-generation/generate-keypair-using-rsa-with-cpp#3-storing-and-retrieving-keys</a></li>
+            <li><a href="https://www.youtube.com/watch?v=ClGgqYSllyM">https://www.youtube.com/watch?v=ClGgqYSllyM</a></li>
+            <li><a href="https://ssojet.com/keypair-generation/generate-keypair-using-rsa-in-cpp#generating-the-rsa-key-pair">https://ssojet.com/keypair-generation/generate-keypair-using-rsa-in-cpp#generating-the-rsa-key-pair</a></li>
+            <li><a href="https://cplusplus.com/reference/random/">https://cplusplus.com/reference/random/</a></li>
+            <li><a href="https://en.wikipedia.org/wiki/Mersenne_Twister">https://en.wikipedia.org/wiki/Mersenne_Twister</a></li>
+            <li><a href="https://dogenerator.com/index.php/tr/blog/random-generator">https://dogenerator.com/index.php/tr/blog/random-generator</a></li>
+            <li><a href="https://stackoverflow.com/questions/13445688/how-to-generate-a-random-number-in-c">https://stackoverflow.com/questions/13445688/how-to-generate-a-random-number-in-c</a></li>
+            <li><a href="https://stackoverflow.com/questions/7114043/random-number-generation-in-c11-how-to-generate-how-does-it-work">https://stackoverflow.com/questions/7114043/random-number-generation-in-c11-how-to-generate-how-does-it-work</a></li>
+        </ul>
+    </div>
+
+    <div style="height: 100px;"></div>
+
+    <footer style="position: fixed; left: 0; bottom: 0; width: 100%; background: transparent; text-align: center; padding: 10px 0; z-index: 100;">
+        <div>
+            <a href="./21 Cpp Asenkron Programlama.html" style="margin-right: 20px; cursor:pointer;">
+                &larr; Önceki
+            </a>
+            <a href="" style="cursor:pointer;">
+                Sonraki &rarr;
+            </a>
+        </div>
+        <div>
+            <p>&copy; 2026 Data's Book</p>
+        </div>
+
+        <div style="position: absolute; right: 20px; bottom: 20px;">
+            <a href="./1 Cpp İçindekiler.html" style="text-decoration: none;">
+                İçindekiler
+            </a>
+        </div>
+    </footer>
+</body>
+</html>
+
+<!-- Muhammet Enes nam-ı diğer Data Delete tarafından sevgi ile yapıldı <3 -->
