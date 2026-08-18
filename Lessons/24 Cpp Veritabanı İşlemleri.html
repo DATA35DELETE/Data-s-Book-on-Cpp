@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data's Book on Cpp</title>
+
+    <link rel="icon" type="image/x-icon" href="../Sources/favicon.png">
+
+    <script src="../Sources/JS/setBackgroundMedia.js"></script>
+
+    <link rel="stylesheet" href="../Sources/JS/hljs/vs2015.css">
+    <script src="../Sources/JS/hljs/highlight.min.js"></script>
+    <script>
+        window.onload = function() {
+            hljs.highlightAll();
+        };
+    </script>
+
+    <link rel="stylesheet" href="../Sources/CSS/main.css">
+</head>
+<body>
+    <h1>Veritabanı İşlemleri</h1>
+
+    <div style="height: 100px;"></div>
+    
+    <div id="mainDiv">
+        <h2>Veritabanı Nedir?</h2>
+        <pre id="preh2">Veritabanı, internette veya kendi bilgisayarımızda bilgileri belirli bir formatta tutarak, belirli bir sözdizimi ile de o verileri bizlere geri veren bir yapıdır. Bir çok veritabanı olasada biz bu sayfada kendi bilgisayarımızda veritabanı oluşturup üstelik bunu bir dosya üzerinden yürüten Sqlite'ı kullanacağız.</pre>
+
+        <pre id="preh2">Şimdi akıllar karıştırsa düzeltelim; Veritabanlarını bir binanın bir katı olarak düşünebilirsiniz. Her daire "tablo" dediğimiz yapıları ve o yapılarda veri tutcularımız olan insanlar tutulur. Yani bir nevi bir veriyi saklamanın bir başka yöntemlerinden biridir.</pre>
+
+        <pre id="preh2">Peki neden veritabanı veya onun dili olan SQL? Çünkü evrensellik! Json veya Xml dosyaları sizlerin kendi projenizde kullanıcağız formatlardır. Sizler anlasanızda bir başkası kullandığınız veri saklama formatını bilmediği için ve her yiğidin yoğurt yiyişide farklı olduğu için anlamakta güçlük çekicektir. Bir başka sebeb ise internettir. İnternette verinlerin neredeyse tamamı veritabanlarında saklanır ve o veritabanlarıyla iletişim için SQL dili kullanılır. Yani SQL ve veritabanları bizler için internetdeki alanlarla iletişim dilimizdir. SQL ile veri alırız ve veririz.</pre>
+
+        <pre id="preh2">Geldik SQLite'ın ne olduğuna... Başta konuştuğumuz gibi SQLite dosya tabanlı bizlere bir veritabanı hizmeti sunar. Diğer veritabanlarının aksine herhangi bir internet veya herhangi bir üyelik satın alıp size sunucu vermez. Kendi bilgisayarında ve kendi belirlediğiniz dosyalarda işlemlerinizi gerçekleştirirsiniz. Tabi internet üzerinden bir sunucu satın alıp bir veritabanı yapmak isterseniz, hangi veritabanına bağlı olarak kütüphane değişicektir. Ama biz bu sayfada SQLite'ı anlatıcağız...</pre>
+
+        <h2>SQLite Kurulumu</h2>
+        <pre id="codeh2">SQLite kütüphanesini kurmak için;
+
+Windows; <code class="language-bash">pacman -S mingw-w64-x86_64-sqlite3</code>
+Linux; <code class="language-bash">sudo apt install libsqlite3-dev</code></pre>
+
+        <h2>Veritabanı Kurma</h2>
+        <pre id="preh2">Teorikten çıktık gelidk şimdi pratiğe! Normal şartlarda SQL dilinde bir veritabanı <code class="language-sql">create database veritabaniIsmi</code> ile oluşturuldu fakat SQLite bizlere bunu bizlere ".db" dosyası oluşturarak sunar. Yani her .db dosyası bizim için bir veritabanıdır.</pre>
+
+        <pre id="codeh2">Şimdi biraz klasik gelicek ama bir müşteri kayıt sistemi yapabiliriz... İlk olarak bir veritabanı oluşturalım. Veritabanımın adı ise "musteriler" olsun.
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;sqlite3.h> // SQLite kütüphanemiz. Bir C kütüphanesidir
+
+using namespace std;
+
+int main()
+{
+    sqlite3 *musterilerDb; // Veritabanımızın nesnesi
+    int acildiMi = sqlite3_open("musteriler.db", &musterilerDb); // Veritabını açıyoruz. Yoksa da açıyoruz
+    // int acildiMi = ; Fonksiyon eğer başarılı olursa 1 döner, başarılı olursa 0 döner
+    // "musteriler.db"; Dosya ismi
+    // &musterilerDb; Veritabanı nesnesi
+
+    if (acildiMi) // Eğer başarısız olursa
+    {
+        cout << "musteriler.db acilamadi" << endl;
+    }
+    
+    sqlite3_close(musterilerDb); // Veritabanını kapatır
+    
+    return 0;
+}</code>
+
+Derlerken;
+
+<code class="language-bash">g++ main.cpp -o main -lsqlite3</code>
+
+Çıktısı ise;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/24 Cpp Veritabanı İşlemleri.html/1.png" alt="24.1" width="100%">
+        </div>
+
+        <h2>Tablo Oluşturma</h2>
+        <pre id="preh2">Analojimizden gidicek olursak demiştik ki katlardaki daireler bizim tablomuzdur. Hadi gelin tablo oluşturalım! Analoji bir yana tablolar bizler için verileri tutan depolar gibidir. Yani bir veritabanında veri tutucak ise tablo içerisinde olması zorunludur. Bu tablolarıda Excel'deki tablolara benzetebiliriz. Yanı sütünlar ve satırlar mantığına sahiptirlerdir.</pre>
+
+        <pre id="codeh2">SQL dilinde bir tablo oluşturmak için;
+
+<code class="language-sql">create table tabloIsmi(sutunIsmi sutunTuru, ...)</code>
+
+Gelin şimdi müşteriler için bir tablo oluşturalım;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;sqlite3.h>
+
+using namespace std;
+
+int main()
+{
+    sqlite3 *musterilerDb;
+    int acildiMi = sqlite3_open("musteriler.db", &musterilerDb);
+    if (acildiMi)
+    {
+        cout << "musteriler.db acilamadi" << endl;
+    }
+    
+    acildiMi = sqlite3_exec(musterilerDb, "create table musteriler_tbl(id int, isim varchar(128), soyad text, musterikTarigi date)", 0, 0, 0); // Veritabanımıza SQL göndermemizi sağlar
+    // acildiMi = ; Eğer fonksiyon başarısız 0 döner, başarılı olursa 0'dan farklı bir değer döner
+    // musterilerDb; Etki ediceğimiz veritabanı nesnesi
+    // "create table musteriler_tbl(id int, isim varchar(128), soyad text, musterikTarigi date)"; Gönderilecek SQL
+    // 0; Geri dönen veriler için bir Callback kısmı, 0 ise es geçilir
+    // 0; Birinci çıktı için Callback kısmı
+    // 0; Eğer bir hata çıkarsa yazdırılacak bir bellek alanı. Çoğu durumda bizlere Segmentation Fault yedirdiği için kullanmıyoruz
+    
+    // Ayrıca SQL dilinde "varchar(256)" demek tıpkı C++ dili gibi "bana 256 karakterlik bir yazı alanı ver" demektir. Text ise uzunluğu değiştirilebilen bir yazı türüdür. Tıpkı String gibi
+
+    if (acildiMi != 0) // Eğer başarısız olursa
+    {
+        cout << sqlite3_errmsg(musterilerDb) << endl; // sqlite3_errmsg ile hatayı görebiliriz
+    }
+    else // Başarılı ise
+    {
+        cout << "musteriler tablosu olusturuldu!" << endl;
+    }
+
+    sqlite3_close(musterilerDb);
+    
+    return 0;
+}</code>
+
+Çıktısı ise;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/24 Cpp Veritabanı İşlemleri.html/2.png" alt="24.2" width="100%">
+        </div>
+
+        <pre id="preh2">Fark etti iseniz programı iki kere çalıştırdım. Bunun sebebi aynı tablo varsa bir veritabanında hata çıkarma olayını gösterme niyetimdir.</pre>
+
+        <h2>Veri Ekleme</h2>
+        <pre id="preh2">Tablomuz hazır. Şimdi ise için dolduralım. SQL dilinde bir tabloya veri eklemek istediğimiz zaman şu komutu kullanırız;
+
+<code class="language-sql">insert into tabloIsmi(sutunIsimleri...) values(sutunTurlerineUygunOlucakSiradaVerileri...)</code>
+
+Hadi bir kaç müşteri ekliyelim;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;sqlite3.h>
+
+using namespace std;
+
+int main()
+{
+    sqlite3 *musterilerDb;
+    int hataKontrol = sqlite3_open("musteriler.db", &musterilerDb);
+    if (hataKontrol)
+    {
+        cout << "musteriler.db acilamadi" << endl;
+    }
+    
+    // Yorum satırı çünkü bir daha çalışırsa bizlere hata vericektir
+    /*hataKontrol = sqlite3_exec(musterilerDb, "create table musteriler_tbl(id int, isim varchar(128), soyad text, musteriOlmaTarigi date)", 0, 0, 0);
+
+    if (hataKontrol != 0)
+    {
+        cout << sqlite3_errmsg(musterilerDb) << endl;
+    }
+    else
+    {
+        cout << "musteriler tablosu olusturuldu!" << endl;
+    }*/
+
+    // 1. Müşteri
+    hataKontrol = sqlite3_exec(musterilerDb, "insert into musteriler_tbl(id, isim, soyad, musteriOlmaTarigi) values(0, 'Data', 'Delete', '2026-08-18')", 0,0,0);
+    if (hataKontrol != 0)
+    {
+        cout << sqlite3_errmsg(musterilerDb) << endl;
+    }
+    else
+    {
+        cout << "Musteri eklendi!" << endl;
+    }
+
+    //2. Müşteri
+    hataKontrol = sqlite3_exec(musterilerDb, "insert into musteriler_tbl(id, isim, soyad, musteriOlmaTarigi) values(1, 'Hatsune', 'Miku', '2025-02-05')", 0,0,0);
+    if (hataKontrol != 0)
+    {
+        cout << sqlite3_errmsg(musterilerDb) << endl;
+    }
+    else
+    {
+        cout << "Musteri eklendi!" << endl;
+    }
+
+    // 3. Müşteri
+    hataKontrol = sqlite3_exec(musterilerDb, "insert into musteriler_tbl(id, isim, soyad, musteriOlmaTarigi) values(2, 'Kasene', 'Teto', '2024-12-04')", 0,0,0);
+    if (hataKontrol != 0)
+    {
+        cout << sqlite3_errmsg(musterilerDb) << endl;
+    }
+    else
+    {
+        cout << "Musteri eklendi!" << endl;
+    }
+
+
+    sqlite3_close(musterilerDb);
+    
+    return 0;
+}</code>
+        
+Çıktısı;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/24 Cpp Veritabanı İşlemleri.html/3.png" alt="24.3" width="100%">
+        </div>
+
+        <pre id="preh2">Fark etti iseniz iki kere çalıştırdım ki aynı veriyi aynı tabloya birden fazla kez koyabilceğimizi öğrenmiş olduk.</pre>
+
+        <h2>Veri Sorgulama</h2>
+        <pre id="preh2">Veri sorgulamak aslında SQL dilinde bir nevi verileri ekrana basmak gibidir. Bir tablodaki tüm verileri çıkarmak için SQL'de bu komut kullanılır;
+
+<code class="language-sql">select getirilecekOlanSutunlarKiGeneldeYildizIsaretiIleTumSutunlarGetirtilir from tabloIsmi</code>
+
+Ayrıca C++ programlama dilinde verileri elde etmek için Callback sistemi kullanılır. Her satır için sırayla sütünları ve sütünlarındaki verilerle Callback fonksiyonuna verilir.
+
+Hadi tablodan verilerimizi çekelim;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;sqlite3.h>
+
+using namespace std;
+
+bool ilkSeferMi = true; // Bir tablo görüntüsü vermek için bir kontrol ekliyorum
+
+int tumMusterilerYazdir(void* bosVeri, int sutunSayisi, char** sutunVerileri, char** sutunIsimleri) // Tüm müşterilerin yazdırılcağı Callback Fonksiyonumuz
+{
+    if (ilkSeferMi) // İlk sefer ise
+    {
+        ilkSeferMi = false; // İLk seferi kapat
+
+        for (int i = 0; i < sutunSayisi; i++) // Gelen veri kadar dön
+        {
+            cout << sutunIsimleri[i] << "    "; // Sütün isimlerini yazdır
+        }
+
+        cout << endl << endl; // Daha sonra iki satır koy
+    }
+    
+    for (int i = 0; i < sutunSayisi; i++) // Gelen veri kadar dön
+    {
+        cout << sutunVerileri[i] << "    ";
+    }
+    
+    cout << endl; // Sonunda bir satır koy
+
+    return 0; // Diğer veriye geç
+}
+
+int main()
+{
+    sqlite3 *musterilerDb;
+    int hataKontrol = sqlite3_open("musteriler.db", &musterilerDb);
+    if (hataKontrol)
+    {
+        cout << "musteriler.db acilamadi" << endl;
+    }
+    
+    /*hataKontrol = sqlite3_exec(musterilerDb, "create table musteriler_tbl(id int, isim varchar(128), soyad text, musteriOlmaTarigi date)", 0, 0, 0);
+    if (hataKontrol != 0)
+    {
+        cout << sqlite3_errmsg(musterilerDb) << endl;
+    }
+    else
+    {
+        cout << "musteriler tablosu olusturuldu!" << endl;
+    }
+
+    // 1. Müşteri
+    hataKontrol = sqlite3_exec(musterilerDb, "insert into musteriler_tbl(id, isim, soyad, musteriOlmaTarigi) values(0, 'Data', 'Delete', '2026-08-18')", 0,0,0);
+    if (hataKontrol != 0)
+    {
+        cout << sqlite3_errmsg(musterilerDb) << endl;
+    }
+    else
+    {
+        cout << "Musteri eklendi!" << endl;
+    }
+
+    //2. Müşteri
+    hataKontrol = sqlite3_exec(musterilerDb, "insert into musteriler_tbl(id, isim, soyad, musteriOlmaTarigi) values(1, 'Hatsune', 'Miku', '2025-02-05')", 0,0,0);
+    if (hataKontrol != 0)
+    {
+        cout << sqlite3_errmsg(musterilerDb) << endl;
+    }
+    else
+    {
+        cout << "Musteri eklendi!" << endl;
+    }
+
+    // 3. Müşteri
+    hataKontrol = sqlite3_exec(musterilerDb, "insert into musteriler_tbl(id, isim, soyad, musteriOlmaTarigi) values(2, 'Kasene', 'Teto', '2024-12-04')", 0,0,0);
+    if (hataKontrol != 0)
+    {
+        cout << sqlite3_errmsg(musterilerDb) << endl;
+    }
+    else
+    {
+        cout << "Musteri eklendi!" << endl;
+    }*/
+
+    hataKontrol = sqlite3_exec(musterilerDb, "select * from musteriler_tbl", tumMusterilerYazdir,0,0);
+    if (hataKontrol != 0)
+    {
+        cout << endl << sqlite3_errmsg(musterilerDb) << endl << endl;
+    }
+    else
+    {
+        cout << endl << "Musteriler yazdirildi!" << endl << endl;
+    }
+
+    ilkSeferMi = true; // Tablo görünümü için ilk seferi açıyoruz
+
+    // Belirli bir sütünü yazdırma
+    hataKontrol = sqlite3_exec(musterilerDb, "select id,isim from musteriler_tbl", tumMusterilerYazdir,0,0);
+    if (hataKontrol != 0)
+    {
+        cout << endl << sqlite3_errmsg(musterilerDb) << endl << endl;
+    }
+    else
+    {
+        cout << endl << "Musteriler yazdirildi!" << endl << endl;
+    }
+
+    // Order by komutu ile çekilen verileri büyükten küçüğe(asc) veya küçükten büyüğe(desc) sıralayabiliyoruz
+
+    ilkSeferMi = true;
+
+    // Küçükten büyüğe
+    hataKontrol = sqlite3_exec(musterilerDb, "select * from musteriler_tbl order by id desc", tumMusterilerYazdir,0,0);
+    if (hataKontrol != 0)
+    {
+        cout << endl << sqlite3_errmsg(musterilerDb) << endl << endl;
+    }
+    else
+    {
+        cout << endl << "Musteriler yazdirildi!" << endl << endl;
+    }
+
+    // Büyükten küçüğe
+    hataKontrol = sqlite3_exec(musterilerDb, "select * from musteriler_tbl order by id asc", tumMusterilerYazdir,0,0);
+    if (hataKontrol != 0)
+    {
+        cout << endl << sqlite3_errmsg(musterilerDb) << endl << endl;
+    }
+    else
+    {
+        cout << endl << "Musteriler yazdirildi!" << endl << endl;
+    }
+
+    sqlite3_close(musterilerDb);
+    
+    return 0;
+}</code>
+
+Çıktı ise;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/24 Cpp Veritabanı İşlemleri.html/4.png" alt="24.4" width="100%">
+        </div>
+
+        <h2>Veri Güncelleme</h2>
+        <pre id="codeh2">Veri güncellemek için SQL komutu olarak;
+
+<code class="language-sql">update tabloIsmi set sutunIsmi='olmasiIstenen'</code>
+
+Fakat bu komut SQL'de "Şu tablodaki 'sutunIsmi'ndeki bütün verileri 'olmasiIstenen' yap" demektir ki biz bu durumu pek istemeyiz. Bu sebeble SQL'de "Koşul" ifade olarak kullandığımız <code class="language-sql">where</code> ile bütün verilerin yerine koşulda yazan veriyi değiştirme imkanı bizlere sunar;
+
+<code class="language-sql">update tabloIsmi set sutunIsmi='olmasiIstenen' where sutunIsmi='suAnKiVeriDegeri'</code>
+
+Şeklinde güvenli hale getirilir.
+
+Hadi 'Data' müşterimizi güncelleyelim;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;sqlite3.h>
+
+using namespace std;
+
+bool ilkSeferMi = true; // Bir tablo görüntüsü vermek için bir kontrol ekliyorum
+
+int tumMusterilerYazdir(void* bosVeri, int sutunSayisi, char** sutunVerileri, char** sutunIsimleri) // Tüm müşterilerin yazdırılcağı Callback Fonksiyonumuz
+{
+    if (ilkSeferMi) // İlk sefer ise
+    {
+        ilkSeferMi = false; // İLk seferi kapat
+
+        for (int i = 0; i < sutunSayisi; i++) // Gelen veri kadar dön
+        {
+            cout << sutunIsimleri[i] << "    "; // Sütün isimlerini yazdır
+        }
+
+        cout << endl << endl; // Daha sonra iki satır koy
+    }
+    
+    for (int i = 0; i < sutunSayisi; i++) // Gelen veri kadar dön
+    {
+        cout << sutunVerileri[i] << "    ";
+    }
+    
+    cout << endl; // Sonunda bir satır koy
+
+    return 0; // Diğer veriye geç
+}
+
+int main()
+{
+    sqlite3 *musterilerDb;
+    int hataKontrol = sqlite3_open("musteriler.db", &musterilerDb);
+    if (hataKontrol)
+    {
+        cout << "musteriler.db acilamadi" << endl;
+    }
+    
+    /*hataKontrol = sqlite3_exec(musterilerDb, "create table musteriler_tbl(id int, isim varchar(128), soyad text, musteriOlmaTarigi date)", 0, 0, 0);
+    if (hataKontrol != 0)
+    {
+        cout << sqlite3_errmsg(musterilerDb) << endl;
+    }
+    else
+    {
+        cout << "musteriler tablosu olusturuldu!" << endl;
+    }
+
+    // 1. Müşteri
+    hataKontrol = sqlite3_exec(musterilerDb, "insert into musteriler_tbl(id, isim, soyad, musteriOlmaTarigi) values(0, 'Data', 'Delete', '2026-08-18')", 0,0,0);
+    if (hataKontrol != 0)
+    {
+        cout << sqlite3_errmsg(musterilerDb) << endl;
+    }
+    else
+    {
+        cout << "Musteri eklendi!" << endl;
+    }
+
+    //2. Müşteri
+    hataKontrol = sqlite3_exec(musterilerDb, "insert into musteriler_tbl(id, isim, soyad, musteriOlmaTarigi) values(1, 'Hatsune', 'Miku', '2025-02-05')", 0,0,0);
+    if (hataKontrol != 0)
+    {
+        cout << sqlite3_errmsg(musterilerDb) << endl;
+    }
+    else
+    {
+        cout << "Musteri eklendi!" << endl;
+    }
+
+    // 3. Müşteri
+    hataKontrol = sqlite3_exec(musterilerDb, "insert into musteriler_tbl(id, isim, soyad, musteriOlmaTarigi) values(2, 'Kasene', 'Teto', '2024-12-04')", 0,0,0);
+    if (hataKontrol != 0)
+    {
+        cout << sqlite3_errmsg(musterilerDb) << endl;
+    }
+    else
+    {
+        cout << "Musteri eklendi!" << endl;
+    }*/
+
+    hataKontrol = sqlite3_exec(musterilerDb, "select * from musteriler_tbl", tumMusterilerYazdir,0,0);
+    if (hataKontrol != 0)
+    {
+        cout << endl << sqlite3_errmsg(musterilerDb) << endl << endl;
+    }
+    else
+    {
+        cout << endl << "Musteriler yazdirildi!" << endl << endl;
+    }
+
+    // Güncelleme
+
+    hataKontrol = sqlite3_exec(musterilerDb, "update musteriler_tbl set isim='Enes' where isim='Data'", 0,0,0);
+    if (hataKontrol != 0)
+    {
+        cout << endl << sqlite3_errmsg(musterilerDb) << endl << endl;
+    }
+    else
+    {
+        cout << endl << "Musteri degistirildi!" << endl << endl;
+    }
+
+    ilkSeferMi = true;
+
+    hataKontrol = sqlite3_exec(musterilerDb, "select * from musteriler_tbl", tumMusterilerYazdir,0,0);
+    if (hataKontrol != 0)
+    {
+        cout << endl << sqlite3_errmsg(musterilerDb) << endl << endl;
+    }
+    else
+    {
+        cout << endl << "Musteriler yazdirildi!" << endl << endl;
+    }
+
+    sqlite3_close(musterilerDb);
+    
+    return 0;
+}</code>
+
+Çıktımız ise;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/24 Cpp Veritabanı İşlemleri.html/5.png" alt="24.5" width="100%">
+        </div>
+
+        <h2>Veri Silme</h2>
+        <pre id="preh2">Son olarak veri silmek istersek SQL komutu olarak şunu kullanırız;
+
+<code class="language-sql">delete from tabloIsmi where silinmekIstenenSatirinSahipOlduguSutunIsmi='silinmekIstenenSatirinHangiSutunVerisineGoreSilincegi'</code>
+
+Aynı şekilde bir <code class="language-sql">where</code> kullanmazsak tablodaki tüm verileri silicektir.
+
+Hadi Enes müşterisini silelim;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;sqlite3.h>
+
+using namespace std;
+
+bool ilkSeferMi = true; // Bir tablo görüntüsü vermek için bir kontrol ekliyorum
+
+int tumMusterilerYazdir(void* bosVeri, int sutunSayisi, char** sutunVerileri, char** sutunIsimleri) // Tüm müşterilerin yazdırılcağı Callback Fonksiyonumuz
+{
+    if (ilkSeferMi) // İlk sefer ise
+    {
+        ilkSeferMi = false; // İLk seferi kapat
+
+        for (int i = 0; i < sutunSayisi; i++) // Gelen veri kadar dön
+        {
+            cout << sutunIsimleri[i] << "    "; // Sütün isimlerini yazdır
+        }
+
+        cout << endl << endl; // Daha sonra iki satır koy
+    }
+    
+    for (int i = 0; i < sutunSayisi; i++) // Gelen veri kadar dön
+    {
+        cout << sutunVerileri[i] << "    ";
+    }
+    
+    cout << endl; // Sonunda bir satır koy
+
+    return 0; // Diğer veriye geç
+}
+
+int main()
+{
+    sqlite3 *musterilerDb;
+    int hataKontrol = sqlite3_open("musteriler.db", &musterilerDb);
+    if (hataKontrol)
+    {
+        cout << "musteriler.db acilamadi" << endl;
+    }
+    
+    /*hataKontrol = sqlite3_exec(musterilerDb, "create table musteriler_tbl(id int, isim varchar(128), soyad text, musteriOlmaTarigi date)", 0, 0, 0);
+    if (hataKontrol != 0)
+    {
+        cout << sqlite3_errmsg(musterilerDb) << endl;
+    }
+    else
+    {
+        cout << "musteriler tablosu olusturuldu!" << endl;
+    }
+
+    // 1. Müşteri
+    hataKontrol = sqlite3_exec(musterilerDb, "insert into musteriler_tbl(id, isim, soyad, musteriOlmaTarigi) values(0, 'Data', 'Delete', '2026-08-18')", 0,0,0);
+    if (hataKontrol != 0)
+    {
+        cout << sqlite3_errmsg(musterilerDb) << endl;
+    }
+    else
+    {
+        cout << "Musteri eklendi!" << endl;
+    }
+
+    //2. Müşteri
+    hataKontrol = sqlite3_exec(musterilerDb, "insert into musteriler_tbl(id, isim, soyad, musteriOlmaTarigi) values(1, 'Hatsune', 'Miku', '2025-02-05')", 0,0,0);
+    if (hataKontrol != 0)
+    {
+        cout << sqlite3_errmsg(musterilerDb) << endl;
+    }
+    else
+    {
+        cout << "Musteri eklendi!" << endl;
+    }
+
+    // 3. Müşteri
+    hataKontrol = sqlite3_exec(musterilerDb, "insert into musteriler_tbl(id, isim, soyad, musteriOlmaTarigi) values(2, 'Kasene', 'Teto', '2024-12-04')", 0,0,0);
+    if (hataKontrol != 0)
+    {
+        cout << sqlite3_errmsg(musterilerDb) << endl;
+    }
+    else
+    {
+        cout << "Musteri eklendi!" << endl;
+    }*/
+
+    hataKontrol = sqlite3_exec(musterilerDb, "select * from musteriler_tbl", tumMusterilerYazdir,0,0);
+    if (hataKontrol != 0)
+    {
+        cout << endl << sqlite3_errmsg(musterilerDb) << endl << endl;
+    }
+    else
+    {
+        cout << endl << "Musteriler yazdirildi!" << endl << endl;
+    }
+
+    // Silme işlemi
+    hataKontrol = sqlite3_exec(musterilerDb, "delete from musteriler_tbl where isim='Enes'", 0,0,0);
+    if (hataKontrol != 0)
+    {
+        cout << endl << sqlite3_errmsg(musterilerDb) << endl << endl;
+    }
+    else
+    {
+        cout << endl << "Musteri silindi!" << endl << endl;
+    }
+
+    ilkSeferMi = true;
+
+    hataKontrol = sqlite3_exec(musterilerDb, "select * from musteriler_tbl", tumMusterilerYazdir,0,0);
+    if (hataKontrol != 0)
+    {
+        cout << endl << sqlite3_errmsg(musterilerDb) << endl << endl;
+    }
+    else
+    {
+        cout << endl << "Musteriler yazdirildi!" << endl << endl;
+    }
+
+    sqlite3_close(musterilerDb);
+    
+    return 0;
+}</code>
+
+Çıktımız;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/24 Cpp Veritabanı İşlemleri.html/6.png" alt="24.6" width="100%">
+        </div>
+
+        <pre id="codeh2">Eğer tabloyu silmek isteseydik?
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;sqlite3.h>
+
+using namespace std;
+
+bool ilkSeferMi = true; // Bir tablo görüntüsü vermek için bir kontrol ekliyorum
+
+int tumMusterilerYazdir(void* bosVeri, int sutunSayisi, char** sutunVerileri, char** sutunIsimleri) // Tüm müşterilerin yazdırılcağı Callback Fonksiyonumuz
+{
+    if (ilkSeferMi) // İlk sefer ise
+    {
+        ilkSeferMi = false; // İLk seferi kapat
+
+        for (int i = 0; i < sutunSayisi; i++) // Gelen veri kadar dön
+        {
+            cout << sutunIsimleri[i] << "    "; // Sütün isimlerini yazdır
+        }
+
+        cout << endl << endl; // Daha sonra iki satır koy
+    }
+    
+    for (int i = 0; i < sutunSayisi; i++) // Gelen veri kadar dön
+    {
+        cout << sutunVerileri[i] << "    ";
+    }
+    
+    cout << endl; // Sonunda bir satır koy
+
+    return 0; // Diğer veriye geç
+}
+
+int main()
+{
+    sqlite3 *musterilerDb;
+    int hataKontrol = sqlite3_open("musteriler.db", &musterilerDb);
+    if (hataKontrol)
+    {
+        cout << "musteriler.db acilamadi" << endl;
+    }
+    
+    /*hataKontrol = sqlite3_exec(musterilerDb, "create table musteriler_tbl(id int, isim varchar(128), soyad text, musteriOlmaTarigi date)", 0, 0, 0);
+    if (hataKontrol != 0)
+    {
+        cout << sqlite3_errmsg(musterilerDb) << endl;
+    }
+    else
+    {
+        cout << "musteriler tablosu olusturuldu!" << endl;
+    }
+
+    // 1. Müşteri
+    hataKontrol = sqlite3_exec(musterilerDb, "insert into musteriler_tbl(id, isim, soyad, musteriOlmaTarigi) values(0, 'Data', 'Delete', '2026-08-18')", 0,0,0);
+    if (hataKontrol != 0)
+    {
+        cout << sqlite3_errmsg(musterilerDb) << endl;
+    }
+    else
+    {
+        cout << "Musteri eklendi!" << endl;
+    }
+
+    //2. Müşteri
+    hataKontrol = sqlite3_exec(musterilerDb, "insert into musteriler_tbl(id, isim, soyad, musteriOlmaTarigi) values(1, 'Hatsune', 'Miku', '2025-02-05')", 0,0,0);
+    if (hataKontrol != 0)
+    {
+        cout << sqlite3_errmsg(musterilerDb) << endl;
+    }
+    else
+    {
+        cout << "Musteri eklendi!" << endl;
+    }
+
+    // 3. Müşteri
+    hataKontrol = sqlite3_exec(musterilerDb, "insert into musteriler_tbl(id, isim, soyad, musteriOlmaTarigi) values(2, 'Kasene', 'Teto', '2024-12-04')", 0,0,0);
+    if (hataKontrol != 0)
+    {
+        cout << sqlite3_errmsg(musterilerDb) << endl;
+    }
+    else
+    {
+        cout << "Musteri eklendi!" << endl;
+    }*/
+
+    hataKontrol = sqlite3_exec(musterilerDb, "select * from musteriler_tbl", tumMusterilerYazdir,0,0);
+    if (hataKontrol != 0)
+    {
+        cout << endl << sqlite3_errmsg(musterilerDb) << endl << endl;
+    }
+    else
+    {
+        cout << endl << "Musteriler yazdirildi!" << endl << endl;
+    }
+
+    // Silme işlemi
+    hataKontrol = sqlite3_exec(musterilerDb, "drop table musteriler_tbl", 0,0,0);
+    if (hataKontrol != 0)
+    {
+        cout << endl << sqlite3_errmsg(musterilerDb) << endl << endl;
+    }
+    else
+    {
+        cout << endl << "Musteri silindi!" << endl << endl;
+    }
+
+    ilkSeferMi = true;
+
+    hataKontrol = sqlite3_exec(musterilerDb, "select * from musteriler_tbl", tumMusterilerYazdir,0,0);
+    if (hataKontrol != 0)
+    {
+        cout << endl << sqlite3_errmsg(musterilerDb) << endl << endl;
+    }
+    else
+    {
+        cout << endl << "Musteriler yazdirildi!" << endl << endl;
+    }
+
+    sqlite3_close(musterilerDb);
+    
+    return 0;
+}</code>
+
+Çıktı;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/24 Cpp Veritabanı İşlemleri.html/7.png" alt="24.7" width="100%">
+        </div>
+
+        <h2>Güvenli Sorgu Yazma</h2>
+        <pre id="preh2">Şimdi biz bu sorguları yazıyoruz ama kendimiz yazıyoruz. Yani eklediğimiz veriler bizim eklediğimiz veriler. Peki ya kullanıcı? Kullanıcılardan gelen verileri direkt olarak String birleştirme gibi bir sorgu yaparsak; zamanında Google, Yahoo veya Yandex gibi arama motoru devlerinin başına geldiği gibi SQL Injection saldırısına maruz kalabilrisiniz. Evet biz SQL biliyoruz ama kullanıcı bilmiyor olabilir. Ama kötü niyetli kullanıcılar kesinlikle SQL bilirler.</pre>
+
+        <pre id="preh2">Peki ne demeyi mi çalışıyorum? SQL dilinde her dilde olduğu gibi yorum satırı operatörü(--) bulunur. Bu operatör kullanılan SQL komutlarını açıklamak içindir. Ama kötü niyetli kullanıcılar için en önemli veritabanını silme komutunu çalıştırma aracı "<code class="language-sql">drop database primaryDatabase --</code>" aracıdır. Bu komut der ki; "'primaryDatabase' adlı veritabanını sil ve geri kalan satırı yorum yap" der. Böylelikle tüm önemli verileri silinip toz olur gider...</pre>
+
+        <pre id="preh2">İşte bu durumu önlemek için "Prepared Statements" adlı bir önden tanımlama sistemi kullanılır. Bu sistem kötü niyetli kullanıcının girdiği zararlı sorguyu sanki sadece bir yazı verisiymiş gibi tanıtır ve çalışabilme geçerliğini yitirir. Böylelikle veriler korunmuş olur.</pre>
+
+        <pre id="codeh2">Gelin beraber kullanıcının girdiği değerlerle tabloya veri ekleyen ve bunu güvenli bir şekilde yapan bir sistem geliştirelim;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;sqlite3.h>
+
+using namespace std;
+
+bool ilkSeferMi = true;
+
+int tumMusterilerYazdir(void* bosVeri, int sutunSayisi, char** sutunVerileri, char** sutunIsimleri)
+{
+    if (ilkSeferMi)
+    {
+        ilkSeferMi = false;
+
+        for (int i = 0; i < sutunSayisi; i++)
+        {
+            cout << sutunIsimleri[i] << "    ";
+        }
+
+        cout << endl << endl;
+    }
+    
+    for (int i = 0; i < sutunSayisi; i++)
+    {
+        cout << sutunVerileri[i] << "    ";
+    }
+    
+    cout << endl;
+
+    return 0;
+}
+
+int main()
+{
+    sqlite3 *musterilerDb;
+    int hataKontrol = sqlite3_open("musteriler.db", &musterilerDb);
+    if (hataKontrol)
+    {
+        cout << "musteriler.db acilamadi" << endl;
+    }
+    
+    hataKontrol = sqlite3_exec(musterilerDb, "create table musteriler_tbl(id int, isim varchar(128), soyad text, musteriOlmaTarigi text)", 0, 0, 0);
+    if (hataKontrol != 0)
+    {
+        cout << sqlite3_errmsg(musterilerDb) << endl;
+    }
+    else
+    {
+        cout << "musteriler tablosu olusturuldu!" << endl;
+    }
+
+    cout << endl << "musteriler tablosundaki Id sutununa veri ekleyin: ";
+    string yeniMusteriId;
+    getline(cin, yeniMusteriId); // Getline ile kullanıcının girdiği bütün girdiği verirs
+
+    cout << endl << "musteriler tablosundaki Isim sutununa veri ekleyin: ";
+    string yeniMusteriIsmi;
+    getline(cin, yeniMusteriIsmi);
+
+    cout << endl << "musteriler tablosundaki Soyad sutununa veri ekleyin: ";
+    string yeniMusteriSoyad;
+    getline(cin, yeniMusteriSoyad);
+
+    cout << endl << "musteriler tablosundaki musteriOlmaTarigi sutununa veri ekleyin(format; Yil-Ay-Gun): ";
+    string yeniMusteriTarigi;
+    getline(cin, yeniMusteriTarigi);
+
+    // Veriler aldık şimdi güvenli sorgu yapımızda
+
+    sqlite3_stmt *guvenliSorguNesnesi; // Güvenli sorgu nesnemiz, güvenli veri doldurma işlemlerimiz bu nesne üzerinden yapıcağız
+    char sqlSorgusu[] = "insert into musteriler_tbl(id, isim, soyad, musteriOlmaTarigi) values(?, ?, ?, ?)"; // Sorgumuzu tanımladık. Soru işaretleri(?) yerine bizim güvenli veri yerleştirmede kullanıcağımız fonksiyonlar ile verileri doldurucağız
+
+    sqlite3_prepare_v2(musterilerDb, sqlSorgusu, -1, &guvenliSorguNesnesi, nullptr);// Güvenli sorgu nesnesini başlatır
+    // musterilerDb; Veritabanımız
+    // sqlSorgusu.c_str(); String şeklinde sorgumuz
+    // -1; Sorgu ne kadar olucak. -1 değeri otomatik olarak ayarlanacak demektir
+    // &guvenliSorguNesnesi; Güvenli değişkenimiz
+    // 0; Hata mesajları. Şimdilik es geçtim
+    
+    sqlite3_bind_int(guvenliSorguNesnesi, 1, (int)(yeniMusteriId.c_str()[0] - 48)); // Güvenli sorgu nesnemize Integer değerini güvenli bir şekilde ekler
+    // (int)(yeniMusteriId.c_str()[0] - 48); Güvenli sorgu nesnemiz
+    // 1; Kaçıncı soru işaretine ekleneceği
+    // yeniMusteriId; Eklenicek veri
+
+    sqlite3_bind_text(guvenliSorguNesnesi, 2, yeniMusteriIsmi.c_str(), yeniMusteriIsmi.length() + 1, 0); // String verisini güvenli bir şekilde ekler
+    // guvenliSorguNesnesi; Güvenli sorgu nesnemiz
+    // 2; Kaçıncı soru işaretine ekleneceği
+    // yeniMusteriIsmi.c_str(); Eklenicek veri
+    // yeniMusteriIsmi.length() + 1; eklenicek olan verinin uzunluğu
+    // 0; Boş veri
+
+    sqlite3_bind_text(guvenliSorguNesnesi, 3, yeniMusteriSoyad.c_str(), yeniMusteriSoyad.length() + 1, 0);
+
+    sqlite3_bind_text(guvenliSorguNesnesi, 4, yeniMusteriTarigi.c_str(), yeniMusteriTarigi.length() + 1, 0); // Tarih türüde String şeklinde eklenir
+
+    char* guvenliSql = sqlite3_expanded_sql(guvenliSorguNesnesi); // Güvenli SQL nesnesini verileriyle birlikte SQL sorgusu olarak verir
+
+    hataKontrol = sqlite3_exec(musterilerDb, sqlite3_expanded_sql(guvenliSorguNesnesi), 0,0,0);
+    if (hataKontrol != 0)
+    {
+        cout << sqlite3_errmsg(musterilerDb) << endl;
+    }
+    else
+    {
+        cout << "musteriler tablosuna veriler eklendi!" << endl;
+    }
+
+    ilkSeferMi = true;
+
+    hataKontrol = sqlite3_exec(musterilerDb, "select * from musteriler_tbl", tumMusterilerYazdir,0,0);
+    if (hataKontrol != 0)
+    {
+        cout << sqlite3_errmsg(musterilerDb) << endl;
+    }
+    else
+    {
+        cout << endl << "musteriler yazdirildi!" << endl;
+    }
+
+
+    sqlite3_close(musterilerDb);
+    
+    return 0;
+}</code>
+
+Çıktısı ise;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/24 Cpp Veritabanı İşlemleri.html/8.png" alt="24.8" width="100%">
+        </div>
+
+        <h2>Kaynakça</h2>
+        <ul>
+            <li><a href="https://data35delete.github.io/Data-s-Book-on-C/Lessons/21%20C%20Veritabanı%20İşlemleri.html">Data's Book on C - Veritabanı İşlemleri</a></li>
+            <li><a href="https://www.geeksforgeeks.org/cpp/sql-using-c-c-and-sqlite/">https://www.geeksforgeeks.org/cpp/sql-using-c-c-and-sqlite/</a></li>
+        </ul>
+    </div>
+
+    <div style="height: 100px;"></div>
+
+    <footer style="position: fixed; left: 0; bottom: 0; width: 100%; background: transparent; text-align: center; padding: 10px 0; z-index: 100;">
+        <div>
+            <a href="./23 Cpp Log Sistemi.html" style="margin-right: 20px; cursor:pointer;">
+                &larr; Önceki
+            </a>
+            <a href="" style="cursor:pointer;">
+                Sonraki &rarr;
+            </a>
+        </div>
+        <div>
+            <p>&copy; 2026 Data's Book</p>
+        </div>
+
+        <div style="position: absolute; right: 20px; bottom: 20px;">
+            <a href="./1 Cpp İçindekiler.html" style="text-decoration: none;">
+                İçindekiler
+            </a>
+        </div>
+    </footer>
+</body>
+</html>
+
+<!-- Muhammet Enes nam-ı diğer Data Delete tarafından sevgi ile yapıldı <3 -->
