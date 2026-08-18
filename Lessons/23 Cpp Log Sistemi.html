@@ -154,7 +154,251 @@ Klasörümüzde oluşan .log dosyasının içeriği ise;</pre>
             <img src="../Bibliography/23 Cpp Log Sistemi.html/2.png" alt="23.2" width="100%">
         </div>
 
+        <h2>Log Kütüphanesi Yazma</h2>
+        <pre id="preh2">Normal şartlarda sizlere bir Log kütüphanesi tanıtmalı veya yükletmeliydim ama düşününce bu kadar basit bir işin neden kütüphaneye ihtiyaç duyalım ki? Bu sebeble bugüne kadar öğrendiğimiz bilgileri kullanarak bir C++ tabanlı bir Log kütüphanesi yazmanızı istiyorum ki bir yandan bende yazıcağım...</pre>
+
+        <pre id="preh2">Şimdi iş şöyle olucak, C++ tabanl bir Log kütüphanesi yazıcağız. Dolayısıyla Log seviyelerini, onunla beraber Log seviyelerinin renklerinide eğer konsola yazdırıcaksa programcı renkli olarak yazdırıcak. Ayrıca dosyaya yazma özelliğinde takdir ederseniz renkli yazdıramayız. Ayrıca Log kütüphanesinde OOP'den bol bol yararlanacağız ayrıca... Birde sizden bu kendi yazdığınız projeyi Github sayfasına koyarsanız gelecek için sizlere güzel bir referans olabilir!</pre>
+
+        <pre id="codeh2">Şimdi her koddan önce başlık dosyamızı yazalım ki programcılar kolaylıkla kütüphanemizi kullanabilsinler. Ben projemin ismine Data's Logger++ diyeceğim. Yani kısaltmasıyla DLogger++ olucak. Tabi siz istediğiniz ismi koyabilirsiniz.
+
+dloggerpp.hpp
+
+<code class="language-cpp">#ifndef _D_LOGGERPP_H_P_P_
+#define _D_LOGGERPP_H_P_P_
+
+#include &lt;iostream>
+#include &lt;fstream>
+#include &lt;string.h>
+#include &lt;time.h>
+
+using namespace std;
+
+class dloggerpp
+{
+    private:
+        bool dosyayaMi = false;
+        string dosyaIsmi = "";
+
+    public:
+
+        dloggerpp() // Bir dosyaya Loglancağı zaman
+        {
+            dosyayaMi = false;
+        }
+
+        dloggerpp(string dosyaAdi) // Bir dosyaya Loglancağı zaman
+        {
+            dosyayaMi = true;
+            dosyaIsmi = dosyaAdi;
+        }
+
+        void info_logger(unsigned long long satirNumarasi, const char* mesajIcergigi)
+        {
+            time_t guncelZaman = time(0);
+            char* guncelZamanStr = ctime(&guncelZaman);
+            for (int i = 0; i < strlen(guncelZamanStr); i++)
+                if (guncelZamanStr[i] == '\n')
+                    guncelZamanStr[i] = '\0';
+
+            if (dosyayaMi)
+            {
+                ofstream dosya (dosyaIsmi, ios::app);
+
+                dosya << guncelZamanStr <<
+                ", " << satirNumarasi <<
+                " [INFO] " <<
+                mesajIcergigi << endl;
+
+                dosya.close();
+            }
+            else
+            {
+                cout << guncelZamanStr <<
+                ", " << satirNumarasi <<
+                " \x1b[92m[INFO]\x1b[39m " <<
+                mesajIcergigi << endl;
+            }
+            
+        }
+        void debug_logger(unsigned long long satirNumarasi, const char* mesajIcergigi)
+        {
+            time_t guncelZaman = time(0);
+            char* guncelZamanStr = ctime(&guncelZaman);
+            for (int i = 0; i < strlen(guncelZamanStr); i++)
+                if (guncelZamanStr[i] == '\n')
+                    guncelZamanStr[i] = '\0';
+
+            if (dosyayaMi)
+            {
+                ofstream dosya (dosyaIsmi, ios::app);
+
+                dosya << guncelZamanStr <<
+                ", " << satirNumarasi <<
+                " [DEBUG] " <<
+                mesajIcergigi << endl;
+
+                dosya.close();
+            }
+            else
+            {
+                cout << guncelZamanStr <<
+                ", " << satirNumarasi <<
+                " \x1b[32m[DEBUG]\x1b[39m " <<
+                mesajIcergigi << endl;
+            }
+            
+        }
+        void trace_logger(unsigned long long satirNumarasi, const char* mesajIcergigi)
+        {
+            time_t guncelZaman = time(0);
+            char* guncelZamanStr = ctime(&guncelZaman);
+            for (int i = 0; i < strlen(guncelZamanStr); i++)
+                if (guncelZamanStr[i] == '\n')
+                    guncelZamanStr[i] = '\0';
+
+            if (dosyayaMi)
+            {
+                ofstream dosya (dosyaIsmi, ios::app);
+
+                dosya << guncelZamanStr <<
+                ", " << satirNumarasi <<
+                " [TRACE] " <<
+                mesajIcergigi << endl;
+
+                dosya.close();
+            }
+            else
+            {
+                cout << guncelZamanStr <<
+                ", " << satirNumarasi <<
+                " \x1b[34m[TRACE]\x1b[39m " <<
+                mesajIcergigi << endl;
+            }
+            
+        }
+        void warn_logger(unsigned long long satirNumarasi, const char* mesajIcergigi)
+        {
+            time_t guncelZaman = time(0);
+            char* guncelZamanStr = ctime(&guncelZaman);
+            for (int i = 0; i < strlen(guncelZamanStr); i++)
+                if (guncelZamanStr[i] == '\n')
+                    guncelZamanStr[i] = '\0';
+
+            if (dosyayaMi)
+            {
+                ofstream dosya (dosyaIsmi, ios::app);
+
+                dosya << guncelZamanStr <<
+                ", " << satirNumarasi <<
+                " [WARN] " <<
+                mesajIcergigi << endl;
+
+                dosya.close();
+            }
+            else
+            {
+                cout << guncelZamanStr <<
+                ", " << satirNumarasi <<
+                " \x1b[33m[WARN]\x1b[39m " <<
+                mesajIcergigi << endl;
+            }
+            
+        }
+        void error_logger(unsigned long long satirNumarasi, const char* mesajIcergigi)
+        {
+            time_t guncelZaman = time(0);
+            char* guncelZamanStr = ctime(&guncelZaman);
+            for (int i = 0; i < strlen(guncelZamanStr); i++)
+                if (guncelZamanStr[i] == '\n')
+                    guncelZamanStr[i] = '\0';
+
+            if (dosyayaMi)
+            {
+                ofstream dosya (dosyaIsmi, ios::app);
+
+                dosya << guncelZamanStr <<
+                ", " << satirNumarasi <<
+                " [ERR] " <<
+                mesajIcergigi << endl;
+
+                dosya.close();
+            }
+            else
+            {
+                cout << guncelZamanStr <<
+                ", " << satirNumarasi <<
+                " \x1b[91m[ERR]\x1b[39m " <<
+                mesajIcergigi << endl;
+            }
+            
+        }
+        void fatal_logger(unsigned long long satirNumarasi, const char* mesajIcergigi)
+        {
+            time_t guncelZaman = time(0);
+            char* guncelZamanStr = ctime(&guncelZaman);
+            for (int i = 0; i < strlen(guncelZamanStr); i++)
+                if (guncelZamanStr[i] == '\n')
+                    guncelZamanStr[i] = '\0';
+
+            if (dosyayaMi)
+            {
+                ofstream dosya (dosyaIsmi, ios::app);
+
+                dosya << guncelZamanStr <<
+                ", " << satirNumarasi <<
+                " [FATAL] " <<
+                mesajIcergigi << endl;
+
+                dosya.close();
+            }
+            else
+            {
+                cout << guncelZamanStr <<
+                ", " << satirNumarasi <<
+                " \x1b[31m[FATAL]\x1b[39m " <<
+                mesajIcergigi << endl;
+            }
+            
+        }
+};
+
+#endif</code>
         
+
+Kütüphanemiz hazır. Evet tüm kütüphane tek bir başlık dosyasında. Şimdi örnek uygulamamız;
+main.cpp
+
+<code class="language-cpp">#include "dloggerpp.hpp"
+
+int main()
+{
+    dloggerpp dlogger;
+
+    dlogger.info_logger(__LINE__,"info ile ilgili mesaj");
+    dlogger.debug_logger(__LINE__,"debug ile ilgili mesaj");
+    dlogger.trace_logger(__LINE__,"trace ile ilgili mesaj");
+    dlogger.warn_logger(__LINE__,"warn ile ilgili mesaj");
+    dlogger.error_logger(__LINE__,"error ile ilgili mesaj");
+    dlogger.fatal_logger(__LINE__,"fatal ile ilgili mesaj");
+
+    dloggerpp dlogger2(".log");
+
+    dlogger2.info_logger(__LINE__,"info ile ilgili mesaj");
+    dlogger2.debug_logger(__LINE__,"debug ile ilgili mesaj");
+    dlogger2.trace_logger(__LINE__,"trace ile ilgili mesaj");
+    dlogger2.warn_logger(__LINE__,"warn ile ilgili mesaj");
+    dlogger2.error_logger(__LINE__,"error ile ilgili mesaj");
+    dlogger2.fatal_logger(__LINE__,"fatal ile ilgili mesaj");
+}</code>
+
+Çıktıları ise;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/23 Cpp Log Sistemi.html/3.png" alt="23.3" width="100%">
+            <img src="../Bibliography/23 Cpp Log Sistemi.html/4.png" alt="23.4" width="100%">
+        </div>
+
+        <pre id="preh2">Artık bir Log kütüphanemiz var! <a href="https://github.com/DATA35DELETE/Data-s-Loggerpp">Github sayfası</a>.</pre>
 
         <h2>Kaynakça</h2>
         <ul>
