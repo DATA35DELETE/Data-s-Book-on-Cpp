@@ -411,21 +411,18 @@
 - **Veri Silme (DELETE)**: Tanım. Örnek.
   > Metodları
 - **Prepared Statements**: Tanım. SQL Injection Koruması. Örnek.
-- **SQLiteCpp Sarmalayıcısı**: Tanım. C++ OOP Arayüzü. Örnek.
  
 ---
  
 ### C++ : HTTP İstekleri Yönetimi
 - **HTTP Nedir?**: Tanım. Kullanım Senaryoları.
 - **libcurl Kütüphanesi**: Tanım. Kurulum. Örnek.
-- **GET İsteği**: Tanım. Örnek.
+  - **GET İsteği**: Tanım. Örnek.
   > Seçenekler
+  - **Çıktıyı Bir Fonksiyona Gönderme**: Callback
+- **Çıktıyı Direkt Bir Dosyaya Gönderme**
 - **POST İsteği**: Tanım. Örnek.
   > Seçenekler
-- **Header Yönetimi**: Tanım. Örnek.
-- **JSON ile HTTP**: İstek ve Yanıt. Örnek.
-- **HTTPS ve SSL**: Tanım. Örnek.
-- **Hata Yönetimi**: `curl_easy_strerror`. Örnek.
  
 ---
  

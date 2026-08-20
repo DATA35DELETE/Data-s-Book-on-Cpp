@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data's Book on Cpp</title>
+
+    <link rel="icon" type="image/x-icon" href="../Sources/favicon.png">
+
+    <script src="../Sources/JS/setBackgroundMedia.js"></script>
+
+    <link rel="stylesheet" href="../Sources/JS/hljs/vs2015.css">
+    <script src="../Sources/JS/hljs/highlight.min.js"></script>
+    <script>
+        window.onload = function() {
+            hljs.highlightAll();
+        };
+    </script>
+
+    <link rel="stylesheet" href="../Sources/CSS/main.css">
+</head>
+<body>
+    <h1>Http İstekleri</h1>
+
+    <div style="height: 100px;"></div>
+    
+    <div id="mainDiv">
+        <h2>Http İsteği Nedir?</h2>
+        <pre id="preh2">Http isteği, internet üzerinde istediğimiz verileri elde etmek için yaptığımız veri alışverişlerini sağlayan bir sistemdir.</pre>
+    
+        <pre id="preh2">Peki ne zaman kullanılır? Genelde uygulamamızda bazı hazır servisleri veya uzaktadaki sunucumuzla iletişim için kullanırız. Böylelikle internetle iletişim kurmuş oluruz.</pre>
+
+        <h2>libcurl Kütüphanesi</h2>
+        <pre id="preh2">Libcurl, Http istediği atmamızı sağlayan Curl aracının kütüphane versiyonudur. Ayrıca kendisi bir C kütüphanesidir.</pre>
+
+        <pre id="preh2">Kurmak için:
+
+Windows; <code class="language-bash">pacman -S mingw-w64-x86_64-curl</code>
+Linux; <code class="language-bash">sudo apt install libcurl4-openssl-dev</code>
+
+Şeklinde bilgisayarımıza yükleriz.</pre>
+
+        <h2>GET İsteği</h2>
+        <pre id="preh2">GET, Http isteklerinden biridir. GET, bir sunucudan bir veri almak için kullanılan bir yöntemdir. Yani sadece bir veri almak veya bir internet sayfasının içeriğini indirmek için kullanılan bir yöntemdir.</pre>
+
+        <pre id="preh2">Şimdi gelin bir önceki sayfanın kaynak kodlarını Libcurl ile çekelim;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;curl/curl.h> // Kütüphanemiz
+
+int main()
+{
+    CURL* curlAraci = curl_easy_init(); // Curl bizlere basit bir araç sunmak için "Easy" modunda bizlere bir çok fonksiyon sağlar. curl_easy_init komutu bizlere bir Curl aracı nesnesi verir
+
+    if (curlAraci) // Eğer Curl aracı boş değil ise ki oluşturma başarısız olursa fonksiyon Null döner
+    {
+        curl_easy_setopt(curlAraci, CURLOPT_URL, "https://data35delete.github.io/Data-s-Book-on-Cpp/Lessons/24%20Cpp%20Veritabanı%20İşlemleri.html"); // Curl aracına tüm parametreleri curl_easy_setopt ile veririz. Mantık basit;
+        // curlAraci; Etki edilicek olan Curl nesnesi
+        // CURLOPT_URL; Parametre türü. Şuanlık URL ekliyoruz
+        // "https://data35delete.github.io/Data-s-Book-on-Cpp/Lessons/24%20Cpp%20Veritabanı%20İşlemleri.html"; Parametrenin ekliceği veri. Biz GET isteği istediğimiz için site linkini yapıştırdık
+
+        curl_easy_perform(curlAraci); // En son ayarlamalar bittiğinde ise Curl nesnesini çalıştırız ve çıktımız gözlemleriz. Bazı ayarlamlar yapılmazsa çıktı konsola yazdırılır.
+    }
+
+    curl_easy_cleanup(curlAraci); // Bellek yönetimi için serbest bırakıyoruz
+    
+}</code>
+
+Derliyelim;
+
+<code class="language-bash">g++ main.cpp -o main -lcurl</code>
+
+Çıktısı ise;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/25 Cpp Http İstekleri.html/1.png" alt="25.1" width="100%">
+            <img src="../Bibliography/25 Cpp Http İstekleri.html/2.png" alt="25.2" width="100%">
+        </div>
+
+        <h3>Çıktıyı Bir Fonksiyona Yönlendirme</h3>
+        <pre id="preh3">Eğer çıktıyı bir fonksiyona göndermek istersek?</pre>
+
+        <pre id="codeh3">Şimdi çektiğimiz sayfade kaç adet karakterin olduğunu bizlere veren bir program yazalım. Bunu ise Libcurl'un bizlere sunduğu "CURLOPT_WRITEFUNCTION" parametresini kullanalım;
+            
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;curl/curl.h>
+
+using namespace std;
+
+string datasbookoncppVeritabaniIslemleriSayfasi; // Syafanın içeriğini barındırıcak olan değişken
+
+unsigned long long curlAraciCallbackFonksiyonu(char *veri, size_t verininSirasi, size_t gelenVerininBoyutu,void *kullaniciVerisi) // Callback fonsiyonumuz. Gelen her veri bu fonksiyona gelicektir
+// char *veri; Verinin kendisidir
+// size_t verininSirasi; Gelen verinin sırasıdır
+// size_t gelenVerininBoyutu; Gelen verinin gerçek boyutudur
+// void *kullaniciVerisi; Kullanıcı tarafından gönderilen veridir
+{
+    for (int i = 0; i < gelenVerininBoyutu; i++)
+    {
+        datasbookoncppVeritabaniIslemleriSayfasi += veri[i]; // Her harfi teker teker ekliyoruz ki veri fazlası yaşanmasın
+    }
+    
+    return verininSirasi * gelenVerininBoyutu; // Dönüş tipi olarak bu iki değerin çarpımını vermek zorundayız. Yoksa Curl Get işlemine devam etmez
+}
+
+int main()
+{
+    CURL* curlAraci = curl_easy_init();
+
+    if (curlAraci)
+    {
+        curl_easy_setopt(curlAraci, CURLOPT_URL, "https://data35delete.github.io/Data-s-Book-on-Cpp/Lessons/24%20Cpp%20Veritabanı%20İşlemleri.html");
+
+        curl_easy_setopt(curlAraci, CURLOPT_WRITEFUNCTION, curlAraciCallbackFonksiyonu); // Parametremizi ayarlıyoruz
+
+        curl_easy_perform(curlAraci);
+    }
+
+    cout << "Data's Book on Cpp - Veritabani Islemleri sayfasinin boyutu; " << datasbookoncppVeritabaniIslemleriSayfasi.length() << endl; // Yazdırma
+
+    curl_easy_cleanup(curlAraci);
+}</code>
+
+Çıktımız ise; "Data's Book on Cpp - Veritabani Islemleri sayfasinin boyutu; 33592" olucaktır.</pre>
+
+        <h3>Çıktıyı Bir Dosyaya Yönlendirme</h3>
+        <pre id="preh3">Bu seferde tanımladığımız bir dosyaya yazdırılsın. C kütüphanesi olmasından dolayı FILE* verilmelidir. Parametre olarak "CURLOPT_WRITEDATA" kullanılır.</pre>
+
+        <pre id="codeh3">Hadi uygulayalım;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;curl/curl.h>
+
+using namespace std;
+
+int main()
+{
+    CURL* curlAraci = curl_easy_init();
+
+    FILE* curlCikti = fopen("curlCikti.html", "w"); // Çıktının yazılcak dosyamız
+
+    if (curlAraci)
+    {
+        curl_easy_setopt(curlAraci, CURLOPT_URL, "https://data35delete.github.io/Data-s-Book-on-Cpp/Lessons/24%20Cpp%20Veritabanı%20İşlemleri.html");
+
+        curl_easy_setopt(curlAraci, CURLOPT_WRITEDATA, curlCikti); // Parametremizi ayarlıyoruz
+
+        curl_easy_perform(curlAraci);
+    }
+
+    fclose(curlCikti); // Dosyamızdan çıkıyoruz
+
+    curl_easy_cleanup(curlAraci);
+}</code>
+
+Program çalıştıktan sonra klasörümüzde çıkan "curlCikti.html" dosyasını açalım. Göreceğimiz görüntü ise beyaz bir arka planda sayfamızın içeriğidir.</pre>
+
+        <h2>Kaynakça</h2>
+        <ul>
+            <li><a href="https://data35delete.github.io/Data-s-Book-on-C/Lessons/22%20C%20HTTP%20İstekleri%20Yönetimi.html">Data's Book on C - Http İstekleri</a></li>
+            <li><a href="https://everything.curl.dev/install/linux.html">https://everything.curl.dev/install/linux.html</a></li>
+            <li><a href="https://everything.curl.dev/install/windows/win-msys2.html">https://everything.curl.dev/install/windows/win-msys2.html</a></li>
+            <li><a href="https://apidog.com/tr/blog/get-vs-post-request-the-difference-between-http-methods-8/">https://apidog.com/tr/blog/get-vs-post-request-the-difference-between-http-methods-8/</a></li>
+            <li><a href="https://everything.curl.dev/transfers/callbacks/write.html">https://everything.curl.dev/transfers/callbacks/write.html</a></li>
+            <li><a href="https://forums.wxwidgets.org/viewtopic.php?t=20793">https://forums.wxwidgets.org/viewtopic.php?t=20793</a></li>
+            <li><a href="https://stackoverflow.com/questions/69594602/c-curl-callback">https://stackoverflow.com/questions/69594602/c-curl-callback</a></li>
+            <li><a href="https://stackoverflow.com/questions/7974371/libcurl-callbacks-w-c-class-members">https://stackoverflow.com/questions/7974371/libcurl-callbacks-w-c-class-members</a></li>
+        </ul>
+        
+    </div>
+
+    <div style="height: 100px;"></div>
+
+    <footer style="position: fixed; left: 0; bottom: 0; width: 100%; background: transparent; text-align: center; padding: 10px 0; z-index: 100;">
+        <div>
+            <a href="./24 Cpp Veritabanı İşlemleri.html" style="margin-right: 20px; cursor:pointer;">
+                &larr; Önceki
+            </a>
+            <a href="" style="cursor:pointer;">
+                Sonraki &rarr;
+            </a>
+        </div>
+        <div>
+            <p>&copy; 2026 Data's Book</p>
+        </div>
+
+        <div style="position: absolute; right: 20px; bottom: 20px;">
+            <a href="./1 Cpp İçindekiler.html" style="text-decoration: none;">
+                İçindekiler
+            </a>
+        </div>
+    </footer>
+</body>
+</html>
+
+<!-- Muhammet Enes nam-ı diğer Data Delete tarafından sevgi ile yapıldı <3 -->
