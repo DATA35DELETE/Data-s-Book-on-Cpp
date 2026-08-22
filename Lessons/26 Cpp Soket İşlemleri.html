@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data's Book on Cpp</title>
+
+    <link rel="icon" type="image/x-icon" href="../Sources/favicon.png">
+
+    <script src="../Sources/JS/setBackgroundMedia.js"></script>
+
+    <link rel="stylesheet" href="../Sources/JS/hljs/vs2015.css">
+    <script src="../Sources/JS/hljs/highlight.min.js"></script>
+    <script>
+        window.onload = function() {
+            hljs.highlightAll();
+        };
+    </script>
+
+    <link rel="stylesheet" href="../Sources/CSS/main.css">
+</head>
+<body>
+    <h1>Soket İşlemleri</h1>
+
+    <div style="height: 100px;"></div>
+    
+    <div id="mainDiv">
+        <h2>Soket Nedir?</h2>
+        <pre id="preh2">Soket, global veya yerel bir internet ortamında bilgisayarın dış Dünya'ya açılan internet adresidir.</pre>
+
+        <pre id="preh2">Yani sizin bilgisayarınızın dış Dünya'ya açılan bir kapı gibidir. İnternetten gelen tüm verileri bilgisayarınız internet adresine gelir. Bu adresler, bilgisayarın Ip adresini ve numaralı açılan kapısı olan port'unun birleşimi ile oluşur. Yani sizin Ip adresiniz "192.106.43.123", açmak istediğiniz kapı "9584" ise soketiniz "192.106.43.123:9584" şeklinde yazılır. İnternet adresleri(Örn: www.google.com) yapıların arkasında işte bu Ip adresi ve Port numarası bulunur. Peki nasıl biz o adresi yazmadan sadece Url ile o adrese ulaşabiliyoruz? Her alınan Url aslında bir kayıt defteri gibi bir sistemde bir sokete karşılık gelir. Bu kayıt defteride Url'nin alındığı sistem oluyor. Aslında biz farkında olmasakta yazdığımız ifade birer sokettir. Peki Ip adresi internetdeki adresimiz konumunda peki Port adresi ne anlama geliyor? Onuda evimizin birden fazla dış kapıya sahip olmasına benzetebiliriz. Örneğin "192.106.43.123:9584" demek "192.106.43.123 adresindeki evin 9584 numaralı kapısına git" şeklinde bilgisayara ifade eder. Teknik olarak en fazla 65535 kadar port açılabilir. Epeyce dış kapımız varmış... Meraklısına bu sayı 16-bit'in sınırıdır.</pre>
+
+        <h2>TCP ve UDP</h2>
+        <pre id="preh2">Evet soketin ne olduğunu biliyoruz. Tabi soketlerinde türleri vardır. En bilindikleri TCP ve UDP'dir.</pre>
+
+        <pre id="preh2">TCP, el sıkışmalı bir soket türüdür. El sıkışma, iki soketin verilerini birbirlerine "aldım" veya "verdim" sinyallerine denilen bir terimdir. Aslında mantık çok basit; Gönderici olarak biz karşı tarafa verimizi göndeririz. Oda bize ona ulaşan verinin Hash verisini gönderir bizde doğrular ve bu bilgiyi ona tekrardan göndeririz. Bu zamanında internetin daha yeni yeni popüler olduğu dönemlerde mühim bir durumdu. Çünkü veri intetnette giderken genelde ya kayboluyordu ya da bir kısmı eksik gidiyordu. O zamanlarda el sıkışma gibi bir kontrol mekanizmasıda bulunmadığı için kullanıcılar doğru dürüst internetten veri alamıyorlardı. Daha sonra TCP icat edildi ve veri doğruluğu kontrol sistemi getirildi ve verilerimiz eksiksiz internette gezebildi. Daha iyi anlamak için bir görsel sunalım;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/26 Cpp Soket İşlemleri.html/1.svg" alt="26.1" width="100%">
+        </div>
+
+        <pre id="preh2">Gördüğünüz gibi üç adımlı bir işlemle veri aktarılır ve tabikide internetinizi zorlar. Fakat UDP öyle değildir. UDP, TCP'nin bir parçası olan ve veri iletimini sağlayan bir kısımdır. Daha sonraları UDP'ninde tek başına veri iletme özelliğini aldılar ve tek bir soket türü olan UDP'yi geliştirdiler. UDP, TCP'ye göre herhangi bir el sıkışma işlemine sahip değildir. Tabiri cahizse verileri etrafa saçardı. Ta ki biri o verileri tutup kendine alana kadar. Verilerde uçtan uca ve RSA ile şifrelendiği için sadece sahibi veriyi görebilirdi. UDP'de el sıkışması olmadığı için ve verileri etrafa saçtığı için akış sistemlerinde yani canlı olarak bir video izlemede veya uzaktan kumandalı sistemlerinde tercşh edilir. TCP ise hızın daha çok verinin doğrulu önemli olan sistemlerde kullanılır. Bankacılık ve oyunlarda gibi sistemlerde tercih edilir. Bir görsel daha sunalım;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/26 Cpp Soket İşlemleri.html/2.svg" alt="26.2" width="100%">
+        </div>
+
+        <h2>TCP İletişimi</h2>
+        <pre id="preh2">Hem Windows hemde Linux'da kodlar neredeyse aynıdır. Sadece Windows'da tüm kodlar <code class="language-cpp">winsock2.h</code> kütüphanesinde yer alırken, Linux'da dağıtık şeklinde kütüphaneler bulunur.</pre>
+
+        <pre id="preh2">İlk olarak projemiz aynı internet ağındaki iki cihazın bir dosyayı paylaşması olucak. Ip adreslerine göre iletişim kurulduğu için Ip adresimizi öğrenmemiz gerek;
+
+Windows; <code class="language-bash">ipconfig</code>
+
+Çıktısında bağlı olduğunuz ağa ve bağlantı şeklinize(Ethernet ise Ethernet Adapter, kablosuz ise Wireless LAN adapter) göre Ip adresiniz "IPv4 Address" kısmında yazıcaktır.</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/26 Cpp Soket İşlemleri.html/3.png" alt="26.3" width="100%">
+        </div>
+
+        <pre id="preh2">Çıktıya göre benim Windows bilgisayarımın Ip adresi 192.168.1.104, bu bilgisayar gönderici konumunda olsun.
+            
+Linux; <code class="language-bash">ip a</code>
+
+Çıktısında bağlı olduğunuz ağa ve bağlantı şeklinize(Ethernet ise eth, kablosuz ise wlan) göre Ip adresiniz "IPv4 Address" kısmında yazıcaktır.</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/26 Cpp Soket İşlemleri.html/4.jpeg" alt="26.4" width="100%">
+        </div>
+
+        <pre id="preh2">Çıktıya Kali bilgisayarımın Ip adresi 192.168.1.12, bu bilgisayarımda alıcı konumunda olsun.</pre>
+
+        <pre id="preh2">Artık kodları yazabiliriz. Ben göndericiyi Windows, alıyıcı Kali olarak seçtim. Fakat siz Kali'u gönderici, Windows'u alıcı, sadece Kali'ler veya sadece Windows'lar arasında yapabilirsiniz. Eğer iki adet bilgisayarınız yok ise aynı bilgisayar içerisinde de yapabilirsiniz. Ben iki işletim sistemi içinde derleme komutlarını vericeğim;</pre>
+
+        <pre id="codeh2">gonderici.cpp
+
+<code class="language-cpp"></code>
+        </pre>
+
+        <h2>Kaynakça</h2>
+        <ul>
+            <li><a href="https://psateknoloji.com/port-nedir/">https://psateknoloji.com/port-nedir/</a></li>
+            <li><a href="https://www.wikihow.com.tr/Linux%27ta-IP-Adresi-Nasıl-Kontrol-Edilir">https://www.wikihow.com.tr/Linux%27ta-IP-Adresi-Nasıl-Kontrol-Edilir</a></li>
+            <li><a href="https://data35delete.github.io/Data-s-Book-on-C/Lessons/23%20C%20Soket%20Programlama.html">Data's Book on C - Soket Programlama</a></li>
+        </ul>
+    </div>
+
+    <div style="height: 100px;"></div>
+
+    <footer style="position: fixed; left: 0; bottom: 0; width: 100%; background: transparent; text-align: center; padding: 10px 0; z-index: 100;">
+        <div>
+            <a href="./25 Cpp Http İstekleri.html" style="margin-right: 20px; cursor:pointer;">
+                &larr; Önceki
+            </a>
+            <a href="" style="cursor:pointer;">
+                Sonraki &rarr;
+            </a>
+        </div>
+        <div>
+            <p>&copy; 2026 Data's Book</p>
+        </div>
+
+        <div style="position: absolute; right: 20px; bottom: 20px;">
+            <a href="./1 Cpp İçindekiler.html" style="text-decoration: none;">
+                İçindekiler
+            </a>
+        </div>
+    </footer>
+</body>
+</html>
+
+<!-- Muhammet Enes nam-ı diğer Data Delete tarafından sevgi ile yapıldı <3 -->
