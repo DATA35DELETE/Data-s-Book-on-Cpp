@@ -48,34 +48,399 @@
         <h2>TCP İletişimi</h2>
         <pre id="preh2">Hem Windows hemde Linux'da kodlar neredeyse aynıdır. Sadece Windows'da tüm kodlar <code class="language-cpp">winsock2.h</code> kütüphanesinde yer alırken, Linux'da dağıtık şeklinde kütüphaneler bulunur.</pre>
 
-        <pre id="preh2">İlk olarak projemiz aynı internet ağındaki iki cihazın bir dosyayı paylaşması olucak. Ip adreslerine göre iletişim kurulduğu için Ip adresimizi öğrenmemiz gerek;
+        <pre id="codeh2">Şimdi proje olarak, bir tarafın diğer tarafa uctan uca ve şifreli bir şekilde mesaj göndermesini yapabiliriz.</pre>
 
-Windows; <code class="language-bash">ipconfig</code>
-
-Çıktısında bağlı olduğunuz ağa ve bağlantı şeklinize(Ethernet ise Ethernet Adapter, kablosuz ise Wireless LAN adapter) göre Ip adresiniz "IPv4 Address" kısmında yazıcaktır.</pre>
+        <pre id="codeh2">Bunun için ilk olarak göndericinin Ip adresini bulmamız gerekir. 
+            
+Windows için; <code class="language-bash">ipconfig</code></pre>
 
         <div id="divh2Img">
             <img src="../Bibliography/26 Cpp Soket İşlemleri.html/3.png" alt="26.3" width="100%">
         </div>
 
-        <pre id="preh2">Çıktıya göre benim Windows bilgisayarımın Ip adresi 192.168.1.104, bu bilgisayar gönderici konumunda olsun.
-            
-Linux; <code class="language-bash">ip a</code>
+        <pre id="preh2">Çıktısında bağlı olduğunuz ağa ve bağlantı şeklinize(Ethernet ise Ethernet Adapter, kablosuz ise Wireless LAN adapter) göre Ip adresiniz "IPv4 Address" kısmında yazıcaktır. Ben gönderici olarak Windows bilgisayarımı seçiceğim. Siz dilerseniz Linux bilgisayarınızı gönderici seçebilirsiniz.</pre>
 
-Çıktısında bağlı olduğunuz ağa ve bağlantı şeklinize(Ethernet ise eth, kablosuz ise wlan) göre Ip adresiniz "IPv4 Address" kısmında yazıcaktır.</pre>
+        <pre id="preh2">Linux'da Ip adresini öğrenmek istersek;
+
+<code class="language-bash">ip a</code></pre>
 
         <div id="divh2Img">
             <img src="../Bibliography/26 Cpp Soket İşlemleri.html/4.jpeg" alt="26.4" width="100%">
         </div>
 
-        <pre id="preh2">Çıktıya Kali bilgisayarımın Ip adresi 192.168.1.12, bu bilgisayarımda alıcı konumunda olsun.</pre>
+        <pre id="preh2">Çıktısında bağlı olduğunuz ağa ve bağlantı şeklinize(Ethernet ise eth, kablosuz ise wlan) göre Ip adresiniz "IPv4 Address" kısmında yazıcaktır.</pre>
 
-        <pre id="preh2">Artık kodları yazabiliriz. Ben göndericiyi Windows, alıyıcı Kali olarak seçtim. Fakat siz Kali'u gönderici, Windows'u alıcı, sadece Kali'ler veya sadece Windows'lar arasında yapabilirsiniz. Eğer iki adet bilgisayarınız yok ise aynı bilgisayar içerisinde de yapabilirsiniz. Ben iki işletim sistemi içinde derleme komutlarını vericeğim;</pre>
+        <pre id="preh2">Ben Linux cihazımı alıcı olarak seçtim.</pre>
 
-        <pre id="codeh2">gonderici.cpp
+        <pre id="codeh2">Cihazlar ve Ip adresleri hazır ise kodları yazabiliriz. İlk olarak gonderici.cpp
 
-<code class="language-cpp"></code>
-        </pre>
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;fstream>
+
+#include &lt;openssl/rsa.h>
+#include &lt;openssl/pem.h>
+#include &lt;openssl/sha.h>
+#include &lt;unistd.h>
+
+// Şimdi soket açmak için kütüphanelerimiz çağralım
+
+#ifdef WIN32 // Windows da isek
+
+#include &lt;winsock2.h>
+
+#else // Değil isek
+
+#include &lt;netinet/in.h>
+#include &lt;arpa/inet.h>
+#include &lt;sys/socket.h>
+
+#endif
+
+#ifndef WIN32
+
+typedef int SOCKET;
+
+#endif
+
+using namespace std;
+
+#define gonderlicekMesaj "Selam alici! Ben gonderici." // Bu makro göndericinin, alıcıya göndericiği mesajdır
+
+int main()
+{
+#ifdef WIN32 // Windows'da isek soket fonksiyonlarının çalışabilmesi için başlatmamız gereken bir aracı vardır
+    WSADATA wsa;
+    WSAStartup(MAKEWORD(2,2), &wsa);
+#endif // Linux'da gerek yoktur
+
+    SOCKET gondericiSoket = socket(AF_INET, SOCK_STREAM, 0); // Soketimizi açıyoruz
+    // SOCKET gondericiSoket = ; Açılan soketin atanıcağı değişken
+    // AF_INET; İnternet türü. Biz IPv4 kullancağımız için AF_INET
+    // SOCK_STREAM; TCP soket türü
+    // 0; Protokol türü. Şimdilik varsayılanda
+
+    sockaddr_in gondericiBilgileri; // Gönderici tarafın bilgilerini bu yapıya atayacağız
+#ifdef WIN32 // Windows'da isek, hangi akla hizmet bilinmez Windows'da bu şeklinde Ip ayarlanması yapılır
+    gondericiBilgileri.sin_addr.S_un.S_addr = inet_addr("192.168.1.104"); // Gönderici Ip'sini ayarlıyoruz
+#else // Değil isek
+    gondericiBilgileri.sin_addr.s_addr = inet_addr("192.168.1.104");
+#endif
+    gondericiBilgileri.sin_family = AF_INET; // İnternet türümüzü ayarlıyoruz
+    gondericiBilgileri.sin_port = htons(8282); // Portumuzu ayarlıyoruz
+
+    bind(gondericiSoket, (sockaddr*)&gondericiBilgileri, sizeof(gondericiBilgileri)); // Açılan soketimizle bilgileri birleştiriyoruz. Böylelikle Ip adresi ile soketimiz birbirlerine bağlanmış oluyorlar
+    // gondericiSoket; Açılan soketimiz
+    // (sockaddr*)&gondericiBilgileri; Soket bilgilerinin bulunduğu yapı
+    // sizeof(gondericiBilgileri); Soket bilgilerinin bulunduğu yapının boyutu
+
+    listen(gondericiSoket, 5); // Soketimizi dinliyoruz ki gelecek olan bağlantıları yakalayabilelim
+    // gondericiSoket; Dinlenicek olan soket
+    // 5; Maksimum bağlantı sırasında kalıcak olan bağlantı sayısı
+
+    SOCKET aliciSoket = 0; // Alıcı için soket. Gelen istekler bir soket olarak kayıt edilir
+    char aliciVerisi[1024]; // Alıcıdan gelecek olan veriler için ayrılmış kısım. Char dizisi çünkü bu tarz sistemler C tabanlıdır
+
+    aliciSoket = accept(gondericiSoket, nullptr, nullptr); // Gelen isteği kabul eder. Bu istek alıcı tarafındaki "connect" fonksiyonudur
+    // aliciSoket = ; İsteğini gönderen soketi alır
+    // gondericiSoket; İsteklerin geldiği soket
+    // nullptr, nullptr; İsteksek gelen isteğin bilgilerinide alabiliriz. Şimdilik nullptr ile almıyoruz
+
+    while (1) // Ana döngümüz. Bütün sistem bu döngüde çalışıcak
+    {
+        memset(aliciVerisi, 0, 1024); // Bu sistem bir döngü ile çalıştığı için bir önceki turdaki yazılan veriyi temizliyoruz
+
+        recv(aliciSoket, aliciVerisi, 1023, 0); // Gelen isteğin verisini alır
+        // aliciSoket; İsteğin soketi
+        // aliciVerisi; Kayıt edilcek verinin değişkeni
+        // 1023; Boyutu
+        // 0; Güvenlik ayarı
+
+        if (!strncmp("1.1: ", aliciVerisi, 5)) // 1.1. Aşama, kendi RSA anahtarlarını oluştur
+        {
+            RSA* gondericiRSA = RSA_new();
+
+            RSA_generate_key_ex(gondericiRSA, 2048, NULL, NULL);
+
+            FILE* gondericiPrivate = fopen("gondericiPrivate.pem", "wb");
+            PEM_write_RSAPrivateKey(gondericiPrivate, gondericiRSA, NULL, NULL, NULL, NULL, NULL);
+            fclose(gondericiPrivate);
+
+            FILE* gondericiPublic = fopen("gondericiPublic.pem", "wb");
+            PEM_write_RSAPublicKey(gondericiPublic, gondericiRSA);
+            fclose(gondericiPublic);
+
+            send(aliciSoket, "1.2: ", 6, 0); // Karşı tarafa veri gönderir.
+            // aliciSoket; Tarafın soketi
+            // "1.2: "; Veri
+            // 5; Verinin uzunluğu
+            // 0; Güvenlik ayarı
+        }
+        else if (!strncmp("2.1: ", aliciVerisi, 5)) // 2.1. Aşama, karşı tarafa kendi Public anahtarını gönder
+        {
+            ifstream gondericiPublic("gondericiPublic.pem");
+            string gonderilcekVeri = "2.2: ";
+            string publicVeriOkuyucusu;
+
+            while (getline(gondericiPublic, publicVeriOkuyucusu))
+            {
+                gonderilcekVeri += publicVeriOkuyucusu + '\n';
+            }
+            gondericiPublic.close();
+            
+            send(aliciSoket, gonderilcekVeri.c_str(), 1023, 0);
+        }
+        else if (!strncmp("2.3: ", aliciVerisi, 5)) // 2.3. Aşama, karşı taraftan gelen Public anahtarı kaydet
+        {
+            ofstream aliciPublic("aliciPublic.pem");
+
+            for (int i = 5; i < 431; i++)
+            {
+                aliciPublic << aliciVerisi[i];
+            }
+            aliciPublic.close();
+
+            send(aliciSoket, "2.4: ", 6, 0);
+        }
+        else if (!strncmp("3.1: ", aliciVerisi, 5)) // 3.1. Aşama, gönderilcek olan veriyi karşı tarafın Public anahtarı ile şifreleyip gönder
+        {
+            RSA* aliciPublicRSA = RSA_new();
+
+            FILE* aliciPublic = fopen("aliciPublic.pem", "rb");
+            aliciPublicRSA = PEM_read_RSAPublicKey(aliciPublic, &aliciPublicRSA, NULL, NULL);
+            fclose(aliciPublic);
+
+            char gonderilicekVeri[261] = "3.2: ";
+            char sifreliVeri[256];
+
+            RSA_public_encrypt(sizeof(gonderlicekMesaj), (unsigned char*)gonderlicekMesaj, (unsigned char*)sifreliVeri, aliciPublicRSA, 1);
+
+            for (int i = 5; i < 261; i++)
+            {
+                gonderilicekVeri[i] = sifreliVeri[i - 5];
+            }
+
+            send(aliciSoket, gonderilicekVeri, 261, 0);
+        }
+        else if (!strncmp("3.3: ", aliciVerisi, 5)) // 3.3. Aşama, karşı taraf mesajı aldıktan sonra orjinal mesajın Hash verini gönder
+        {
+            SHA256_CTX sha;
+
+            SHA256_Init(&sha);
+            SHA256_Update(&sha, gonderlicekMesaj, sizeof(gonderlicekMesaj));
+
+            char shaVerisi[32];
+
+            SHA256_Final((unsigned char*)shaVerisi, &sha);
+
+            char gonderilcekVeri[37] = "3.4: ";
+
+            for (int i = 5; i < 37; i++)
+            {
+                gonderilcekVeri[i] = shaVerisi[i - 5];
+            }
+
+            send(aliciSoket, gonderilcekVeri, 37, 0);
+        }
+    }
+    
+}</code>
+
+Derleme;
+
+Windows; <code class="language-bash">g++ gonderici.cpp -o gonderici -lws2_32 -lssl -lcrypto</code>
+Linux; <code class="language-bash">g++ gonderici.cpp -o gonderici -lssl -lcrypto</code>
+
+Gönderici tamam şimdi alıcı tarafını yazalım;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;fstream>
+
+#include &lt;openssl/rsa.h>
+#include &lt;openssl/pem.h>
+#include &lt;openssl/sha.h>
+#include &lt;unistd.h>
+
+// Şimdi soket açmak için kütüphanelerimiz çağralım
+
+#ifdef WIN32 // Windows da isek
+
+#include &lt;winsock2.h>
+
+#else // Değil isek
+
+#include &lt;netinet/in.h>
+#include &lt;arpa/inet.h>
+#include &lt;sys/socket.h>
+
+#endif
+
+#ifndef WIN32
+
+typedef int SOCKET;
+
+#endif
+
+using namespace std;
+
+int main()
+{
+#ifdef WIN32 // Windows'da isek soket fonksiyonlarının çalışabilmesi için başlatmamız gereken bir aracı vardır
+    WSADATA wsa;
+    WSAStartup(MAKEWORD(2,2), &wsa);
+#endif // Linux'da gerek yoktur
+
+    SOCKET gondericiSoket = socket(AF_INET, SOCK_STREAM, 0); // Soketimizi açıyoruz
+    // SOCKET gondericiSoket = ; Açılan soketin atanıcağı değişken
+    // AF_INET; İnternet türü. Biz IPv4 kullancağımız için AF_INET
+    // SOCK_STREAM; TCP soket türü
+    // 0; Protokol türü. Şimdilik varsayılanda
+
+    sockaddr_in gondericiBilgileri; // Gönderici tarafın bilgilerini bu yapıya atayacağız
+#ifdef WIN32 // Windows'da isek, hangi akla hizmet bilinmez Windows'da bu şeklinde Ip ayarlanması yapılır
+    gondericiBilgileri.sin_addr.S_un.S_addr = inet_addr("192.168.1.104"); // Gönderici Ip'sini ayarlıyoruz
+#else // Değil isek
+    gondericiBilgileri.sin_addr.s_addr = inet_addr("192.168.1.104");
+#endif
+    gondericiBilgileri.sin_family = AF_INET; // İnternet türümüzü ayarlıyoruz
+    gondericiBilgileri.sin_port = htons(8282); // Portumuzu ayarlıyoruz
+
+    connect(gondericiSoket, (sockaddr*)&gondericiBilgileri, sizeof(gondericiBilgileri)); // Gönderici soketine bağlanıyoruz. Göndericide bu isteği "accept" fonksiyonu ile kabul edicek
+    // gondericiSoket; Bağlanılıcak olan soket
+    // (sockaddr*)&gondericiBilgileri; Bağlanılıcak olan soketin bilgileri
+    // sizeof(gondericiBilgileri); Bağlanılıcak olan soketin bilgilerinin boyutu
+
+    char gondericiVerisi[1024]; // Göndericiden gelen verileri kayıt etmek için değişken
+
+    send(gondericiSoket, "1.1: ", 6, 0); // Bağlantının ardından göndericiye 1.1. aşama geçirt.
+
+    while (1)
+    {
+        memset(gondericiVerisi, 0, 1024);
+
+        recv(gondericiSoket, gondericiVerisi, 1023, 0);
+
+        if (!strncmp("1.2: ", gondericiVerisi, 5)) // 1.2. Aşama, kendi RSA anahtarlarını oluştur
+        {
+            RSA* aliciRSA = RSA_new();
+
+            RSA_generate_key_ex(aliciRSA, 2048, NULL, NULL);
+
+            FILE* aliciPrivate = fopen("aliciPrivate.pem", "wb");
+            PEM_write_RSAPrivateKey(aliciPrivate, aliciRSA, NULL, NULL, NULL, NULL, NULL);
+            fclose(aliciPrivate);
+
+            FILE* aliciPublic = fopen("aliciPublic.pem", "wb");
+            PEM_write_RSAPublicKey(aliciPublic, aliciRSA);
+            fclose(aliciPublic);
+
+            send(gondericiSoket, "2.1: ", 6, 0);
+        }
+        else if (!strncmp("2.2: ", gondericiVerisi, 5)) // 2.2. Aşama, gondericinin RSA Public anahtarını kaydet ve kendi RSA Public anahtarını gönder
+        {
+            ofstream gondericiPublic("gondericiPublic.pem");
+
+            for (int i = 5; i < 431; i++)
+            {
+                gondericiPublic << gondericiVerisi[i];
+            }
+            gondericiPublic.close();
+
+            ifstream aliciPublic("aliciPublic.pem");
+            string gondericilekVeri = "2.3: ";
+            string publicVeriOkuyucu;
+
+            while(getline(aliciPublic, publicVeriOkuyucu))
+            {
+                gondericilekVeri += publicVeriOkuyucu + '\n';
+            }
+            aliciPublic.close();
+            
+            send(gondericiSoket, gondericilekVeri.c_str(), 1023, 0);
+        }
+        else if (!strncmp("2.4: ", gondericiVerisi, 5)) // 2.4. Aşama, anahtar paylaşımı ardından göndericiyi 3.1. aşamaya geçirt
+        {
+            send(gondericiSoket, "3.1: ", 6, 0);
+        }
+        else if (!strncmp("3.2: ", gondericiVerisi, 5)) // 3.2. Aşama, alıcının RSA Public anahtarı ile şifrelenmiş olan veriyi alıp kaydet
+        {
+            char gondericiSifreliMesaj[256];
+            
+            for (size_t i = 5; i < 261; i++)
+            {
+                gondericiSifreliMesaj[i - 5] = gondericiVerisi[i];
+            }
+
+            ofstream sifreliMsg("msg");
+            for (int i = 0; i < 256; i++)
+            {
+                sifreliMsg << gondericiSifreliMesaj[i];
+            }
+            
+            send(gondericiSoket, "3.3: ", 6, 0);
+        }
+        else if (!strncmp("3.4: ", gondericiVerisi, 5)) // 3.4. Aşama, göndericiden gelen orjinal mesajın Hash verisini al ve daha önceden gelen şifreli veriyi alıp kendi RSA Private anahtarı ile çöz. Ardından çıktı olarak yazdır
+        {
+            char gondericiSha[32];
+
+            for (size_t i = 5; i < 37; i++)
+            {
+                gondericiSha[i - 5] = gondericiVerisi[i];
+            }
+
+            RSA* aliciPrivateRSA = RSA_new();
+
+            FILE* aliciPrivate = fopen("aliciPrivate.pem", "rb");
+            aliciPrivateRSA = PEM_read_RSAPrivateKey(aliciPrivate, &aliciPrivateRSA, NULL, NULL);
+            fclose(aliciPrivate);
+
+            char sifresiCozunmusVeri[256];
+            char gondericiMesaj[256];
+
+            ifstream sifreliMsg("msg");
+            sifreliMsg.read(gondericiMesaj, 256);
+            sifreliMsg.close();
+
+            int cozulmusunBoyutu = RSA_private_decrypt(256, (unsigned char*)gondericiMesaj, (unsigned char*)sifresiCozunmusVeri, aliciPrivateRSA, 1);
+
+            char cozulmusSHA[32];
+
+            SHA256_CTX sha;
+
+            SHA256_Init(&sha);
+            SHA256_Update(&sha, sifresiCozunmusVeri, cozulmusunBoyutu);
+
+            SHA256_Final((unsigned char*)cozulmusSHA, &sha);
+
+            if (!strncmp(gondericiSha, cozulmusSHA, 32)) // Hash'leri kontrol et. Aynı ise yazdır
+            {
+                cout << "Gondericiden gelen mesaj; " << sifresiCozunmusVeri << endl;
+            }
+            else // Değil ise 3.1. aşamsına tekrar geç
+                send(gondericiSoket, "3.1: ", 6, 0);
+
+            break;
+        }
+        
+    }
+    
+    return 0;
+}</code>
+
+Derleme
+
+Windows; <code class="language-bash">g++ gonderici.cpp -o gonderici -lws2_32 -lssl -lcrypto</code>
+Linux; <code class="language-bash">g++ gonderici.cpp -o gonderici -lssl -lcrypto</code>
+
+Kodlarımız hazır! Şimdi ilk olarak göndericiyi ardından alıyıcı çalıştıralım ve çıktıyı gözlemleyelim;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/26 Cpp Soket İşlemleri.html/5.png" alt="26.5" width="100%">
+        </div>
+
+        <pre id="preh2">İsterseniz Wireshark ile ağı tarayın, giden mesaj şifrelidir ve asla okuyamazsınız...</pre>
+
+        <h2>UDP İletişimi</h2>
+        <pre id="codeh2">TCP ile yazdığımız sistemi şimdi UDP ile yazalım;</pre>
 
         <h2>Kaynakça</h2>
         <ul>
