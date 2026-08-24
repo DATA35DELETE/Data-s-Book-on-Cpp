@@ -442,6 +442,820 @@ Kodlarımız hazır! Şimdi ilk olarak göndericiyi ardından alıyıcı çalı�
         <h2>UDP İletişimi</h2>
         <pre id="codeh2">TCP ile yazdığımız sistemi şimdi UDP ile yazalım;</pre>
 
+        <pre id="codeh2">gonderici.cpp
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;fstream>
+
+#include &lt;openssl/rsa.h>
+#include &lt;openssl/pem.h>
+#include &lt;openssl/sha.h>
+#include &lt;unistd.h>
+
+#ifdef WIN32
+
+#include &lt;winsock2.h>
+
+#else
+
+#include &lt;netinet/in.h>
+#include &lt;arpa/inet.h>
+#include &lt;sys/socket.h>
+
+#endif
+
+#ifndef WIN32
+
+typedef int SOCKET;
+
+#endif
+
+using namespace std;
+
+#define gonderlicekMesaj "Selam alici! Ben gonderici."
+
+int main()
+{
+#ifdef WIN32
+    WSADATA wsa;
+    WSAStartup(MAKEWORD(2,2), &wsa);
+#endif
+
+    SOCKET gondericiSoket = socket(AF_INET, SOCK_DGRAM, 0); // Soketimizi açıyoruz
+    // SOCKET gondericiSoket = ; Açılan soketin atanıcağı değişken
+    // AF_INET; İnternet türü. Biz IPv4 kullancağımız için AF_INET
+    // SOCK_DGRAM; UDP soket türü
+    // 0; Protokol türü. Şimdilik varsayılanda
+
+    sockaddr_in gondericiBilgileri;
+#ifdef WIN32
+    gondericiBilgileri.sin_addr.S_un.S_addr = inet_addr("192.168.1.104");
+#else
+    gondericiBilgileri.sin_addr.s_addr = inet_addr("192.168.1.104");
+#endif
+    gondericiBilgileri.sin_family = AF_INET;
+    gondericiBilgileri.sin_port = htons(8282);
+
+    bind(gondericiSoket, (sockaddr*)&gondericiBilgileri, sizeof(gondericiBilgileri));
+
+    char aliciVerisi[1024];
+
+    sockaddr_in bagliCihazBilgiler;
+#ifdef WIN32 // Yine, yeni ve yeniden Windows'da bilgilerin boyutlarını düz Integer tanımlarken
+    int bilgilerinUzunlugu = sizeof(gondericiBilgileri);
+#else // Linux'da işaretsiz Integer tanımlanır
+    unsigned int bilgilerinUzunlugu = sizeof(gondericiBilgileri);
+#endif
+
+    while (1)
+    {
+        memset(aliciVerisi, 0, 1024);
+
+        recvfrom(gondericiSoket, aliciVerisi, 1023, 0, (sockaddr*)&bagliCihazBilgiler, &bilgilerinUzunlugu); // UDP soketinden veri alma
+        // gondericiSoket; Veri alınıcak olan soket
+        // aliciVerisi; Kayıt edilcek değişken
+        // 1023; Verinin boyutu
+        // 0; Güvenlik ayarı
+        // (sockaddr*)&bagliCihazBilgiler; Veri atan karşı tarafın bilgilerinin kayıt edildiği yapı. UDP'de "accept" olmadığından bu şekilde haberleşme sağlanır
+        // &bilgilerinUzunlugu; Bilgilerin uzunluğunun işaretçisi
+
+        if (!strncmp("1.1: ", aliciVerisi, 5))
+        {
+            RSA* gondericiRSA = RSA_new();
+
+            RSA_generate_key_ex(gondericiRSA, 2048, NULL, NULL);
+
+            FILE* gondericiPrivate = fopen("gondericiPrivate.pem", "wb");
+            PEM_write_RSAPrivateKey(gondericiPrivate, gondericiRSA, NULL, NULL, NULL, NULL, NULL);
+            fclose(gondericiPrivate);
+
+            FILE* gondericiPublic = fopen("gondericiPublic.pem", "wb");
+            PEM_write_RSAPublicKey(gondericiPublic, gondericiRSA);
+            fclose(gondericiPublic);
+
+            sendto(gondericiSoket, "1.2: ", 6, 0,(sockaddr*)&bagliCihazBilgiler,bilgilerinUzunlugu); // Karşı tarafa veri gönderir.
+            // gondericiSoket; Ana soket. Dediğimiz gibi Accept olmadığından kendi soketimize atarız. Kim tutarsa veri onun olur
+            // "1.2: "; Veri
+            // 6; Verinin uzunluğu
+            // 0; Güvenlik ayarı
+            // (sockaddr*)&bagliCihazBilgiler; Verinin kime ait olduğunu bildiren yapı
+            // &bilgilerinUzunlugu; Yapının uzunluğu
+        }
+        else if (!strncmp("2.1: ", aliciVerisi, 5))
+        {
+            ifstream gondericiPublic("gondericiPublic.pem");
+            string gonderilcekVeri = "2.2: ";
+            string publicVeriOkuyucusu;
+
+            while (getline(gondericiPublic, publicVeriOkuyucusu))
+            {
+                gonderilcekVeri += publicVeriOkuyucusu + '\n';
+            }
+            gondericiPublic.close();
+            
+            sendto(gondericiSoket, gonderilcekVeri.c_str(), 1023, 0,(sockaddr*)&bagliCihazBilgiler,bilgilerinUzunlugu);
+        }
+        else if (!strncmp("2.3: ", aliciVerisi, 5))
+        {
+            ofstream aliciPublic("aliciPublic.pem");
+
+            for (int i = 5; i < 431; i++)
+            {
+                aliciPublic << aliciVerisi[i];
+            }
+            aliciPublic.close();
+
+            sendto(gondericiSoket, "2.4: ", 6, 0,(sockaddr*)&bagliCihazBilgiler,bilgilerinUzunlugu);
+        }
+        else if (!strncmp("3.1: ", aliciVerisi, 5))
+        {
+            RSA* aliciPublicRSA = RSA_new();
+
+            FILE* aliciPublic = fopen("aliciPublic.pem", "rb");
+            aliciPublicRSA = PEM_read_RSAPublicKey(aliciPublic, &aliciPublicRSA, NULL, NULL);
+            fclose(aliciPublic);
+
+            char gonderilicekVeri[261] = "3.2: ";
+            char sifreliVeri[256];
+
+            RSA_public_encrypt(sizeof(gonderlicekMesaj), (unsigned char*)gonderlicekMesaj, (unsigned char*)sifreliVeri, aliciPublicRSA, 1);
+
+            for (int i = 5; i < 261; i++)
+            {
+                gonderilicekVeri[i] = sifreliVeri[i - 5];
+            }
+
+            sendto(gondericiSoket, gonderilicekVeri, 261, 0,(sockaddr*)&bagliCihazBilgiler,bilgilerinUzunlugu);
+        }
+        else if (!strncmp("3.3: ", aliciVerisi, 5))
+        {
+            SHA256_CTX sha;
+
+            SHA256_Init(&sha);
+            SHA256_Update(&sha, gonderlicekMesaj, sizeof(gonderlicekMesaj));
+
+            char shaVerisi[32];
+
+            SHA256_Final((unsigned char*)shaVerisi, &sha);
+
+            char gonderilcekVeri[37] = "3.4: ";
+
+            for (int i = 5; i < 37; i++)
+            {
+                gonderilcekVeri[i] = shaVerisi[i - 5];
+            }
+
+            sendto(gondericiSoket, gonderilcekVeri, 37, 0,(sockaddr*)&bagliCihazBilgiler,bilgilerinUzunlugu);
+        }
+    }
+    
+}</code>
+
+alici.cpp
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;fstream>
+
+#include &lt;openssl/rsa.h>
+#include &lt;openssl/pem.h>
+#include &lt;openssl/sha.h>
+#include &lt;unistd.h>
+
+#ifdef WIN32
+
+#include &lt;winsock2.h>
+
+#else
+
+#include &lt;netinet/in.h>
+#include &lt;arpa/inet.h>
+#include &lt;sys/socket.h>
+
+#endif
+
+#ifndef WIN32
+
+typedef int SOCKET;
+
+#endif
+
+using namespace std;
+
+int main()
+{
+#ifdef WIN32
+    WSADATA wsa;
+    WSAStartup(MAKEWORD(2,2), &wsa);
+#endif 
+
+    SOCKET gondericiSoket = socket(AF_INET, SOCK_DGRAM, 0);
+
+    sockaddr_in gondericiBilgileri;
+#ifdef WIN32
+    gondericiBilgileri.sin_addr.S_un.S_addr = inet_addr("192.168.1.104");
+#else
+    gondericiBilgileri.sin_addr.s_addr = inet_addr("192.168.1.104");
+#endif
+    gondericiBilgileri.sin_family = AF_INET;
+    gondericiBilgileri.sin_port = htons(8282);
+
+    char gondericiVerisi[1024];
+
+#ifdef WIN32
+    int bilgilerinUzunlugu = sizeof(gondericiBilgileri);
+#else
+    unsigned int bilgilerinUzunlugu = sizeof(gondericiBilgileri);
+#endif
+
+    sendto(gondericiSoket, "1.1: ", 6, 0, (sockaddr*)&gondericiBilgileri, bilgilerinUzunlugu);
+
+    while (1)
+    {
+        memset(gondericiVerisi, 0, 1024);
+
+        recvfrom(gondericiSoket, gondericiVerisi, 1023, 0, (sockaddr*)&gondericiBilgileri, &bilgilerinUzunlugu);
+
+        if (!strncmp("1.2: ", gondericiVerisi, 5))
+        {
+            RSA* aliciRSA = RSA_new();
+
+            RSA_generate_key_ex(aliciRSA, 2048, NULL, NULL);
+
+            FILE* aliciPrivate = fopen("aliciPrivate.pem", "wb");
+            PEM_write_RSAPrivateKey(aliciPrivate, aliciRSA, NULL, NULL, NULL, NULL, NULL);
+            fclose(aliciPrivate);
+
+            FILE* aliciPublic = fopen("aliciPublic.pem", "wb");
+            PEM_write_RSAPublicKey(aliciPublic, aliciRSA);
+            fclose(aliciPublic);
+
+            sendto(gondericiSoket, "2.1: ", 6, 0, (sockaddr*)&gondericiBilgileri, bilgilerinUzunlugu);
+        }
+        else if (!strncmp("2.2: ", gondericiVerisi, 5))
+        {
+            ofstream gondericiPublic("gondericiPublic.pem");
+
+            for (int i = 5; i < 431; i++)
+            {
+                gondericiPublic << gondericiVerisi[i];
+            }
+            gondericiPublic.close();
+
+            ifstream aliciPublic("aliciPublic.pem");
+            string gondericilekVeri = "2.3: ";
+            string publicVeriOkuyucu;
+
+            while(getline(aliciPublic, publicVeriOkuyucu))
+            {
+                gondericilekVeri += publicVeriOkuyucu + '\n';
+            }
+            aliciPublic.close();
+            
+            sendto(gondericiSoket, gondericilekVeri.c_str(), 1023, 0, (sockaddr*)&gondericiBilgileri, bilgilerinUzunlugu);
+        }
+        else if (!strncmp("2.4: ", gondericiVerisi, 5))
+        {
+            sendto(gondericiSoket, "3.1: ", 6, 0, (sockaddr*)&gondericiBilgileri, bilgilerinUzunlugu);
+        }
+        else if (!strncmp("3.2: ", gondericiVerisi, 5))
+        {
+            char gondericiSifreliMesaj[256];
+            
+            for (size_t i = 5; i < 261; i++)
+            {
+                gondericiSifreliMesaj[i - 5] = gondericiVerisi[i];
+            }
+
+            ofstream sifreliMsg("msg");
+            for (int i = 0; i < 256; i++)
+            {
+                sifreliMsg << gondericiSifreliMesaj[i];
+            }
+            
+            sendto(gondericiSoket, "3.3: ", 6, 0, (sockaddr*)&gondericiBilgileri, bilgilerinUzunlugu);
+        }
+        else if (!strncmp("3.4: ", gondericiVerisi, 5))
+        {
+            char gondericiSha[32];
+
+            for (size_t i = 5; i < 37; i++)
+            {
+                gondericiSha[i - 5] = gondericiVerisi[i];
+            }
+
+            RSA* aliciPrivateRSA = RSA_new();
+
+            FILE* aliciPrivate = fopen("aliciPrivate.pem", "rb");
+            aliciPrivateRSA = PEM_read_RSAPrivateKey(aliciPrivate, &aliciPrivateRSA, NULL, NULL);
+            fclose(aliciPrivate);
+
+            char sifresiCozunmusVeri[256];
+            char gondericiMesaj[256];
+
+            ifstream sifreliMsg("msg");
+            sifreliMsg.read(gondericiMesaj, 256);
+            sifreliMsg.close();
+
+            int cozulmusunBoyutu = RSA_private_decrypt(256, (unsigned char*)gondericiMesaj, (unsigned char*)sifresiCozunmusVeri, aliciPrivateRSA, 1);
+
+            char cozulmusSHA[32];
+
+            SHA256_CTX sha;
+
+            SHA256_Init(&sha);
+            SHA256_Update(&sha, sifresiCozunmusVeri, cozulmusunBoyutu);
+
+            SHA256_Final((unsigned char*)cozulmusSHA, &sha);
+
+            if (!strncmp(gondericiSha, cozulmusSHA, 32))
+            {
+                cout << "Gondericiden gelen mesaj; " << sifresiCozunmusVeri;
+            }
+            else
+                sendto(gondericiSoket, "3.1: ", 6, 0, (sockaddr*)&gondericiBilgileri, bilgilerinUzunlugu);
+
+            break;
+        }
+        
+    }
+    
+
+    return 0;
+}</code>
+
+Derleme komutları ve çıktılar değişmicektir.</pre>
+
+        <h2>Çok İstemcili Gönderici</h2>
+        <pre id="codeh2">Çok istemcili gönderici için, her bir göndericiyi bir Thread içinde başlatılır. Alıcı tarafında ise hangi göndericiye bağlanacağı kendisi seçer. Hadi kodlayalım;
+
+gonderici.cpp
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;fstream>
+#include &lt;thread>
+
+#include &lt;openssl/rsa.h>
+#include &lt;openssl/pem.h>
+#include &lt;openssl/sha.h>
+#include &lt;unistd.h>
+
+#ifdef WIN32
+
+#include &lt;winsock2.h>
+
+#else
+
+#include &lt;netinet/in.h>
+#include &lt;arpa/inet.h>
+#include &lt;sys/socket.h>
+
+#endif
+
+#ifndef WIN32
+
+typedef int SOCKET;
+
+#endif
+
+using namespace std;
+
+#define gonderlicekMesaj1 "Selam alici! Ben 1. gonderici."
+#define gonderlicekMesaj2 "Selam alici! Ben 2. gonderici."
+
+int gonderici1Olustur()
+{
+#ifdef WIN32
+    WSADATA wsa;
+    WSAStartup(MAKEWORD(2,2), &wsa);
+#endif
+
+    SOCKET gondericiSoket = socket(AF_INET, SOCK_DGRAM, 0);
+
+    sockaddr_in gondericiBilgileri;
+#ifdef WIN32
+    gondericiBilgileri.sin_addr.S_un.S_addr = inet_addr("192.168.1.104");
+#else
+    gondericiBilgileri.sin_addr.s_addr = inet_addr("192.168.1.104");
+#endif
+    gondericiBilgileri.sin_family = AF_INET;
+    gondericiBilgileri.sin_port = htons(8888);
+
+    bind(gondericiSoket, (sockaddr*)&gondericiBilgileri, sizeof(gondericiBilgileri));
+
+    char aliciVerisi[1024];
+
+    sockaddr_in bagliCihazBilgiler;
+#ifdef WIN32
+    int bilgilerinUzunlugu = sizeof(gondericiBilgileri);
+#else
+    unsigned int bilgilerinUzunlugu = sizeof(gondericiBilgileri);
+#endif
+
+    while (1)
+    {
+        memset(aliciVerisi, 0, 1024);
+
+        recvfrom(gondericiSoket, aliciVerisi, 1023, 0, (sockaddr*)&bagliCihazBilgiler, &bilgilerinUzunlugu);
+
+        if (!strncmp("1.1: ", aliciVerisi, 5))
+        {
+            RSA* gondericiRSA = RSA_new();
+
+            RSA_generate_key_ex(gondericiRSA, 2048, NULL, NULL);
+
+            FILE* gondericiPrivate = fopen("gondericiPrivate.pem", "wb");
+            PEM_write_RSAPrivateKey(gondericiPrivate, gondericiRSA, NULL, NULL, NULL, NULL, NULL);
+            fclose(gondericiPrivate);
+
+            FILE* gondericiPublic = fopen("gondericiPublic.pem", "wb");
+            PEM_write_RSAPublicKey(gondericiPublic, gondericiRSA);
+            fclose(gondericiPublic);
+
+            sendto(gondericiSoket, "1.2: ", 6, 0,(sockaddr*)&bagliCihazBilgiler,bilgilerinUzunlugu);
+        }
+        else if (!strncmp("2.1: ", aliciVerisi, 5))
+        {
+            ifstream gondericiPublic("gondericiPublic.pem");
+            string gonderilcekVeri = "2.2: ";
+            string publicVeriOkuyucusu;
+
+            while (getline(gondericiPublic, publicVeriOkuyucusu))
+            {
+                gonderilcekVeri += publicVeriOkuyucusu + '\n';
+            }
+            gondericiPublic.close();
+            
+            sendto(gondericiSoket, gonderilcekVeri.c_str(), 1023, 0,(sockaddr*)&bagliCihazBilgiler,bilgilerinUzunlugu);
+        }
+        else if (!strncmp("2.3: ", aliciVerisi, 5))
+        {
+            ofstream aliciPublic("aliciPublic.pem");
+
+            for (int i = 5; i < 431; i++)
+            {
+                aliciPublic << aliciVerisi[i];
+            }
+            aliciPublic.close();
+
+            sendto(gondericiSoket, "2.4: ", 6, 0,(sockaddr*)&bagliCihazBilgiler,bilgilerinUzunlugu);
+        }
+        else if (!strncmp("3.1: ", aliciVerisi, 5))
+        {
+            RSA* aliciPublicRSA = RSA_new();
+
+            FILE* aliciPublic = fopen("aliciPublic.pem", "rb");
+            aliciPublicRSA = PEM_read_RSAPublicKey(aliciPublic, &aliciPublicRSA, NULL, NULL);
+            fclose(aliciPublic);
+
+            char gonderilicekVeri[261] = "3.2: ";
+            char sifreliVeri[256];
+
+            RSA_public_encrypt(sizeof(gonderlicekMesaj1), (unsigned char*)gonderlicekMesaj1, (unsigned char*)sifreliVeri, aliciPublicRSA, 1);
+
+            for (int i = 5; i < 261; i++)
+            {
+                gonderilicekVeri[i] = sifreliVeri[i - 5];
+            }
+
+            sendto(gondericiSoket, gonderilicekVeri, 261, 0,(sockaddr*)&bagliCihazBilgiler,bilgilerinUzunlugu);
+        }
+        else if (!strncmp("3.3: ", aliciVerisi, 5))
+        {
+            SHA256_CTX sha;
+
+            SHA256_Init(&sha);
+            SHA256_Update(&sha, gonderlicekMesaj1, sizeof(gonderlicekMesaj1));
+
+            char shaVerisi[32];
+
+            SHA256_Final((unsigned char*)shaVerisi, &sha);
+
+            char gonderilcekVeri[37] = "3.4: ";
+
+            for (int i = 5; i < 37; i++)
+            {
+                gonderilcekVeri[i] = shaVerisi[i - 5];
+            }
+
+            sendto(gondericiSoket, gonderilcekVeri, 37, 0,(sockaddr*)&bagliCihazBilgiler,bilgilerinUzunlugu);
+        }
+    }
+}
+
+int gonderici2Olustur()
+{
+#ifdef WIN32
+    WSADATA wsa;
+    WSAStartup(MAKEWORD(2,2), &wsa);
+#endif
+
+    SOCKET gondericiSoket = socket(AF_INET, SOCK_DGRAM, 0);
+
+    sockaddr_in gondericiBilgileri;
+#ifdef WIN32
+    gondericiBilgileri.sin_addr.S_un.S_addr = inet_addr("192.168.1.104");
+#else
+    gondericiBilgileri.sin_addr.s_addr = inet_addr("192.168.1.104");
+#endif
+    gondericiBilgileri.sin_family = AF_INET;
+    gondericiBilgileri.sin_port = htons(7777);
+
+    bind(gondericiSoket, (sockaddr*)&gondericiBilgileri, sizeof(gondericiBilgileri));
+
+    char aliciVerisi[1024];
+
+    sockaddr_in bagliCihazBilgiler;
+#ifdef WIN32
+    int bilgilerinUzunlugu = sizeof(gondericiBilgileri);
+#else
+    unsigned int bilgilerinUzunlugu = sizeof(gondericiBilgileri);
+#endif
+
+    while (1)
+    {
+        memset(aliciVerisi, 0, 1024);
+
+        recvfrom(gondericiSoket, aliciVerisi, 1023, 0, (sockaddr*)&bagliCihazBilgiler, &bilgilerinUzunlugu);
+
+        if (!strncmp("1.1: ", aliciVerisi, 5))
+        {
+            RSA* gondericiRSA = RSA_new();
+
+            RSA_generate_key_ex(gondericiRSA, 2048, NULL, NULL);
+
+            FILE* gondericiPrivate = fopen("gondericiPrivate.pem", "wb");
+            PEM_write_RSAPrivateKey(gondericiPrivate, gondericiRSA, NULL, NULL, NULL, NULL, NULL);
+            fclose(gondericiPrivate);
+
+            FILE* gondericiPublic = fopen("gondericiPublic.pem", "wb");
+            PEM_write_RSAPublicKey(gondericiPublic, gondericiRSA);
+            fclose(gondericiPublic);
+
+            sendto(gondericiSoket, "1.2: ", 6, 0,(sockaddr*)&bagliCihazBilgiler,bilgilerinUzunlugu);
+        }
+        else if (!strncmp("2.1: ", aliciVerisi, 5))
+        {
+            ifstream gondericiPublic("gondericiPublic.pem");
+            string gonderilcekVeri = "2.2: ";
+            string publicVeriOkuyucusu;
+
+            while (getline(gondericiPublic, publicVeriOkuyucusu))
+            {
+                gonderilcekVeri += publicVeriOkuyucusu + '\n';
+            }
+            gondericiPublic.close();
+            
+            sendto(gondericiSoket, gonderilcekVeri.c_str(), 1023, 0,(sockaddr*)&bagliCihazBilgiler,bilgilerinUzunlugu);
+        }
+        else if (!strncmp("2.3: ", aliciVerisi, 5))
+        {
+            ofstream aliciPublic("aliciPublic.pem");
+
+            for (int i = 5; i < 431; i++)
+            {
+                aliciPublic << aliciVerisi[i];
+            }
+            aliciPublic.close();
+
+            sendto(gondericiSoket, "2.4: ", 6, 0,(sockaddr*)&bagliCihazBilgiler,bilgilerinUzunlugu);
+        }
+        else if (!strncmp("3.1: ", aliciVerisi, 5))
+        {
+            RSA* aliciPublicRSA = RSA_new();
+
+            FILE* aliciPublic = fopen("aliciPublic.pem", "rb");
+            aliciPublicRSA = PEM_read_RSAPublicKey(aliciPublic, &aliciPublicRSA, NULL, NULL);
+            fclose(aliciPublic);
+
+            char gonderilicekVeri[261] = "3.2: ";
+            char sifreliVeri[256];
+
+            RSA_public_encrypt(sizeof(gonderlicekMesaj2), (unsigned char*)gonderlicekMesaj2, (unsigned char*)sifreliVeri, aliciPublicRSA, 1);
+
+            for (int i = 5; i < 261; i++)
+            {
+                gonderilicekVeri[i] = sifreliVeri[i - 5];
+            }
+
+            sendto(gondericiSoket, gonderilicekVeri, 261, 0,(sockaddr*)&bagliCihazBilgiler,bilgilerinUzunlugu);
+        }
+        else if (!strncmp("3.3: ", aliciVerisi, 5))
+        {
+            SHA256_CTX sha;
+
+            SHA256_Init(&sha);
+            SHA256_Update(&sha, gonderlicekMesaj2, sizeof(gonderlicekMesaj2));
+
+            char shaVerisi[32];
+
+            SHA256_Final((unsigned char*)shaVerisi, &sha);
+
+            char gonderilcekVeri[37] = "3.4: ";
+
+            for (int i = 5; i < 37; i++)
+            {
+                gonderilcekVeri[i] = shaVerisi[i - 5];
+            }
+
+            sendto(gondericiSoket, gonderilcekVeri, 37, 0,(sockaddr*)&bagliCihazBilgiler,bilgilerinUzunlugu);
+        }
+    }
+}
+
+int main()
+{
+    thread gonderici1(gonderici1Olustur);
+    thread gonderici2(gonderici2Olustur);
+
+    gonderici1.join();
+    gonderici2.join();
+}</code>
+
+alici.cpp
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;fstream>
+
+#include &lt;openssl/rsa.h>
+#include &lt;openssl/pem.h>
+#include &lt;openssl/sha.h>
+#include &lt;unistd.h>
+
+#ifdef WIN32
+
+#include &lt;winsock2.h>
+
+#else
+
+#include &lt;netinet/in.h>
+#include &lt;arpa/inet.h>
+#include &lt;sys/socket.h>
+
+#endif
+
+#ifndef WIN32
+
+typedef int SOCKET;
+
+#endif
+
+using namespace std;
+
+int main(int argc, char* argv[])
+{
+#ifdef WIN32
+    WSADATA wsa;
+    WSAStartup(MAKEWORD(2,2), &wsa);
+#endif 
+
+    SOCKET gondericiSoket = socket(AF_INET, SOCK_DGRAM, 0);
+
+    sockaddr_in gondericiBilgileri;
+#ifdef WIN32
+    gondericiBilgileri.sin_addr.S_un.S_addr = inet_addr("192.168.1.104");
+#else
+    gondericiBilgileri.sin_addr.s_addr = inet_addr("192.168.1.104");
+#endif
+    gondericiBilgileri.sin_family = AF_INET;
+
+    if (argv[1][0] == '1')
+    {
+        gondericiBilgileri.sin_port = htons(8888);
+    }
+    else if (argv[1][0] == '2')
+    {
+        gondericiBilgileri.sin_port = htons(7777);
+    }
+
+    char gondericiVerisi[1024];
+
+#ifdef WIN32
+    int bilgilerinUzunlugu = sizeof(gondericiBilgileri);
+#else
+    unsigned int bilgilerinUzunlugu = sizeof(gondericiBilgileri);
+#endif
+
+    sendto(gondericiSoket, "1.1: ", 6, 0, (sockaddr*)&gondericiBilgileri, bilgilerinUzunlugu);
+
+    while (1)
+    {
+        memset(gondericiVerisi, 0, 1024);
+
+        recvfrom(gondericiSoket, gondericiVerisi, 1023, 0, (sockaddr*)&gondericiBilgileri, &bilgilerinUzunlugu);
+
+        if (!strncmp("1.2: ", gondericiVerisi, 5))
+        {
+            RSA* aliciRSA = RSA_new();
+
+            RSA_generate_key_ex(aliciRSA, 2048, NULL, NULL);
+
+            FILE* aliciPrivate = fopen("aliciPrivate.pem", "wb");
+            PEM_write_RSAPrivateKey(aliciPrivate, aliciRSA, NULL, NULL, NULL, NULL, NULL);
+            fclose(aliciPrivate);
+
+            FILE* aliciPublic = fopen("aliciPublic.pem", "wb");
+            PEM_write_RSAPublicKey(aliciPublic, aliciRSA);
+            fclose(aliciPublic);
+
+            sendto(gondericiSoket, "2.1: ", 6, 0, (sockaddr*)&gondericiBilgileri, bilgilerinUzunlugu);
+        }
+        else if (!strncmp("2.2: ", gondericiVerisi, 5))
+        {
+            ofstream gondericiPublic("gondericiPublic.pem");
+
+            for (int i = 5; i < 431; i++)
+            {
+                gondericiPublic << gondericiVerisi[i];
+            }
+            gondericiPublic.close();
+
+            ifstream aliciPublic("aliciPublic.pem");
+            string gondericilekVeri = "2.3: ";
+            string publicVeriOkuyucu;
+
+            while(getline(aliciPublic, publicVeriOkuyucu))
+            {
+                gondericilekVeri += publicVeriOkuyucu + '\n';
+            }
+            aliciPublic.close();
+            
+            sendto(gondericiSoket, gondericilekVeri.c_str(), 1023, 0, (sockaddr*)&gondericiBilgileri, bilgilerinUzunlugu);
+        }
+        else if (!strncmp("2.4: ", gondericiVerisi, 5))
+        {
+            sendto(gondericiSoket, "3.1: ", 6, 0, (sockaddr*)&gondericiBilgileri, bilgilerinUzunlugu);
+        }
+        else if (!strncmp("3.2: ", gondericiVerisi, 5))
+        {
+            char gondericiSifreliMesaj[256];
+            
+            for (size_t i = 5; i < 261; i++)
+            {
+                gondericiSifreliMesaj[i - 5] = gondericiVerisi[i];
+            }
+
+            ofstream sifreliMsg("msg");
+            for (int i = 0; i < 256; i++)
+            {
+                sifreliMsg << gondericiSifreliMesaj[i];
+            }
+            
+            sendto(gondericiSoket, "3.3: ", 6, 0, (sockaddr*)&gondericiBilgileri, bilgilerinUzunlugu);
+        }
+        else if (!strncmp("3.4: ", gondericiVerisi, 5))
+        {
+            char gondericiSha[32];
+
+            for (size_t i = 5; i < 37; i++)
+            {
+                gondericiSha[i - 5] = gondericiVerisi[i];
+            }
+
+            RSA* aliciPrivateRSA = RSA_new();
+
+            FILE* aliciPrivate = fopen("aliciPrivate.pem", "rb");
+            aliciPrivateRSA = PEM_read_RSAPrivateKey(aliciPrivate, &aliciPrivateRSA, NULL, NULL);
+            fclose(aliciPrivate);
+
+            char sifresiCozunmusVeri[256];
+            char gondericiMesaj[256];
+
+            ifstream sifreliMsg("msg");
+            sifreliMsg.read(gondericiMesaj, 256);
+            sifreliMsg.close();
+
+            int cozulmusunBoyutu = RSA_private_decrypt(256, (unsigned char*)gondericiMesaj, (unsigned char*)sifresiCozunmusVeri, aliciPrivateRSA, 1);
+
+            char cozulmusSHA[32];
+
+            SHA256_CTX sha;
+
+            SHA256_Init(&sha);
+            SHA256_Update(&sha, sifresiCozunmusVeri, cozulmusunBoyutu);
+
+            SHA256_Final((unsigned char*)cozulmusSHA, &sha);
+
+            if (!strncmp(gondericiSha, cozulmusSHA, 32))
+            {
+                cout << "Gondericiden gelen mesaj; " << sifresiCozunmusVeri;
+            }
+            else
+                sendto(gondericiSoket, "3.1: ", 6, 0, (sockaddr*)&gondericiBilgileri, bilgilerinUzunlugu);
+
+            break;
+        }
+        
+    }
+    
+    return 0;
+}</code>
+
+Çıktısı;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/26 Cpp Soket İşlemleri.html/6.png" alt="26.6" width="100%">
+        </div>
+
         <h2>Kaynakça</h2>
         <ul>
             <li><a href="https://psateknoloji.com/port-nedir/">https://psateknoloji.com/port-nedir/</a></li>
