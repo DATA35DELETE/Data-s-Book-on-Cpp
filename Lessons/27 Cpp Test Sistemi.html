@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data's Book on Cpp</title>
+
+    <link rel="icon" type="image/x-icon" href="../Sources/favicon.png">
+
+    <script src="../Sources/JS/setBackgroundMedia.js"></script>
+
+    <link rel="stylesheet" href="../Sources/JS/hljs/vs2015.css">
+    <script src="../Sources/JS/hljs/highlight.min.js"></script>
+    <script>
+        window.onload = function() {
+            hljs.highlightAll();
+        };
+    </script>
+
+    <link rel="stylesheet" href="../Sources/CSS/main.css">
+</head>
+<body>
+    <h1>Test Sistemi</h1>
+
+    <div style="height: 100px;"></div>
+    
+    <div id="mainDiv">
+        <h2>Test Nedir?</h2>
+        <pre id="preh2">Test, yazdığımız kodları otomatik bir sistem tarafında bütün olasılıkları deniyen ve bir hata çıktıysa bize bildiren bir sistemdir.</pre>
+        
+        <pre id="preh2">Peki neden test etmeliyiz veya neden sadece kendimiz test etmiyoruzda bu işi algoritmalara bırakıyoruz? Cevap basit, otonatikleştirmek. Düşünün, bir sistem içerisinde yüzden fazla fonksiyon var ve bu fonksiyonları cağırıp çıktılarını değerlendirmek açıkcası acı verici olur. Çünkü çok zaman alırdı. İşte test sistemleri bu işi sadece "İşlemi gir, ne beklediğini yaz" prensibiyle bizim yerimize girdiğimiz bütün çıktıları analiz eder ve bir rapor verir.</pre>
+
+        <h2>Unit Test Nedir?</h2>
+        <pre id="preh2">Unit Test, yazılım sistemlerinde test edilebilir en küçük parçalara denir. Genelde bir fonksiyon, yapı veya sınıf test edilen kısımlara Unit Test yani birim testi denir.</pre>
+
+        <h2>Google Test</h2>
+        <pre id="preh2">Google Test veya gTest, C++ için geliştirilmiş popüler bir test kütüphanesidir.</pre>
+
+        <h3>Kurulum</h3>
+        <pre id="codeh3">Windows; <code class="language-bash">pacman -S mingw-w64-x86_64-gtest</code>
+
+Linux; <code class="language-bash">sudo apt install libgtest-dev</code>
+
+CMake;
+<code class="language-cmake">find_package(GTest REQUIRED)
+add_executable(uygulamaAdi main.cpp)
+target_link_libraries(uygulamaAdi GTest::gtest GTest::gtest_main)</code></pre>
+
+        <h3>Kullanımı</h3>
+        <pre id="codeh3">Kütüphanemiz kurulduğuna göre basit bir örnek yapalım. Bir hesaplama makinesi kodlayalım ve gTest ile test edelim;
+
+<code class="language-cpp">#include &lt;iostream>
+#include &lt;gtest/gtest.h> //gTest kütüphanemiz 
+
+using namespace std;
+
+// Hesaplama fonksiyonlarımız
+int toplama(int a, int b)
+{
+    return a + b;
+}
+int cikarma(int a, int b)
+{
+    return a - b;
+}
+int carpma(int a, int b)
+{
+    return a * b;
+}
+int bolme(int a, int b)
+{
+    return a * b; // Diğer fonksiyonların çıktısı doğru fakat burada bilerekten yanlış işlemi verdim
+}
+
+TEST(hesapMakinesi, toplama) // Unit Test fonksiyonumuz. Tüm testlerimizi "TEST" türü fonksiyonlarla yazarız
+// hesapMakinesi; Test, sınıf ve bölme mantığı ile çalışır. Yani toplama işlemi hangi işlemler bütünüyle kullanılıyor, hesap makinesi. O zaman toplama işleminin test sınıfı hesap makinesi oluyor. Bu sınıflara "suite" denir.
+// toplama; Bu ise o sınıfın içerisindeki test biriminin ismidir. Çıktıda gözlemleceğimiz üzere "hesapMakinesi.toplama" şeklinde göreceğiz
+{
+    EXPECT_EQ(toplama(2, 5), 7); // EXPECT_EQ, 1. parametresinde işlemi ve 2. parametresinde beklenen çıktı belirlenir ve işlem test edilir. Eğer işlemin sonucu 2. parametredekiyle farklı ise hata raporu verir. Hatasız geçer ise "İşlem başarılı" şeklinde ifade edilir
+}
+TEST(hesapMakinesi, cikarma)
+{
+    EXPECT_EQ(cikarma(5, 1), 4);
+}
+TEST(hesapMakinesi, carpma)
+{
+    EXPECT_EQ(cikarma(10, 6), 61); // Bilerek yanlış sonuç beklemesini ayarladım
+}
+TEST(hesapMakinesi, bolme)
+{
+    EXPECT_EQ(bolme(100, 20), 5);
+}
+
+int main(int argc, char* argv[])
+{
+    testing::InitGoogleTest(&argc, argv); // Tüm testleri çalıştırabilmek için ana sistemi başlatır. İstersek parametre vererekte testleri farklı çıktılara veya farklı modlarla yapabiliriz
+
+    return RUN_ALL_TESTS(); // Tüm testleri çalıştırır
+}</code>
+
+Derleme ve çalıştırma
+
+<code class="language-bash">g++ main.cpp -o main -lgtest
+
+main</code>
+
+Çıktı ise;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/27 Cpp Test Sistemi.html/1.png" alt="27.1" width="100%">
+        </div>
+        
+        <pre id="preh3">Çıktıda gördüğümüz gibi yazdığımız testleri sonuçlarını, başarılı olanların ve olamayanların bir raporu bulunmaktadır.</pre>
+
+        <pre id="preh3">gTest bizlere özel bazı parametreler sağlar. Böylelikle biz fazladan kod yazmadan gTest bizler için parametreye göre farklı işlemler yapabilir.</pre>
+
+        <pre id="codeh3">Çıktıyı belirli bir formatlı dosyaya isterkek
+
+<code class="language-bash">--gtest_output="format:ciktiDosyasi";
+
+main --gtest_output="xml:cikti.xml" # Çıktı XML dosya formatında gözükür
+main --gtest_output="json: cikti.json" # Çıktı Json formatında gözükür</code>
+
+Çıktılar;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/27 Cpp Test Sistemi.html/2.png" alt="27.2" width="100%">
+            <img src="../Bibliography/27 Cpp Test Sistemi.html/3.png" alt="27.3" width="100%">
+        </div>
+        
+        <pre id="codeh3"><code class="language-cpp">main --gtest_repeat=tekrarEdilcekMiktar</code>; Test "tekrarEdilcekMiktar" kadar tekrar eder.
+        
+<code class="language-bash">main --gtest_break_on_failure</code>; Test sürecinde hata çıktığı an programı kapatır.</pre>
+
+        <h2>Kaynakça</h2>
+        <ul>
+            <li><a href="https://bilgisayartech.com.tr/makale/unit-test-nedir-yazilim-gelistirme-surecindeki-kritik-rolu-271-819">https://bilgisayartech.com.tr/makale/unit-test-nedir-yazilim-gelistirme-surecindeki-kritik-rolu-271-819</a></li>
+            <li><a href="https://terminalroot.com/how-to-install-and-get-started-with-google-test/">https://terminalroot.com/how-to-install-and-get-started-with-google-test/</a></li>
+            <li><a href="https://www.geeksforgeeks.org/software-testing/gtest-framework/">https://www.geeksforgeeks.org/software-testing/gtest-framework/</a></li>
+            <li><a href="https://google.github.io/googletest/advanced.html">https://google.github.io/googletest/advanced.html</a></li>
+        </ul>
+    </div>
+
+    <div style="height: 100px;"></div>
+
+    <footer style="position: fixed; left: 0; bottom: 0; width: 100%; background: transparent; text-align: center; padding: 10px 0; z-index: 100;">
+        <div>
+            <a href="./26 Cpp Soket İşlemleri.html" style="margin-right: 20px; cursor:pointer;">
+                &larr; Önceki
+            </a>
+            <a href="" style="cursor:pointer;">
+                Sonraki &rarr;
+            </a>
+        </div>
+        <div>
+            <p>&copy; 2026 Data's Book</p>
+        </div>
+
+        <div style="position: absolute; right: 20px; bottom: 20px;">
+            <a href="./1 Cpp İçindekiler.html" style="text-decoration: none;">
+                İçindekiler
+            </a>
+        </div>
+    </footer>
+</body>
+</html>
+
+<!-- Muhammet Enes nam-ı diğer Data Delete tarafından sevgi ile yapıldı <3 -->
