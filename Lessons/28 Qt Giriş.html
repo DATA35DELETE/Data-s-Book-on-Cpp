@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data's Book on Cpp</title>
+
+    <link rel="icon" type="image/x-icon" href="../Sources/favicon.png">
+
+    <script src="../Sources/JS/setBackgroundMedia.js"></script>
+
+    <link rel="stylesheet" href="../Sources/JS/hljs/vs2015.css">
+    <script src="../Sources/JS/hljs/highlight.min.js"></script>
+    <script>
+        window.onload = function() {
+            hljs.highlightAll();
+        };
+    </script>
+
+    <link rel="stylesheet" href="../Sources/CSS/main.css">
+</head>
+<body>
+    <h1>Giriş</h1>
+
+    <div style="height: 100px;"></div>
+    
+    <div id="mainDiv">
+        <h2>Qt Nedir?</h2>
+        <pre id="preh2">Qt, C++ dili için geliştirilmiş ve Linux, MacOS ve Windows gibi işletim sistemlerine tek kod tabanıyla derlenenbilen; Pencere sistemi, veri yönetimi, veritabanı işlemleri ve test sistemlerini alanlarında muazzam kütüphaneler ve araçlar sunan bir kütüphane topluluğudur.</pre>
+        
+        <pre id="preh2">Evet Qt'yi illaki duymuşsunuzdur. C++ dili için en kapsamlı ve neredeyse en çok kullanılan bir Framework yani çerçevedir. Türkçeye çevirince garip dursada çerçeve dili baştan sona kadar her bir ayrıntısını değiştiren dili neredeyse baştan yazan kütüphaneler bütünlerine yazılımlımda Framework yani çereçeve denir.</pre>
+
+        <pre id="preh2">Peki nedir Qt? Qt; Masaüstü, mobil hatta Web teknolojilerine sorunsuz bir şekilde derleme desteği sağlar. Hatta son zamanlarda gömülü sistemlerde bile kullanılmaya başlanmıştır. Öyleki bazı şehir içi ulaşım otobus şirketlerinin ödeme sistemlerinde kullandıkları o makineler(Yani kartı okuttuğunuz ekran) Qt ile programlanmıştır. Kısaca Qt bir sıvı gibi bulunduğu kabın şeklini alır ve mükemmel çalışır.</pre>
+
+        <h3>Qt Widget Nedir?</h3>
+        <pre id="preh3">Qt Widget, Qt ekosisteminin en eski ve en temel kütüphanelerinde biridir. Dile eklediği özellik ise pencere yönetim sistemidir. Widget, bizlere işletim sisteminin kendi görünümüne uygun bir şekilde pencere tasarlamamızı sağlar. Böylelikte farklı işletim sistemlerinde pencereler uyumlu dururlar. Genel olarak masaüstü geliştermede kullanılır.</pre>
+
+        <h3>Qt Quick</h3>
+        <pre id="preh3">Qt Quick, Qt ekosisteminin dinamik ve esnek pencere yönetim sistemi kütüphanesidir. Qt Widget'a göre daha performanslı ve daha akıcıdır. Bunun sebebi Qt Quick direkt olarak GPU'da çalışır. Qt Widget ise işletim sisteminin yerel fonksiyonlarını kullandığı için CPU temellidir. Qt Quick, süslemesi CSS ve animasyonlandırması JavaScpirt'e benzeye bir sözdizine sahip QML adlı bir dil kullanır. Daha çok mobil, gömülü sistemlerde ve dokunmatikli ekranlarda fazlasıyla tercih edilir.</pre>
+
+        <h3>Kısa Tarihçe</h3>
+        <pre id="preh3">Qt ilk olarak 1991 yılında Eirik Chambe-Eng ve Haavard Nord tarafından bir ultrason görüntümele uygulaması geliştirilmeye çalışınırken ortaya çıkan ve amacı tüm işletim sistemlerinde tek kod tabanıyla derlenebilen ve çalışabilen bir kütüphane olarak doğdu. Ardından ikilimiz Quasar Technologies adlı şirketi kurdular. Sonra Troll Tech oldular. En sonda da kararlarını verip Trolltech olarak devam etmeyi seçtiler. Tarihler 1995 20 Mayıs'ı gösterdiğinde 0.90 sürümü piyasa çıkmıştır. Bu sürüm Linux sistemlerinde pencere oluşturmamız sağlana X11 için çıkmıştır. Çıktığında ise Qt Free Edition Licence ile lisanslanan bir kütüphaneydi. Bu lisans ise içeriği değiştirilmiş kütüphane dosyasını dağtımına izin vermemesiydi. Yani siz Qt'e geliştirme yaptığınızda yasal olarak bu suçtu.</pre>
+
+        <pre id="preh3">Daha sonra ilk olarak X11 için çıkan kütüphanelerini Windows ve MacOS'da çıkarmaya başladılar. Q Public Lisence lisansıyla çıkmış olsada 2000 yılında General Public Licence(Genel Kamu Lisansı) ile tam destek sağlanamadı. 2.2 sürümü ile beraber General Public Licence v2 lisansı ile yayımlanmaya başlandı. Qt dördüncü sürümüne kadar Windows GPL ile pek fazla yayımlanamdı. Her zaman kapalı kaynak olarka kaldı. Dördünce sürümde ise artık Windows'ada artık GPL lisansı ile dağıtım yapıldı ve ekosisteme konsol uygulamaları da yapılmayı eklendi.</pre>
+
+        <pre id="preh3">Ardından Nokia yeni projeleri olan Symbian S60 için bir arayüz sistemi arıyodu. Bunun üzerine Nokia 2008 yılında Trolltech'i satın aldı. Biraz isim karmaşası ardından en son Qt'yi Qt Development Frameworks olarak değiştirti. 2009 yılında Nokia Qt'yi Lesser General Public Lisence ile yayımlantırmaya başladı. Sonda Nokia Symbian projesinden vazgeçti ve Qt'yi Digia adlı firmaya sattı.</pre>
+
+        <pre id="preh3">Tarihlar Eylül 2014'ü gösterdiğinde Digia firması The Qt Company adlı alt firmalarını kurda ve 2016'da Finlandiya'nın başkenti Helsinki şehrinde QTCOM olarak halka açıldı.</pre>
+
+        <pre id="preh3">Qt geliştirilme sürecinde oldukça büyük projelerde yer almış ve çokça kezde kullanılmıştır. Bunlardan belkide en büyüğü KDE masaüstü ortamıdır. KDE, Qt'yi kullanarak Linux sistemler için harika bir masaüstü ortamı tasarlayarak kullanıcıların en çok sevdiği masaüstü ortamı olmaya başarmıştır. Daha sonradan bir çok otomotiv firması Qt ile kendi otomobillerinin grafiksel arayüzlerini tasarlamışlardır.</pre>
+        
+        <pre id="preh3">Peki artık Qt'nin tarihçesini biliyoruz. Ama aklınıza şu soru gelebilir. Qt bu işleri babalarının hayırlarına mı yapıyolarlar? Tüm sistemler için onlarca araç ve mükemmel çalışan kütüphaneleri bedavaya mı veriyorlar? Yani, kısman evet ve hayır. Kısmen evet çünkü cidden bunları kullanmak tamamiyle ücretsiz. Kısman hayır çünkü kullandığın sistem eğer bir gelir elde ediceksek The Qt Company'den lisans satın almak zorundasın. Bu sistem ise LGPL lisanslı ile gelir. Lisans der ki; "Her kim bu projeyi alıp kendi projesine uygular ve yayımlarsa para almam, ama kullanılan proje para kazanır ise bu projeye veya proje sahibine para vermek zorundadır" şeklinde bir şartname vardır. Bu şart kötü gibi gözüksede aslında aşırı derece mantıklı bir şarttır. Mantık şu sizin yaptığınız devasa proje açık kaynak ise herkes kodunuzu görebilir. Öyle değil mi? Sizin belki aylar belki yıllar yemeden içmeden yazdığınız kodlar, başkaları tarafından gözlemleniyor. Ama siz bu projeyi açık kaynak olarak yayımladığınız. Yani açık kaynak dünyasına büyük bir katkıda bulundunuz. Çok güzel, eğer sizin projenizi başkası alıp değiştirip açık kaynak yayımlarsa ve proje para kazanmazsa yine açık kaynak dünyasına katkıda bulunmuş olur, hiç kimsenin emeği yememiş. "Nasıl yemmemiş?" derseniz cevabı "Aynı gemideyiz" olur. Yani sizin amacınızda projenizi alıp geliştiren tarafında amacı aynı. Açık kaynak dünyasına katkı. Ama bir şirket projenizi alıp geliştirip üstelik bundan parada kazanır ve açık kaynak yapmazsa o zaman hem sizin hemde o projede en ufak katıda bulunan insanların emeği paraya çevrilmiş olur. Üstelik bu bir başka kişi tarafından yapılır. İşte bu gibi durumlarda projenizi büyük kâr amacı güden canavarı şirketlerden korur. Böylelikle hem açık kaynak dünyasında yapılan işler açık kaynak dünyasına geri döner hem de koca şirketler sizlere para öderler. Böylelikle tüm LGPL lisansını anlamış olduk.</pre>
+
+        <h3>Lisanslama</h3>
+        <pre id="preh3">Az öncede bahsettiğimiz gibi LGPL lisansı sizlere açık kaynak yapma ve para kazanmama durumları için projeyi ücretsiz hale getirdiğinden bahsetmiştik. Peki ya para için kullanıcak olursak? Qt özelinden konuşucak olursak Qt'den gidip lisans satın almanız gerekir. Onuda <a href="https://www.qt.io/pricing?filter=development-tools">kendi sitelerinden</a> satın almanız gerekir. Sizlerden yıllık 6890 avro istemektedirler. Bu günkü kurla bu uçuk fiyat bizlere 387.320,94 Türk Lirasına tekabul gelmektedir. Açık kaynak tarafında olduğumuz için biz bu fiyat yerine yıllık sıfır Türk Lirası ile bu ekosistemi kullanabilir haledeyiz. İşte açık kaynağın gücü!</pre>
+
+        <h2>Qt Kurulum</h2>
+        <pre id="preh2">Qt öyle klasik "Komutu yaz, indir" gibi bir kütüphane değildir. Qt'yi kullanmak için Qt Creator adlı bir IDE kullanıcağız.</pre>
+
+        <pre id="preh2">İlk olarak Qt Creator kurulumu yapacağız. Bunun için <a href="https://www.qt.io/development/download">indirme sitesine</a> gidelim. Biz açık kaynak bir şekilde kullanıcağımız için "Community Edition" kısmına gidelim. Ardından bizim işletim sistemimize uygun olan sürümü indirelim;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/28 Qt Giriş.html/1.png" alt="28.1" width="100%">
+        </div>
+
+        <pre id="preh2">Ben 64-Bit Windows kullandığım için "Windows x64" seçeneğini seçtim. Ardından "Qt Online Installer for Windows(x64)" yazan butona basalım.</pre>
+
+        <pre id="preh2">İnen kurulum uygulamasını çalıştıralım.</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/28 Qt Giriş.html/2.png" alt="28.2" width="100%">
+        </div>
+
+        <pre id="preh2">Çıkan ekranda "Next" butonuna basalım.</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/28 Qt Giriş.html/3.png" alt="28.3" width="100%">
+        </div>
+
+        <pre id="preh2">Çıkan ekranda sizlerden bir hesap isticektir. Ben hali hazırda hesabım olduğunu için girdim. Eğer sizin Qt hesabınız yoksa "Sign Up" bağlantısından hesabınızı oluşturun, ardından bu ekrana E-postanızı ve şifrenizi girip "Next" butonuna basalım.</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/28 Qt Giriş.html/4.png" alt="28.4" width="100%">
+        </div>
+
+        <pre id="preh2">Sıradaki ekranda bizlerin kullanım koşullarını kabul etmemizi ve hangi şirkette çalıştığımızı istemektedir. Aşağıdaki iki işaretleme kutusunuda işaretliyip "Next" butonuna basalım. Merak edenler için birinci işaretleme kutu kullanıö şartlarını kabul etme, diğeri ise "Herhangi bir şirkette çalışmıyorum" kutusudur.</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/28 Qt Giriş.html/5.png" alt="28.5" width="100%">
+        </div>
+
+        <pre id="preh2">Ufak bir yükleme ekranının ardından bizlere hangi bileşenlerini kuracağını ve nereye kuracağını isteyen bir ekran karşımıza çıkıcaktır. Yukarında istediğiniz yere seçenbilirisiniz. Ayrıca kutucuk olan "Qt 6.11 for mobile development" işaretleyelim. Çünkü ileride mobil cihazlar içinde derleme yapabilmemiz için. Ardından "Next" butonuna basalım.</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/28 Qt Giriş.html/6.png" alt="28.6" width="100%">
+        </div>
+
+        <pre id="preh2">Çıkan ekran bizlerden kullanılan araçların lisanslarını kabul etmemiz istemektedir. Sırayla lisansları kabul edip "Next" butona basalım.</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/28 Qt Giriş.html/7.png" alt="28.7" width="100%">
+        </div>
+
+        <pre id="preh2">Çıkan ekran bizlerden kendisini başlangıç klasörüne kayıt edip edemiceğini belirtir. "Next" butonuna basalım.</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/28 Qt Giriş.html/7.png" alt="28.8" width="100%">
+        </div>
+
+        <pre id="preh2">Ardından gelen ekran bizlere nelerin indirilceğine dair bir özet sunar. "Install" butonuna basalım ve indirmeyi başlatalım.</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/28 Qt Giriş.html/9.png" alt="28.9" width="100%">
+        </div>
+
+        <pre id="preh2">Uzun bir indirmeden ardından "Next" butonuna basalım. Ardından "Finish" butonuna basarak kurulumu tamamlayalım. Artık Qt ekosistemini kullanabiliriz!</pre>
+
+        <h2>İlk Qt Projesi</h2>
+        <pre id="preh2">İLk Qt projesi için Qt Creator'u IDE'mizi açalım. Açılan pencerede "Create Project..." yazan butona basalım. Açılan menüde sol menüden "Projects" kısmından "Application (Qt)" kısma tıklayalım. Gelen seçeneklerden "Qt Widget Application" seçeneğini seçelim ve "Choose..." diyerek devam edelim.</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/28 Qt Giriş.html/10.png" alt="28.10" width="100%">
+        </div>
+
+        <pre id="preh2">Çıkan pencere projenin ismini ve nereye kayıt edilceğini istiyen bir penceredir. Ben ismi "ilkProje" yapıcağım fakat siz isterseniz farklı yapabilirsiniz.</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/28 Qt Giriş.html/11.png" alt="28.11" width="100%">
+        </div>
+
+        <pre id="preh2">Ardından gelen kısım hangi Qt sürümü ile CMake'in kullanılcağını isticektir. "Next" butonuna basalım.</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/28 Qt Giriş.html/12.png" alt="28.12" width="100%">
+        </div>
+
+        <pre id="preh2">Sonraki kısımda ise bizden sınıfların hangi isimlerle oluşturulcağını belirtiyor. "Next" butonuna basalım.</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/28 Qt Giriş.html/13.png" alt="28.13" width="100%">
+        </div>
+
+        <pre id="preh2">Daha sonra ise bizden Qt'nin bir özelliği olan, dil paketleri özelliğini aktif edip edimeyeceğini soruyor. "Next" butonuna tıklayalım.</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/28 Qt Giriş.html/14.png" alt="28.14" width="100%">
+        </div>
+
+        <pre id="preh2">Ardından ise projemizi derleme takımlarını ayarlıyoruz. Biz ilk olarak masaüstü için uygulama geliştiriceğimiz için "Desktop" ayarı açıktır. Fakat eğer uygulamanızı birde Android cihazınızada derleyebilirsiniz. Bunun için sizlere uygun ARM mimarisi olan "arm64-v8a" veya "armabi-v7a" seçip(Eğer görece yeni bir telefona ise arm64-v8a, görece eski bir telefona ise armabi-v7a" seçiniz), ardından telefonuzdan "Geliştirici" modunu açıp, "USB Hata Ayıklama" özelliğini açmanız gerekir. Bu işlemler telefon tarafında. Qt Creator tarafında ise daha başka işlemler yapılmalı ki onlarıda ilerleyen sayfalarda detaylıca anlatıcağız. "Next" butonuna basalım.</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/28 Qt Giriş.html/15.png" alt="28.15" width="100%">
+        </div>
+
+        <pre id="preh2">Son olarak bizden hangi sürüm kontrol aracını kullanıcağımızı istiyor. Biz seçmeyerek "Finish" butonuna basalım ve projemizin oluşturulmasını bekliyelim.</pre>
+
+        <h3>Proje Yapısı</h3>
+        <pre id="preh3">Açılan pencerede projemizin yapsını görebiliriz. Tanıtmak gerekirse, orta kısım kodlarımızın düzenleyebilceğimiz kısım iken, sol kısımdaki yer ise bizim dosya yöneticimizden. Aslında yüzlerce pencere var ama Qt kullanırken genelde sadece bu ikisi arasında gidip geleceğiz.</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/28 Qt Giriş.html/16.png" alt="28.16" width="100%">
+        </div>
+
+        <pre id="preh3">Dosya yöneticisini daha detaylı inceleyelim;</pre>
+
+        <pre id="preh3">CMakeLists.txt; Geçmiş sayfalarda öğrendiğimiz CMake dosyasıdır. Evet Qt kendini derlemek için CMake kullanılır. Eskiden QMake vardı fakat CMake her yerde standart olduğunu için CMake'e geçiş yaptılar.</pre>
+
+        <pre id="preh3">ilkProje; Projemizin ana klasörüdür.</pre>
+
+        <pre id="preh3">Forms; Qt'nin .ui uzantılı pencere tasarlama dosyalarının bulunduğu klasördür.</pre>
+
+        <pre id="preh3">Header Files; Tüm başlık dosyalarının bulunduğu klasördür. Genel olarak projenin kütüphaneleri bu kısımdan yönetilir.</pre>
+
+        <pre id="preh3">Source Files; Kaynak kodların klasörüdür.</pre>
+
+        <pre id="preh3">&lt;Build Directory>; Projemizin derleme sonrası çalıştırılabilir dosyalarının bulunduğu klasördür. İçindeki "ilkProje.exe.manifest" ise uygulamanın ön bilgilerini girdiğimiz Xml dosyasıdır.</pre>
+
+        <h3>Pencere Tasarlama</h3>
+        <pre id="preh3">Pencere tasarlamak için "Forms" klasöründeki "mainwindow.ui" dosyasına basalım.</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/28 Qt Giriş.html/17.png" alt="28.17" width="100%">
+        </div>
+
+        <pre id="preh3">Qt Creator, "sürükle bırak" mantığı ile bizlere pencere tasarlamamızı olanak tanır. Bu kısmı ilerki sayfalarda daha detaylı inceleyeceğiz. Ufaktan bir tanıtım yapıcak olursak, sol menü Item'lerimizin olduğu, orta kısım canlı ön görüntüleme ve sağ kısım ise Item'lerimizin özelliklerini değiştirebilceğimiz kısımdır.</pre>
+
+        <h2>Proje Derleme</h2>
+        <pre id="preh2">Qt, projemizi oluştururken hazır kodlar sunar. Bizim yapmamız gereken işlem ise sol alt kısımda yer alan yeşil içi boş oynatma butonuna basmak olucaktır.</pre>
+        
+        <div id="divh2Img">
+            <img src="../Bibliography/28 Qt Giriş.html/18.png" alt="28.18" width="100%">
+        </div>
+
+        <pre id="preh2">Ardından penceremizin oluştuğunu gözlemleyebilirsiniz!</pre>
+
+        <h2>Meta-Object Sistemi</h2>
+        <pre id="preh2">Meta-Object sistemi, Qt için tüm bileşenleri denetleyen ve düzenleyen bir üst sistemdir. Bizim QObject sınıfları ise Q_OBJECT makrosu ile Qt'nin kendi sistemi ile yazdığımız kodlar arasında iletişimi sağlar. Bu sistemin işliyişine ise MOC yani Meta-Object Compiler(Meta-Object Derliyicisi) denir.</pre>
+
+        <h2>Kaynakça</h2>
+        <ul>
+            <li><a href="https://www.mustafayemural.com/artic-my000015/">https://www.mustafayemural.com/artic-my000015/</a></li>
+            <li><a href="https://en.wikipedia.org/wiki/Qt_Group">https://en.wikipedia.org/wiki/Qt_Group</a></li>
+            <li><a href="https://en.wikipedia.org/wiki/Qt_Project">https://en.wikipedia.org/wiki/Qt_Project</a></li>
+            <li><a href="https://btt.community/t/hangi-masaustu-ortami-en-iyisi/22989/3">https://btt.community/t/hangi-masaustu-ortami-en-iyisi/22989/3</a></li>
+            <li><a href="https://www.qt.io/pricing?filter=development-tools">https://www.qt.io/pricing?filter=development-tools</a></li>
+            <li><a href="https://doc.qt.io/qt-6/metaobjects.html">https://doc.qt.io/qt-6/metaobjects.html</a></li>
+        </ul>
+    </div>
+
+    <div style="height: 100px;"></div>
+
+    <footer style="position: fixed; left: 0; bottom: 0; width: 100%; background: transparent; text-align: center; padding: 10px 0; z-index: 100;">
+        <div>
+            <a href="./27 Cpp Test Sistemi.html" style="margin-right: 20px; cursor:pointer;">
+                &larr; Önceki
+            </a>
+            <a href="" style="cursor:pointer;">
+                Sonraki &rarr;
+            </a>
+        </div>
+        <div>
+            <p>&copy; 2026 Data's Book</p>
+        </div>
+
+        <div style="position: absolute; right: 20px; bottom: 20px;">
+            <a href="./1 Cpp İçindekiler.html" style="text-decoration: none;">
+                İçindekiler
+            </a>
+        </div>
+    </footer>
+</body>
+</html>
+
+<!-- Muhammet Enes nam-ı diğer Data Delete tarafından sevgi ile yapıldı <3 -->
