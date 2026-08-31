@@ -20,99 +20,303 @@
     <link rel="stylesheet" href="../Sources/CSS/main.css">
 </head>
 <body>
-    <h1>Example Main Title</h1>
+    <h1>Signal ve Slot</h1>
 
     <div style="height: 100px;"></div>
     
     <div id="mainDiv">
-        <h2>Title</h2>
-        <pre id="preh2">    This title <code class="language-rust">for</code> rust programing language!</pre>
+        <h2>Signal ve Slot Nedir?</h2>
+        <pre id="preh2">Signal ve Slot Türkçe isimleriyle sinyal ve yuva, objeler arasında fonksiyonları birbirlerine bağlamak için kullanılan bir sistemdir.</pre>
 
-        <pre id="codeh2"><code class="language-rust">let two: u8 = 2;
-let three: u8 = 3;
+        <pre id="preh2">Mantık ise çok basittir. Bir sinyal bir veya birden fazla yuvaya bağlı olarak kullanım sağlar. Yani aslında sinyal fonksiyonun çağırdığımızda yuva fonksiyonunu çağırmış oluruz. Bu genelde "Tıklama" veya "Fare üzerinde" gibi durumlarda kullanılan bir sistemdir.</pre>
 
-let two_plus_three = two + three;</code></pre>
+        <pre id="preh2">Sizlere bir yerlerden bu sistem tanıdık gelebilir... Evet, Callback yapısı! Aslında tam olarak Callback olmasada arkada Callback yapısı kullanılır. Peki neden Qt'de sinyal ve yuva kullanılır. Cevap C++'ın Callback yapısının dayanaksızlığıdır. Düz Callback sisteminde direkt olarak fonksiyonun işaretçisi verildiğinden ve işaretçilerde bazen bizim istediğimiz gibi çalışamadıkları için çoğu durumda hataya yol açarlar, hatta programların çökmelerine kadar sorun yaratabilirler. İşte bu duruma çözüm olarak Qt sinyal ve yuva sistemini getirtmiştir. Sinyal ve yuva mekanizması bu duruma çağre olarak üst kontrol sistemini kullanılır. Üst sisteminin amacı ise "Doğru işaretçi çağrıld mı?" kontrollü yapmaktır. Böylelikle kararlılık kazanılmıştır.</pre>
 
-        <ul>
-           <li>Making OS</li>
-           <li>low-level programing</li>
-           <li>WebAssembly</li> 
-        </ul>
+        <h2>Sinyal ve Yuva Tanımlama</h2>
+        <pre id="preh2">Şimdi gelin penceremize bir buton koyalım ve onun "Tıklama" fonksiyonunu yani sinyalini bizim kendi tanımlandığımız "butonTiklamaHaberiniVer" fonksiyonuna yani yuvasına bağlıyalıp, çalıştıralım ve butona basarak neler olduğunu gözlemleyelim.</pre>
 
-        <div id="divh2Img">
-            <img src="../Bibliography/example.html/depressiveData.png" alt="Example Image" width="800px" >
-        </div>
+        <pre id="preh2">İlk olarak butonumuzu koyalım. Projemizin mainwindow.ui dosyasına gidelim ve bir PushButton'nu sürükliyerek pencere alanımıza bırakalım.</pre>
 
         <div id="divh2Vid">
-            <video width="800px" controls src="../Bibliography/example.html/STARFALL.mp4" type="video/mp4"></video>
-        </div> 
-
-        <table id="tableh2">
-            <thead>
-                <tr>
-                    <th>th1</th>
-                    <th>th2</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>td1</td>
-                    <td>td2</td>
-                </tr>
-                <tr>
-                    <td>td3</td>
-                    <td>td4</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <h3>Sub Title</h3>
-        <pre id="preh3">    This sub title <code class="language-rust">for</code> rust programing language!</pre>
-
-        <pre id="codeh3"><code class="language-rust">let two: u8 = 2;
-let three: u8 = 3;
-
-let two_plus_three = two + three;</code></pre>
-
-        <ul id="listh3">
-           <li>Making OS</li>
-           <li>low-level programing</li>
-           <li>WebAssembly</li> 
-        </ul>
-
-        <div id="divh3Img">
-            <img src="../Bibliography/example.html/depressiveData.png" alt="Example Image" width="800px" >
+            <video controls src="../Bibliography/29 Qt Signal ve Slot.html/1.mp4" alt="29.1" width="100%"></video>
         </div>
 
-        <div id="divh3Vid">
-            <video width="800px" controls src="../Bibliography/example.html/STARFALL.mp4" type="video/mp4"></video>
-        </div> 
+        <pre id="preh2">Ardından mainwindow.h dosyamıza gelelim ve yuvamızı tanımlayalım;</pre>
 
-        <table id="tableh3">
+        <pre id="codeh2"><code class="language-cpp">#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include &lt;QMainWindow>
+
+QT_BEGIN_NAMESPACE
+namespace Ui {
+class MainWindow;
+}
+QT_END_NAMESPACE
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
+
+public slots: // Yuvamızı tanımlıyoruz. PushButton'nun "clicked" sinyalini bu yuvaya bağlıcağız
+    void butonTiklamaHaberiniVer();
+
+private:
+    Ui::MainWindow *ui;
+};
+#endif // MAINWINDOW_H</code>
+
+Ardından mainwindow.cpp dosyamıza gidelim;
+
+<code class="language-cpp">#include "mainwindow.h"
+#include "./ui_mainwindow.h"
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+    MainWindow::connect(ui->pushButton, SIGNAL(clicked()), this , SLOT(butonTiklamaHaberiniVer())); // Sinyal fonksiyonları yuva fonksiyonlarına bağlamamızı sağlar
+    // ui->pushButton; Sinyalin bulunduğu sınıf. Bir önceki sayfada anlatılan Meta-Object sistemi sayesinde herhangi bir engel olmadan direkt ekrandaki Item'lerimize erişebiliyoruz
+    // SIGNAL(clicked()); SIGNAL makrosu ile sinyal fonksiyonu hazırlanır. Bu durumda pushButton sınıfındaki "clicked" fonksiyonu sinyal durumdadır
+    // this; Yuvanın bulunduğu sınıftır. this işaretçisi ile bu sınıfta olduğunu belirttik
+    // SLOT(butonTiklamaHaberiniVer()); SLOT makrosu ile yuva fonksiyonunu hazırlar. Bu durumda bizim "butonTiklamaHaberiniVer" fonksiyonumuz oluyor
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::butonTiklamaHaberiniVer() // Tanımladığımız yuvamızın işlevini dolduruyoruz
+{
+    qDebug() << "pushButton'a basıldı!" << Qt::endl;
+    // Qt'de standart Cout kullanılmaz. Bunun yenine qDebug kullanılır. Fakat aralarında hiçbir fark yoktur
+    // Qt::endl; Qt'deki std::endl'dır
+}</code>
+
+Kodlar hazır. Şimdi çalıştıralım;</pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/29 Qt Signal ve Slot.html/2.mp4" alt="29.2" width="100%"></video>
+        </div>
+
+        <h3>Yeni Yazım Şekliyle Sinyal ve Yuva Tanımlama</h3>
+        <pre id="codeh3">Bu yazım şekli eski Qt sürümlerinden kalmadır. Bu yazım şeklinde String tabanlı olduğu için bellek israfı yaptıkları için yeni sürümde işaretçi tabanlı bir sinyal-yuva sistemi kullanılır. Gelin beraber uygulayalım;
+
+mainwindow.cpp
+
+<code class="language-cpp">#include "mainwindow.h"
+#include "./ui_mainwindow.h"
+
+#include &lt;QPushButton> // Sinyal fonksiyonunun kullanılcağı kütüphane. Biz QPushButton kullandığımız için onu dahil ettik
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+    connect(ui->pushButton, &QPushButton::clicked, this , &MainWindow::butonTiklamaHaberiniVer); // Yeni yazım şekli ile connect
+    // ui->pushButton; Sinyalin bulunduğu sınıf. Bir önceki sayfada anlatılan Meta-Object sistemi sayesinde herhangi bir engel olmadan direkt ekrandaki Item'lerimize erişebiliyoruz
+    // &QPushButton::clicked; Sinyalin bulunduğu sınıfın kendisine özel tanımlanmış isim alanındaki sinyal fonksiyonunun işaretçisi
+    // this; Yuvanın bulunduğu sınıftır. this işaretçisi ile bu sınıfta olduğunu belirttik
+    // &MainWindow::butonTiklamaHaberiniVer; Yuvanın bulunduğu sınıfın kendisine özel tanımlanmış isim alanındaki yuva fonksiyonunun işaretçisi
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::butonTiklamaHaberiniVer()
+{
+    qDebug() << "pushButton'a basıldı!" << Qt::endl;
+}</code>
+
+Çıktı değişmicektir fakat artık belleğimizi tasaruflu bir şekilde kullanıyor olduk.</pre>
+
+        <h3>Lambda Tanımlama</h3>
+        <pre id="codeh3">Yeni yazım şekli ile gelen özelliklerden biriside yuvaları Lambda fonksiyon olarak tanımlayabiliriz.
+
+Hadi deniyelim;
+
+İlk olarak mainwindow.h dosyasını eski haline döndürelim;
+
+<code class="language-cpp">#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include &lt;QMainWindow>
+
+QT_BEGIN_NAMESPACE
+namespace Ui {
+class MainWindow;
+}
+QT_END_NAMESPACE
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
+
+private:
+    Ui::MainWindow *ui;
+};
+#endif // MAINWINDOW_H
+</code>
+
+Ardından yuvamızı lambda olarak tanımlayalım;
+
+<code class="language-cpp">#include "mainwindow.h"
+#include "./ui_mainwindow.h"
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+    connect(ui->pushButton, &QPushButton::clicked, this ,
+    [] () // Lambda fonksiyonumuz
+    {
+        qDebug() << "QPushButton'a lambda tanımlanan bir yuvaya gönderilen bir sinyal geldi!" << Qt::endl;
+    });
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}</code>
+
+Çıktı ise;</pre>
+
+        <div id="divh3Vid">
+            <video controls src="../Bibliography/29 Qt Signal ve Slot.html/3.mp4" alt="29.3" width="100%"></video>
+        </div>
+
+        <h2>Sinyalin Yuva Bağlantısını Koparma</h2>
+        <pre id="preh2">Bu işlem için <code>disconnect</code> metodu kullanılır.</pre>
+
+        <pre id="preh2">Bu işlem genelde; İşlevini kaybetmiş veya sadece bir kere tıklanabilir nesneler için kullanılır. Bir kere bağlandıktan sonra bir kere bağlantısı kopartabilir.</pre>
+
+        <pre id="codeh2">Şimdi gelin bir örnek yapalım. Butonumuz dursun, o butona sadece bir kere tıklanabilirlik uygulayalım. Bunun için yeni yazım şeklie ile sinyalli yuvaya bağlayıp ardından bağlantıyı kopartıcağız;
+
+mainwindow.h
+
+<code class="language-cpp">#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include &lt;QMainWindow>
+
+QT_BEGIN_NAMESPACE
+namespace Ui {
+class MainWindow;
+}
+QT_END_NAMESPACE
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
+
+public slots:
+    void butonaTekBirKereBasma(); // Yuvamız
+
+private:
+    Ui::MainWindow *ui;
+};
+#endif // MAINWINDOW_H
+</code>
+
+mainwindow.cpp
+
+<code class="language-cpp">#include "mainwindow.h"
+#include "./ui_mainwindow.h"
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+    connect(ui->pushButton, &QPushButton::clicked, this , &MainWindow::butonaTekBirKereBasma); // Bağlıyoruz
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::butonaTekBirKereBasma()
+{
+    qDebug() << "Butona basildi! Bir daha basilmicaktir!" << Qt::endl;
+
+    disconnect(ui->pushButton, &QPushButton::clicked, this , &MainWindow::butonaTekBirKereBasma); // Aynı şekilde bağlantıyı kopartıyoruz
+}</code>
+
+Çıtkı;</pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/29 Qt Signal ve Slot.html/4.mp4" alt="29.4" width="100%"></video>
+        </div>
+        
+        <h2>Sinyal-Yuva Bağlantı Türleri</h2>
+        <pre id="preh2">Belirtmedik ama <code>connect</code> komutunun beşinci parametresi bizden bir bağlantı türü istemektedir. Varsayılan parametre ile o parametre <code>AutoConnection</code> türü olarak işlenmektedir. Aşağıdaki bağlantı türleri tablo olarak verilmiştir.</pre>
+
+        <table id="tableh2" border="1">
             <thead>
                 <tr>
-                    <th>th1</th>
-                    <th>th2</th>
+                    <th>İsmi</th>
+                    <th>Açıklaması</th>
+                    <th>Kullanımı</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>td1</td>
-                    <td>td2</td>
+                    <td>AutoConnection</td>
+                    <td>Kullanımı en uygun olan bağlantı türüdür. Sinyal ve yuva aynı iş parçacağındaysa DirectConnection, değilse QueuedConnection olarak davranır.</td>
+                    <td>Qt::AutoConnection</td>
                 </tr>
                 <tr>
-                    <td>td3</td>
-                    <td>td4</td>
+                    <td>DirectConnection</td>
+                    <td>Sinyal ve yuva aynı iş parçacağındaysa kullanılır. Bu bağlantı türü Callback'e biraz daha benzemektedir. Çünkü direkt olarak çağırma işlemini gerçekleştiririr.</td>
+                    <td>Qt::DirectConnection</td>
+                </tr>
+                <tr>
+                    <td>QueuedConnection</td>
+                    <td>Sinyal ve yuva farklı iş parçacıklarında ise bu bağlantı türü kullanılır. Gelen sinyal isteklerini bir kuyruk listesine koyar ve sırayla işler. Çünkü iş parçacıkları arasında zaman uyumsuzlukları oluşmaması içindir.</td>
+                    <td>Qt::QueuedConnection</td>
                 </tr>
             </tbody>
         </table>
+
+        <h2>Kaynakça</h2>
+        <ul>
+            <li><a href="https://doc.qt.io/qt-6/signalsandslots.html">https://doc.qt.io/qt-6/signalsandslots.html</a></li>
+            <li><a href="https://doc.qt.io/qt-6/qobject.html#connect">https://doc.qt.io/qt-6/qobject.html#connect</a></li>
+            <li><a href="https://forum.qt.io/topic/118029/connect-new-style-syntax-return-result/2">https://forum.qt.io/topic/118029/connect-new-style-syntax-return-result/2</a></li>
+            <li><a href="https://wiki.qt.io/New_Signal_Slot_Syntax">https://wiki.qt.io/New_Signal_Slot_Syntax</a></li>
+            <li><a href="https://runebook.dev/en/docs/qt/qobject/disconnect">https://runebook.dev/en/docs/qt/qobject/disconnect</a></li>
+            <li><a href="https://runebook.dev/en/docs/qt/qt/ConnectionType-enum">https://runebook.dev/en/docs/qt/qt/ConnectionType-enum</a></li>
+        </ul>
     </div>
 
     <div style="height: 100px;"></div>
 
     <footer style="position: fixed; left: 0; bottom: 0; width: 100%; background: transparent; text-align: center; padding: 10px 0; z-index: 100;">
         <div>
-            <a href="" style="margin-right: 20px; cursor:pointer;">
+            <a href="./28 Qt Giriş.html" style="margin-right: 20px; cursor:pointer;">
                 &larr; Önceki
             </a>
             <a href="" style="cursor:pointer;">

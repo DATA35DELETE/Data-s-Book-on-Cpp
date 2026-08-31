@@ -478,10 +478,8 @@
   - **Eski Sözdizimi**: `SIGNAL()` ve `SLOT()` makroları. Örnek.
   - **Yeni Sözdizimi**: Fonksiyon Pointer ile. C++11. Örnek.
   - **Lambda ile connect()**: Tanım. Örnek.
-- **emit**: Tanım. Sinyal Fırlatma. Örnek.
 - **disconnect()**: Tanım. Kullanım Senaryoları. Örnek.
 - **Sinyal-Slot Bağlantı Türleri**: `Qt::AutoConnection`, `Qt::DirectConnection`, `Qt::QueuedConnection`. Tanım. Tablo Halinde.
-- **Özel Sinyaller Tanımlama**: Parametre Geçirme. Örnek.
 
 ---
 
