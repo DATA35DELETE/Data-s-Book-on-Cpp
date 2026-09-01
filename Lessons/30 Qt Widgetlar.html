@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data's Book on Cpp</title>
+
+    <link rel="icon" type="image/x-icon" href="../Sources/favicon.png">
+
+    <script src="../Sources/JS/setBackgroundMedia.js"></script>
+
+    <link rel="stylesheet" href="../Sources/JS/hljs/vs2015.css">
+    <script src="../Sources/JS/hljs/highlight.min.js"></script>
+    <script>
+        window.onload = function() {
+            hljs.highlightAll();
+        };
+    </script>
+
+    <link rel="stylesheet" href="../Sources/CSS/main.css">
+</head>
+<body>
+    <h1>Widgetlar</h1>
+
+    <div style="height: 100px;"></div>
+    
+    <div id="mainDiv">
+        <h2>Widget Nedir?</h2>
+        <pre id="preh2">Widget, Qt'de basit görüntü nesnelerine denilen ve Qt'nin başlangıcından beri var olan bir kütüphanedir. Qt Widget veya Widget; Windows ve Linux işletim sistemlerine sorunsuz bir şekilde çalışan grafik nesneleri sunmaktadır.</pre>
+
+        <pre id="preh2">Kısacası Qt'nin en temeli ve çıkma sebebi olan çapraz platform uygulamalar için pencere yönetimi sunar. Bu sayfada Qt Creator'un Widget'larını inceleyip, ögelerin önemli sinyallerini kodumuza yuvalayarak işlemleri gerçekleştiriceğiz. Bu sebeble "temelWidget" adında bir proje oluşturalım.</pre>
+
+        <h3>Widget Hiyerarşisi</h3>
+        <pre id="preh3">Gösterimlere girmeden önce şu bölmeyi inceleyelim;</pre>
+
+        <div id="divh3Img">
+            <img src="../Bibliography/30 Qt Widgetlar.html/1.png" alt="30.1" width="100%">
+        </div>
+
+        <pre id="preh3">Bu görsel bizim .ui dosyamızı açtığımız vakit çıkan sağ üstdeki hiyerarşidir. Çoğu durumda olduğu gibi bu sistemde de bir hiyerarşi vardır. Bu hiyerarşi ögelerin "Kim kimlere ait" sorularına cevap verir. Daha ögeleri yerleştirmedik ama sizler için ben bir kaç tane koydum. Hiyerarşi, bir ağaca benzetilebelir. Bu pencerede, tüm ögelerin "MainWindow" ögesinin altında barındığını, onun altında "centralwidget"'ın bulunduğunu, onun altında ise çeşitli ögelerin bulunduğu ve diğer ögelerinde içlerinde ögelerin olduğunu belirtir. Mantık basit, kimin altındaysa, onun bölgesinin dışına çıkamaz veya görüntülenemezsin. Bu durumda "pencere" ögesinin altındaki "pencereninAltindekiLabel" ögesi "pencere" ögesinin dışına çıkamaz. Çıksa bile uygulamda görüntülenmez. Bu hiyerarşi sayesinde nesnelerin üzerlerine başka nesneler veya sadece düzen için gerekli oynamalar için kullanılır.</pre>
+
+        <pre id="preh3">Ayrıca bu pencerenin sol tarafı ögelerin isimlerini, sağ tarafı ise mensub oldukları sınıfları belirtir. Örnek olarak "TiklanabilirBtn" ögesi "QPushButton" sınıfına aittir. Birden fazla aynı sınıfta öge bulunabilir ama aynı isimde öge bulunamaz. Bunu bir okul sınıfı metaforu üzerinden anlatırsak; Sizin isminiz "label" olsun ve "QLabel" sınıfındansanız. Tabi sadece siz "QLabel" sınıfından değilsiniz. Başka kişilerde "QLabel" sınıfından ama sınıfta sizden başka "label" ismine sahip bir kişi yok. Öğretmen sınıfa girdiğinde sınıfa, "QLabel" dediğinde "QLabel" sınıfı ona bakarken, "label" dediğinde sadece siz bakarsınız. İşte mantık böyle çalışır. İleride QSS denilen ve Qt'deki Widget'ları süslemek için kullanacağımız olan dil için bu temeller gerekir.</pre>
+
+        <h3>Örnek Gösterim</h3>
+        <pre id="preh3">Son olarak ögelerin örnek düzeni; üstdeki düzenlemede görünümü, altdaki ise genel pencerede görünümü şeklinde olucaktır.</pre>
+
+        <h2>QLabel</h2>
+        <pre id="preh2">QLabel, Widgat'lardaki en temel yazı görüntüleme aracıdır. Yani programcı yazsını yazar ve kullanıcı okur.</pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/30 Qt Widgetlar.html/2.mp4" alt="30.2" width="100%"></video>
+            <video controls src="../Bibliography/30 Qt Widgetlar.html/3.mp4" alt="30.3" width="100%"></video>
+        </div>
+    </div>
+
+    <div style="height: 100px;"></div>
+
+    <footer style="position: fixed; left: 0; bottom: 0; width: 100%; background: transparent; text-align: center; padding: 10px 0; z-index: 100;">
+        <div>
+            <a href="./29 Qt Signal ve Slot.html" style="margin-right: 20px; cursor:pointer;">
+                &larr; Önceki
+            </a>
+            <a href="" style="cursor:pointer;">
+                Sonraki &rarr;
+            </a>
+        </div>
+        <div>
+            <p>&copy; 2026 Data's Book</p>
+        </div>
+
+        <div style="position: absolute; right: 20px; bottom: 20px;">
+            <a href="./1 Cpp İçindekiler.html" style="text-decoration: none;">
+                İçindekiler
+            </a>
+        </div>
+    </footer>
+</body>
+</html>
+
+<!-- Muhammet Enes nam-ı diğer Data Delete tarafından sevgi ile yapıldı <3 -->
