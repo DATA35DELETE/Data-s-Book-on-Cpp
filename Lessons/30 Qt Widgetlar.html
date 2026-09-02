@@ -42,15 +42,201 @@
         <pre id="preh3">Ayrıca bu pencerenin sol tarafı ögelerin isimlerini, sağ tarafı ise mensub oldukları sınıfları belirtir. Örnek olarak "TiklanabilirBtn" ögesi "QPushButton" sınıfına aittir. Birden fazla aynı sınıfta öge bulunabilir ama aynı isimde öge bulunamaz. Bunu bir okul sınıfı metaforu üzerinden anlatırsak; Sizin isminiz "label" olsun ve "QLabel" sınıfındansanız. Tabi sadece siz "QLabel" sınıfından değilsiniz. Başka kişilerde "QLabel" sınıfından ama sınıfta sizden başka "label" ismine sahip bir kişi yok. Öğretmen sınıfa girdiğinde sınıfa, "QLabel" dediğinde "QLabel" sınıfı ona bakarken, "label" dediğinde sadece siz bakarsınız. İşte mantık böyle çalışır. İleride QSS denilen ve Qt'deki Widget'ları süslemek için kullanacağımız olan dil için bu temeller gerekir.</pre>
 
         <h3>Örnek Gösterim</h3>
-        <pre id="preh3">Son olarak ögelerin örnek düzeni; üstdeki düzenlemede görünümü, altdaki ise genel pencerede görünümü şeklinde olucaktır.</pre>
+        <pre id="preh3">Son olarak ögelerin örnek düzeni; üstdeki düzenlemede görünümü, ortadaki ise genel pencerede görünümü ve eğer varsa o ögenin sinyalinin kullanımı şeklinde olucaktır.</pre>
 
         <h2>QLabel</h2>
-        <pre id="preh2">QLabel, Widgat'lardaki en temel yazı görüntüleme aracıdır. Yani programcı yazsını yazar ve kullanıcı okur.</pre>
+        <pre id="preh2">QLabel, Widgat'lardaki en temel yazı ve resim görüntüleme aracıdır. Yani programcı yazsını yazar ve kullanıcı okur.</pre>
 
         <div id="divh2Vid">
             <video controls src="../Bibliography/30 Qt Widgetlar.html/2.mp4" alt="30.2" width="100%"></video>
             <video controls src="../Bibliography/30 Qt Widgetlar.html/3.mp4" alt="30.3" width="100%"></video>
         </div>
+
+        <pre id="preh2">Tabi istersek QLabel'e fotoğraf görüntületmek için;</pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/30 Qt Widgetlar.html/4.mp4" alt="30.4" width="100%"></video>
+            <video controls src="../Bibliography/30 Qt Widgetlar.html/5.mp4" alt="30.5" width="100%"></video>
+        </div>
+
+        <h2>QPushButton</h2>
+        <pre id="preh2">QPushButton, basılabilir bir butondur. Kullanıcı tarafından basıldığında "pressed", tıklama bittiğinde "clicked" sinyallerini verir.</pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/30 Qt Widgetlar.html/6.mp4" alt="30.6" width="100%"></video>
+            <video controls src="../Bibliography/30 Qt Widgetlar.html/7.mp4" alt="30.7" width="100%"></video>
+        </div>
+
+        <pre id="codeh2">mainwindow.h
+
+<code class="language-cpp">#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include &lt;QMainWindow>
+
+QT_BEGIN_NAMESPACE
+namespace Ui {
+class MainWindow;
+}
+QT_END_NAMESPACE
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
+
+public slots:
+    void fareBasti(); // Pressed
+    void fareTikladi(); // Clicked
+
+private:
+    Ui::MainWindow *ui;
+};
+#endif // MAINWINDOW_H
+</code>
+
+mainwindow.cpp
+
+<code class="language-cpp">#include "mainwindow.h"
+#include "./ui_mainwindow.h"
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+    connect(ui->pushButton, &QPushButton::pressed, this, &MainWindow::fareBasti);
+    connect(ui->pushButton, &QPushButton::clicked, this, &MainWindow::fareTikladi);
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::fareBasti()
+{
+    qDebug() << "Fare butona bastı" << Qt::endl;
+}
+
+void MainWindow::fareTikladi()
+{
+    qDebug() << "Fare butona tıkladı" << Qt::endl;
+}
+
+</code></pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/30 Qt Widgetlar.html/8.mp4" alt="30.8" width="100%"></video>
+        </div>
+
+        <h2>QLineEdit</h2>
+        <pre id="preh2">QLineEdit, kullanıcıdan tek satırlık bir girdi alabilmek için kullanılır. Kullanıcı QLineEdit'e odaklanıp daha sonra başka bir ögeye tıklarsa "editingFinished", kullanıcı Enter'e basarsa "returnPressed" ve "editingFinished", kullanıcı yazıyı değiştirirse "textChanged" ile değiştirilmiş yazı ile sinyaller verir.</pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/30 Qt Widgetlar.html/9.mp4" alt="30.9" width="100%"></video>
+            <video controls src="../Bibliography/30 Qt Widgetlar.html/10.mp4" alt="30.10" width="100%"></video>
+        </div>
+
+        <pre id="codeh2">mainwindow.h
+
+<code class="language-cpp">#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include &lt;QMainWindow>
+
+QT_BEGIN_NAMESPACE
+namespace Ui {
+class MainWindow;
+}
+QT_END_NAMESPACE
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
+
+public slots:
+    void fareBasti(); // Pressed
+    void fareTikladi(); // Clicked
+
+    void lineEditKullaniciYazmaIsiniBitirdi(); // editingFinish
+    void lineEditKullaniciEntereBasti(); // returnPressed
+    void lineEditYaziDegistirildi(QString yeniYazi); // textChanged
+
+private:
+    Ui::MainWindow *ui;
+};
+#endif // MAINWINDOW_H
+</code>
+
+mainwindow.cpp
+
+<code class="language-cpp">#include "mainwindow.h"
+#include "./ui_mainwindow.h"
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+    connect(ui->pushButton, &QPushButton::pressed, this, &MainWindow::fareBasti);
+    connect(ui->pushButton, &QPushButton::clicked, this, &MainWindow::fareTikladi);
+
+    connect(ui->lineEdit, &QLineEdit::editingFinished, this, &MainWindow::lineEditKullaniciYazmaIsiniBitirdi);
+    connect(ui->lineEdit, &QLineEdit::returnPressed, this, &MainWindow::lineEditKullaniciEntereBasti);
+    connect(ui->lineEdit, &QLineEdit::textChanged, this, &MainWindow::lineEditYaziDegistirildi);
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::fareBasti()
+{
+    qDebug() << "Fare butona bastı" << Qt::endl;
+}
+void MainWindow::fareTikladi()
+{
+    qDebug() << "Fare butona tıkladı" << Qt::endl;
+}
+
+void MainWindow::lineEditKullaniciYazmaIsiniBitirdi()
+{
+    qDebug() << "Kullanıcı yazma işini bitirdi" << Qt::endl;
+}
+void MainWindow::lineEditKullaniciEntereBasti()
+{
+    qDebug() << "Kullanıcı LineEdit'e Enter'e bastı" << Qt::endl;
+}
+void MainWindow::lineEditYaziDegistirildi(QString yeniYazi)
+{
+    qDebug() << "LineEdit'in yeni değeri; " << yeniYazi << Qt::endl;
+}</code></pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/30 Qt Widgetlar.html/11.mp4" alt="30.11" width="100%"></video>
+        </div>
+
+        <h2>QTextEdit</h2>
+        <pre id="preh2">QTextEdit, QLineEdit'in çok satırlı girdi almak için kullanılan versiyonudur. Ancak sadece kullanıcı yazıyı değiştirdiğindeki sinyal olan "textChanged" sinyali verir. Ama kendisi basit Html kodlarını görüntüleyebilen bir araçtır. Evet yazı hemde Html kodu! Html kodu denemesi için bir önceki sayfamın kaynak kodunu kullanıcağız.</pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/30 Qt Widgetlar.html/12.mp4" alt="30.12" width="100%"></video>
+            <video controls src="../Bibliography/30 Qt Widgetlar.html/13.mp4" alt="30.13" width="100%"></video>
+            <video controls src="../Bibliography/30 Qt Widgetlar.html/14.mp4" alt="30.14" width="100%"></video>
+        </div>
+
+        <h2></h2>
     </div>
 
     <div style="height: 100px;"></div>
