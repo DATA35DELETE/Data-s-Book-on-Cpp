@@ -236,7 +236,240 @@ void MainWindow::lineEditYaziDegistirildi(QString yeniYazi)
             <video controls src="../Bibliography/30 Qt Widgetlar.html/14.mp4" alt="30.14" width="100%"></video>
         </div>
 
-        <h2></h2>
+        <h2>QCheckBox</h2>
+        <pre id="preh2">QCheckBox, bizlere seçilebilir kutucuklar sunan bir ögedir. Bir butonun sinyallerine sahip iken kendi sinyali ise "stateChanged" sinyalidir. By sinyal ise öge kutucuktaki tik değiştiğinde tetiklenir ve parametre olarak kutucuğun işaretli ise bir, değil ise sıfır değerini gönderir. Aynı zamanda kutucuğun yanındaki QLabel ile yazı yazılabilir.</pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/30 Qt Widgetlar.html/15.mp4" alt="30.15" width="100%"></video>
+            <video controls src="../Bibliography/30 Qt Widgetlar.html/16.mp4" alt="30.16" width="100%"></video>
+        </div>
+
+        <pre id="codeh2">mainwindow.h
+
+<code class="language-cpp">#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include &lt;QMainWindow>
+
+QT_BEGIN_NAMESPACE
+namespace Ui {
+class MainWindow;
+}
+QT_END_NAMESPACE
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
+
+public slots:
+    void fareBasti(); // Pressed
+    void fareTikladi(); // Clicked
+
+    void lineEditKullaniciYazmaIsiniBitirdi(); // editingFinish
+    void lineEditKullaniciEntereBasti(); // returnPressed
+    void lineEditYaziDegistirildi(QString yeniYazi); // textChanged
+
+    void qtSeverKontrol(int deger); // stateChanged
+
+
+private:
+    Ui::MainWindow *ui;
+};
+#endif // MAINWINDOW_H
+</code>
+
+mainwindow.cpp
+
+<code class="language-cpp">#include "mainwindow.h"
+#include "./ui_mainwindow.h"
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+    connect(ui->pushButton, &QPushButton::pressed, this, &MainWindow::fareBasti);
+    connect(ui->pushButton, &QPushButton::clicked, this, &MainWindow::fareTikladi);
+
+    connect(ui->lineEdit, &QLineEdit::editingFinished, this, &MainWindow::lineEditKullaniciYazmaIsiniBitirdi);
+    connect(ui->lineEdit, &QLineEdit::returnPressed, this, &MainWindow::lineEditKullaniciEntereBasti);
+    connect(ui->lineEdit, &QLineEdit::textChanged, this, &MainWindow::lineEditYaziDegistirildi);
+
+    connect(ui->checkBox, &QCheckBox::stateChanged, this, &MainWindow::qtSeverKontrol);
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::fareBasti()
+{
+    qDebug() << "Fare butona bastı" << Qt::endl;
+}
+void MainWindow::fareTikladi()
+{
+    qDebug() << "Fare butona tıkladı" << Qt::endl;
+}
+
+void MainWindow::lineEditKullaniciYazmaIsiniBitirdi()
+{
+    qDebug() << "Kullanıcı yazma işini bitirdi" << Qt::endl;
+}
+void MainWindow::lineEditKullaniciEntereBasti()
+{
+    qDebug() << "Kullanıcı LineEdit'e Enter'e bastı" << Qt::endl;
+}
+void MainWindow::lineEditYaziDegistirildi(QString yeniYazi)
+{
+    qDebug() << "LineEdit'in yeni değeri; " << yeniYazi << Qt::endl;
+}
+
+void MainWindow::qtSeverKontrol(int deger)
+{
+    if(deger)
+        qDebug() << "Kullanıcı Qt'yi seviyor!" << Qt::endl;
+    else
+        qDebug() << "Kullanıcı Qt'yi sevmiyor, :(" << Qt::endl;
+}</code></pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/30 Qt Widgetlar.html/17.mp4" alt="30.17" width="100%"></video>
+        </div>
+
+        <h2>QRadioButton</h2>
+        <pre id="preh2">QRadioButton, tıpkı QCheckBox gibi seçilebilir bir buton sunar. Farklı olarak aynı bir Widget ortamında sadece bir adet seçilmiş QRadioButton kabul eder. Bir butonun sinyallerine sahiptir.</pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/30 Qt Widgetlar.html/18.mp4" alt="30.18" width="100%"></video>
+            <video controls src="../Bibliography/30 Qt Widgetlar.html/19.mp4" alt="30.19" width="100%"></video>
+        </div>
+
+        <pre id="codeh2">mainwindow.h
+
+<code class="language-cpp">#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include &lt;QMainWindow>
+
+QT_BEGIN_NAMESPACE
+namespace Ui {
+class MainWindow;
+}
+QT_END_NAMESPACE
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
+
+    void qtSevenRadioKontrol(); // Kontrol
+
+public slots:
+    void fareBasti(); // Pressed
+    void fareTikladi(); // Clicked
+
+    void lineEditKullaniciYazmaIsiniBitirdi(); // editingFinish
+    void lineEditKullaniciEntereBasti(); // returnPressed
+    void lineEditYaziDegistirildi(QString yeniYazi); // textChanged
+
+    void qtSeverKontrol(int deger); // stateChanged
+
+    void qtSevenVeSevmeyenRadio(); // radioButton -> clicked ve radioButton_2 -> clicked
+
+private:
+    Ui::MainWindow *ui;
+};
+#endif // MAINWINDOW_H
+</code>
+
+mainwindow.cpp
+
+<code class="language-cpp">#include "mainwindow.h"
+#include "./ui_mainwindow.h"
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+    connect(ui->pushButton, &QPushButton::pressed, this, &MainWindow::fareBasti);
+    connect(ui->pushButton, &QPushButton::clicked, this, &MainWindow::fareTikladi);
+
+    connect(ui->lineEdit, &QLineEdit::editingFinished, this, &MainWindow::lineEditKullaniciYazmaIsiniBitirdi);
+    connect(ui->lineEdit, &QLineEdit::returnPressed, this, &MainWindow::lineEditKullaniciEntereBasti);
+    connect(ui->lineEdit, &QLineEdit::textChanged, this, &MainWindow::lineEditYaziDegistirildi);
+
+    connect(ui->checkBox, &QCheckBox::stateChanged, this, &MainWindow::qtSeverKontrol);
+
+    connect(ui->radioButton, &QRadioButton::clicked, this, &MainWindow::qtSevenVeSevmeyenRadio);
+    connect(ui->radioButton_2, &QRadioButton::clicked, this, &MainWindow::qtSevenVeSevmeyenRadio);
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::fareBasti()
+{
+    qDebug() << "Fare butona bastı" << Qt::endl;
+}
+void MainWindow::fareTikladi()
+{
+    qDebug() << "Fare butona tıkladı" << Qt::endl;
+}
+
+void MainWindow::lineEditKullaniciYazmaIsiniBitirdi()
+{
+    qDebug() << "Kullanıcı yazma işini bitirdi" << Qt::endl;
+}
+void MainWindow::lineEditKullaniciEntereBasti()
+{
+    qDebug() << "Kullanıcı LineEdit'e Enter'e bastı" << Qt::endl;
+}
+void MainWindow::lineEditYaziDegistirildi(QString yeniYazi)
+{
+    qDebug() << "LineEdit'in yeni değeri; " << yeniYazi << Qt::endl;
+}
+
+void MainWindow::qtSeverKontrol(int deger)
+{
+    if(deger)
+        qDebug() << "Kullanıcı Qt'yi seviyor!" << Qt::endl;
+    else
+        qDebug() << "Kullanıcı Qt'yi sevmiyor, :(" << Qt::endl;
+}
+
+void MainWindow::qtSevenVeSevmeyenRadio()
+{
+    qtSevenRadioKontrol();
+}
+
+void MainWindow::qtSevenRadioKontrol()
+{
+    if(ui->radioButton->isChecked()) // Seçilimi diye kontrol için isChecked kullanılır
+    {
+        qDebug() << "Kullanıcı Qt'yi seviyor!" << Qt::endl;
+    }
+    else if (ui->radioButton_2->isChecked())
+    {
+        qDebug() << "Kullanıcı Qt'yi sevmiyor, :(" << Qt::endl;
+    }
+}</code></pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/30 Qt Widgetlar.html/20.mp4" alt="30.20" width="100%"></video>
+        </div>
     </div>
 
     <div style="height: 100px;"></div>
