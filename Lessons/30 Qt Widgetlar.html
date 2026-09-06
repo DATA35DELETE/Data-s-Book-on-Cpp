@@ -470,6 +470,1314 @@ void MainWindow::qtSevenRadioKontrol()
         <div id="divh2Vid">
             <video controls src="../Bibliography/30 Qt Widgetlar.html/20.mp4" alt="30.20" width="100%"></video>
         </div>
+
+        <h2>QComboBox</h2>
+        <pre id="preh2">QComboBox, açılır ve seçilebilir bir pencere sunan bir ögedir. Seçilen ürünün Index numarası ile "activated" seçilen seçeniği ile "textActivated" sinyallerini verir.</pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/30 Qt Widgetlar.html/21.mp4" alt="30.21" width="100%"></video>
+            <video controls src="../Bibliography/30 Qt Widgetlar.html/22.mp4" alt="30.22" width="100%"></video>
+        </div>
+
+        <pre id="codeh2">mainwindow.h
+
+<code class="language-cpp">#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include &lt;QMainWindow>
+
+QT_BEGIN_NAMESPACE
+namespace Ui {
+class MainWindow;
+}
+QT_END_NAMESPACE
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
+
+    void qtSevenRadioKontrol(); // Kontrol
+
+public slots:
+    void fareBasti(); // Pressed
+    void fareTikladi(); // Clicked
+
+    void lineEditKullaniciYazmaIsiniBitirdi(); // editingFinish
+    void lineEditKullaniciEntereBasti(); // returnPressed
+    void lineEditYaziDegistirildi(QString yeniYazi); // textChanged
+
+    void qtSeverKontrol(int deger); // stateChanged
+
+    void qtSevenVeSevmeyenRadio(); // radioButton -> clicked ve radioButton_2 -> clicked
+
+    void secilenSeceneginIndexi(int i); //comboBox -> activated
+    void secilenSeceneginYazisi(QString); // comboBox -> textActivated
+private:
+    Ui::MainWindow *ui;
+};
+#endif // MAINWINDOW_H
+</code>
+
+mainwindow.cpp
+
+<code class="language-cpp">#include "mainwindow.h"
+#include "./ui_mainwindow.h"
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+    connect(ui->pushButton, &QPushButton::pressed, this, &MainWindow::fareBasti);
+    connect(ui->pushButton, &QPushButton::clicked, this, &MainWindow::fareTikladi);
+
+    connect(ui->lineEdit, &QLineEdit::editingFinished, this, &MainWindow::lineEditKullaniciYazmaIsiniBitirdi);
+    connect(ui->lineEdit, &QLineEdit::returnPressed, this, &MainWindow::lineEditKullaniciEntereBasti);
+    connect(ui->lineEdit, &QLineEdit::textChanged, this, &MainWindow::lineEditYaziDegistirildi);
+
+    connect(ui->checkBox, &QCheckBox::stateChanged, this, &MainWindow::qtSeverKontrol);
+
+    connect(ui->radioButton, &QRadioButton::clicked, this, &MainWindow::qtSevenVeSevmeyenRadio);
+    connect(ui->radioButton_2, &QRadioButton::clicked, this, &MainWindow::qtSevenVeSevmeyenRadio);
+
+    connect(ui->comboBox, &QComboBox::activated, this, &MainWindow::secilenSeceneginIndexi);
+    connect(ui->comboBox, &QComboBox::textActivated, this, &MainWindow::secilenSeceneginYazisi);
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::fareBasti()
+{
+    qDebug() << "Fare butona bastı" << Qt::endl;
+}
+void MainWindow::fareTikladi()
+{
+    qDebug() << "Fare butona tıkladı" << Qt::endl;
+}
+
+void MainWindow::lineEditKullaniciYazmaIsiniBitirdi()
+{
+    qDebug() << "Kullanıcı yazma işini bitirdi" << Qt::endl;
+}
+void MainWindow::lineEditKullaniciEntereBasti()
+{
+    qDebug() << "Kullanıcı LineEdit'e Enter'e bastı" << Qt::endl;
+}
+void MainWindow::lineEditYaziDegistirildi(QString yeniYazi)
+{
+    qDebug() << "LineEdit'in yeni değeri; " << yeniYazi << Qt::endl;
+}
+
+void MainWindow::qtSeverKontrol(int deger)
+{
+    if(deger)
+        qDebug() << "Kullanıcı Qt'yi seviyor!" << Qt::endl;
+    else
+        qDebug() << "Kullanıcı Qt'yi sevmiyor, :(" << Qt::endl;
+}
+
+void MainWindow::qtSevenVeSevmeyenRadio()
+{
+    qtSevenRadioKontrol();
+}
+
+void MainWindow::qtSevenRadioKontrol()
+{
+    if(ui->radioButton->isChecked()) // Seçilimi diye kontrol için isChecked kullanılır
+    {
+        qDebug() << "Kullanıcı Qt'yi seviyor!" << Qt::endl;
+    }
+    else if (ui->radioButton_2->isChecked())
+    {
+        qDebug() << "Kullanıcı Qt'yi sevmiyor, :(" << Qt::endl;
+    }
+}
+
+void MainWindow::secilenSeceneginIndexi(int i)
+{
+    qDebug() << "ComboBox'a seçilen Index; " << i << Qt::endl;
+}
+void MainWindow::secilenSeceneginYazisi(QString secilen)
+{
+    qDebug() << "ComboBox'a seçilen seçenek; " << secilen << Qt::endl;
+}</code></pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/30 Qt Widgetlar.html/23.mp4" alt="30.23" width="100%"></video>
+        </div>
+
+        <h2>QSlider</h2>
+        <pre id="preh2">QSlider, kaydırılabilir bir öge sunar. Yatay ve dikey olarak şekilde kullanılır. Kaydırılabilir alanda sıfırdan yüze kadarda değer alınır. Değer değiştirildiğinde değerle beraber "valueChanged" sinyali gönderir.</pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/30 Qt Widgetlar.html/24.mp4" alt="30.24" width="100%"></video>
+            <video controls src="../Bibliography/30 Qt Widgetlar.html/25.mp4" alt="30.25" width="100%"></video>
+        </div>
+
+        <pre id="codeh2">mainwindow.h
+
+<code class="language-cpp">#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include &lt;QMainWindow>
+
+QT_BEGIN_NAMESPACE
+namespace Ui {
+class MainWindow;
+}
+QT_END_NAMESPACE
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
+
+    void qtSevenRadioKontrol(); // Kontrol
+
+public slots:
+    void fareBasti(); // Pressed
+    void fareTikladi(); // Clicked
+
+    void lineEditKullaniciYazmaIsiniBitirdi(); // editingFinish
+    void lineEditKullaniciEntereBasti(); // returnPressed
+    void lineEditYaziDegistirildi(QString yeniYazi); // textChanged
+
+    void qtSeverKontrol(int deger); // stateChanged
+
+    void qtSevenVeSevmeyenRadio(); // radioButton -> clicked ve radioButton_2 -> clicked
+
+    void secilenSeceneginIndexi(int i); //comboBox -> activated
+    void secilenSeceneginYazisi(QString); // comboBox -> textActivated
+
+    void yataySliderDegeri(int); // horizontalSlider -> valueChanged
+    void dikeySliderDegeri(int); // verticalSlider -> valueChanged
+private:
+    Ui::MainWindow *ui;
+};
+#endif // MAINWINDOW_H
+</code>
+
+mainwindow.cpp
+
+<code class="language-cpp">#include "mainwindow.h"
+#include "./ui_mainwindow.h"
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+    connect(ui->pushButton, &QPushButton::pressed, this, &MainWindow::fareBasti);
+    connect(ui->pushButton, &QPushButton::clicked, this, &MainWindow::fareTikladi);
+
+    connect(ui->lineEdit, &QLineEdit::editingFinished, this, &MainWindow::lineEditKullaniciYazmaIsiniBitirdi);
+    connect(ui->lineEdit, &QLineEdit::returnPressed, this, &MainWindow::lineEditKullaniciEntereBasti);
+    connect(ui->lineEdit, &QLineEdit::textChanged, this, &MainWindow::lineEditYaziDegistirildi);
+
+    connect(ui->checkBox, &QCheckBox::stateChanged, this, &MainWindow::qtSeverKontrol);
+
+    connect(ui->radioButton, &QRadioButton::clicked, this, &MainWindow::qtSevenVeSevmeyenRadio);
+    connect(ui->radioButton_2, &QRadioButton::clicked, this, &MainWindow::qtSevenVeSevmeyenRadio);
+
+    connect(ui->comboBox, &QComboBox::activated, this, &MainWindow::secilenSeceneginIndexi);
+    connect(ui->comboBox, &QComboBox::textActivated, this, &MainWindow::secilenSeceneginYazisi);
+
+    connect(ui->horizontalSlider, &QSlider::valueChanged, this, &MainWindow::yataySliderDegeri);
+    connect(ui->verticalSlider, &QSlider::valueChanged, this, &MainWindow::dikeySliderDegeri);
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::fareBasti()
+{
+    qDebug() << "Fare butona bastı" << Qt::endl;
+}
+void MainWindow::fareTikladi()
+{
+    qDebug() << "Fare butona tıkladı" << Qt::endl;
+}
+
+void MainWindow::lineEditKullaniciYazmaIsiniBitirdi()
+{
+    qDebug() << "Kullanıcı yazma işini bitirdi" << Qt::endl;
+}
+void MainWindow::lineEditKullaniciEntereBasti()
+{
+    qDebug() << "Kullanıcı LineEdit'e Enter'e bastı" << Qt::endl;
+}
+void MainWindow::lineEditYaziDegistirildi(QString yeniYazi)
+{
+    qDebug() << "LineEdit'in yeni değeri; " << yeniYazi << Qt::endl;
+}
+
+void MainWindow::qtSeverKontrol(int deger)
+{
+    if(deger)
+        qDebug() << "Kullanıcı Qt'yi seviyor!" << Qt::endl;
+    else
+        qDebug() << "Kullanıcı Qt'yi sevmiyor, :(" << Qt::endl;
+}
+
+void MainWindow::qtSevenVeSevmeyenRadio()
+{
+    qtSevenRadioKontrol();
+}
+
+void MainWindow::qtSevenRadioKontrol()
+{
+    if(ui->radioButton->isChecked()) // Seçilimi diye kontrol için isChecked kullanılır
+    {
+        qDebug() << "Kullanıcı Qt'yi seviyor!" << Qt::endl;
+    }
+    else if (ui->radioButton_2->isChecked())
+    {
+        qDebug() << "Kullanıcı Qt'yi sevmiyor, :(" << Qt::endl;
+    }
+}
+
+void MainWindow::secilenSeceneginIndexi(int i)
+{
+    qDebug() << "ComboBox'a seçilen Index; " << i << Qt::endl;
+}
+void MainWindow::secilenSeceneginYazisi(QString secilen)
+{
+    qDebug() << "ComboBox'a seçilen seçenek; " << secilen << Qt::endl;
+}
+
+void MainWindow::yataySliderDegeri(int deger)
+{
+    qDebug() << "Yatay Slider'ın değeri; " << deger << Qt::endl;
+}
+void MainWindow::dikeySliderDegeri(int deger)
+{
+    qDebug() << "Dikey Slider'ın değeri; " << deger << Qt::endl;
+}</code></pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/30 Qt Widgetlar.html/26.mp4" alt="30.26" width="100%"></video>
+        </div>
+
+        <h2>QSpinBox ve QDoubleSpinBox</h2>
+        <pre id="preh2">QSpinBox ve QDoubleSpinBox, sayısı artırılabilir bir öge sunar. İki adet buton ile bir birim artırma ve azaltma sunar. QSpinBox tam sayıları desteklerken, QDoubleSpinBox ise ondalıklı sayıları destekler. Değerleri değiştiğinde değeriyle beraber "valueChanged" sinyalini verirler.</pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/30 Qt Widgetlar.html/27.mp4" alt="30.27" width="100%"></video>
+            <video controls src="../Bibliography/30 Qt Widgetlar.html/28.mp4" alt="30.28" width="100%"></video>
+        </div>
+
+        <pre id="codeh2">mainwindow.h
+
+<code class="language-cpp">#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include &lt;QMainWindow>
+
+QT_BEGIN_NAMESPACE
+namespace Ui {
+class MainWindow;
+}
+QT_END_NAMESPACE
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
+
+    void qtSevenRadioKontrol(); // Kontrol
+
+public slots:
+    void fareBasti(); // Pressed
+    void fareTikladi(); // Clicked
+
+    void lineEditKullaniciYazmaIsiniBitirdi(); // editingFinish
+    void lineEditKullaniciEntereBasti(); // returnPressed
+    void lineEditYaziDegistirildi(QString yeniYazi); // textChanged
+
+    void qtSeverKontrol(int deger); // stateChanged
+
+    void qtSevenVeSevmeyenRadio(); // radioButton -> clicked ve radioButton_2 -> clicked
+
+    void secilenSeceneginIndexi(int i); //comboBox -> activated
+    void secilenSeceneginYazisi(QString); // comboBox -> textActivated
+
+    void yataySliderDegeri(int); // horizontalSlider -> valueChanged
+    void dikeySliderDegeri(int); // verticalSlider -> valueChanged
+
+    void integerArtiriciKontrol(int); // spinBox -> valueChanged
+    void doubleAriticKontrol(double); // doubleSpinBox -> valueChanged
+private:
+    Ui::MainWindow *ui;
+};
+#endif // MAINWINDOW_H
+</code>
+        
+
+mainwindow.cpp
+
+<code class="language-cpp">#include "mainwindow.h"
+#include "./ui_mainwindow.h"
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+    connect(ui->pushButton, &QPushButton::pressed, this, &MainWindow::fareBasti);
+    connect(ui->pushButton, &QPushButton::clicked, this, &MainWindow::fareTikladi);
+
+    connect(ui->lineEdit, &QLineEdit::editingFinished, this, &MainWindow::lineEditKullaniciYazmaIsiniBitirdi);
+    connect(ui->lineEdit, &QLineEdit::returnPressed, this, &MainWindow::lineEditKullaniciEntereBasti);
+    connect(ui->lineEdit, &QLineEdit::textChanged, this, &MainWindow::lineEditYaziDegistirildi);
+
+    connect(ui->checkBox, &QCheckBox::stateChanged, this, &MainWindow::qtSeverKontrol);
+
+    connect(ui->radioButton, &QRadioButton::clicked, this, &MainWindow::qtSevenVeSevmeyenRadio);
+    connect(ui->radioButton_2, &QRadioButton::clicked, this, &MainWindow::qtSevenVeSevmeyenRadio);
+
+    connect(ui->comboBox, &QComboBox::activated, this, &MainWindow::secilenSeceneginIndexi);
+    connect(ui->comboBox, &QComboBox::textActivated, this, &MainWindow::secilenSeceneginYazisi);
+
+    connect(ui->horizontalSlider, &QSlider::valueChanged, this, &MainWindow::yataySliderDegeri);
+    connect(ui->verticalSlider, &QSlider::valueChanged, this, &MainWindow::dikeySliderDegeri);
+
+    connect(ui->spinBox, &QSpinBox::valueChanged, this, &MainWindow::integerArtiriciKontrol);
+    connect(ui->doubleSpinBox, &QDoubleSpinBox::valueChanged, this, &MainWindow::doubleAriticKontrol);
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::fareBasti()
+{
+    qDebug() << "Fare butona bastı" << Qt::endl;
+}
+void MainWindow::fareTikladi()
+{
+    qDebug() << "Fare butona tıkladı" << Qt::endl;
+}
+
+void MainWindow::lineEditKullaniciYazmaIsiniBitirdi()
+{
+    qDebug() << "Kullanıcı yazma işini bitirdi" << Qt::endl;
+}
+void MainWindow::lineEditKullaniciEntereBasti()
+{
+    qDebug() << "Kullanıcı LineEdit'e Enter'e bastı" << Qt::endl;
+}
+void MainWindow::lineEditYaziDegistirildi(QString yeniYazi)
+{
+    qDebug() << "LineEdit'in yeni değeri; " << yeniYazi << Qt::endl;
+}
+
+void MainWindow::qtSeverKontrol(int deger)
+{
+    if(deger)
+        qDebug() << "Kullanıcı Qt'yi seviyor!" << Qt::endl;
+    else
+        qDebug() << "Kullanıcı Qt'yi sevmiyor, :(" << Qt::endl;
+}
+
+void MainWindow::qtSevenVeSevmeyenRadio()
+{
+    qtSevenRadioKontrol();
+}
+
+void MainWindow::qtSevenRadioKontrol()
+{
+    if(ui->radioButton->isChecked()) // Seçilimi diye kontrol için isChecked kullanılır
+    {
+        qDebug() << "Kullanıcı Qt'yi seviyor!" << Qt::endl;
+    }
+    else if (ui->radioButton_2->isChecked())
+    {
+        qDebug() << "Kullanıcı Qt'yi sevmiyor, :(" << Qt::endl;
+    }
+}
+
+void MainWindow::secilenSeceneginIndexi(int i)
+{
+    qDebug() << "ComboBox'a seçilen Index; " << i << Qt::endl;
+}
+void MainWindow::secilenSeceneginYazisi(QString secilen)
+{
+    qDebug() << "ComboBox'a seçilen seçenek; " << secilen << Qt::endl;
+}
+
+void MainWindow::yataySliderDegeri(int deger)
+{
+    qDebug() << "Yatay Slider'ın değeri; " << deger << Qt::endl;
+}
+void MainWindow::dikeySliderDegeri(int deger)
+{
+    qDebug() << "Dikey Slider'ın değeri; " << deger << Qt::endl;
+}
+
+void MainWindow::integerArtiriciKontrol(int deger)
+{
+    qDebug() << "Integer artıcı değeri; " << deger << Qt::endl;
+}
+void MainWindow::doubleAriticKontrol(double deger)
+{
+    qDebug() << "Double artıcı değeri; " << deger << Qt::endl;
+}</code></pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/30 Qt Widgetlar.html/29.mp4" alt="30.29" width="100%"></video>
+        </div>
+
+        <h2>QProgessBar</h2>
+        <pre id="preh2">QProgessBar, yüzdelik şeklinde bir bar ekler. İlerleme barı ile işlemlerin ne kadar tamamlandığını anlaşılır.</pre>
+        
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/30 Qt Widgetlar.html/30.mp4" alt="30.30" width="100%"></video>
+            <video controls src="../Bibliography/30 Qt Widgetlar.html/31.mp4" alt="30.31" width="100%"></video>
+        </div>
+
+        <pre id="codeh2">mainwindow.h
+
+<code class="language-cpp">#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include &lt;QMainWindow>
+#include &lt;QThread> // Thread için kütüphane
+
+QT_BEGIN_NAMESPACE
+namespace Ui {
+class MainWindow;
+}
+QT_END_NAMESPACE
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
+
+    void qtSevenRadioKontrol(); // Kontrol
+
+    void ilerlemeBariYukseltme();
+
+public slots:
+    void fareBasti(); // Pressed
+    void fareTikladi(); // Clicked
+
+    void lineEditKullaniciYazmaIsiniBitirdi(); // editingFinish
+    void lineEditKullaniciEntereBasti(); // returnPressed
+    void lineEditYaziDegistirildi(QString yeniYazi); // textChanged
+
+    void qtSeverKontrol(int deger); // stateChanged
+
+    void qtSevenVeSevmeyenRadio(); // radioButton -> clicked ve radioButton_2 -> clicked
+
+    void secilenSeceneginIndexi(int i); //comboBox -> activated
+    void secilenSeceneginYazisi(QString); // comboBox -> textActivated
+
+    void yataySliderDegeri(int); // horizontalSlider -> valueChanged
+    void dikeySliderDegeri(int); // verticalSlider -> valueChanged
+
+    void integerArtiriciKontrol(int); // spinBox -> valueChanged
+    void doubleAriticKontrol(double); // doubleSpinBox -> valueChanged
+private:
+    Ui::MainWindow *ui;
+};
+#endif // MAINWINDOW_H
+</code>
+
+mainwindow.cpp
+
+<code class="language-cpp">#include "mainwindow.h"
+#include "./ui_mainwindow.h"
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+    connect(ui->pushButton, &QPushButton::pressed, this, &MainWindow::fareBasti);
+    connect(ui->pushButton, &QPushButton::clicked, this, &MainWindow::fareTikladi);
+
+    connect(ui->lineEdit, &QLineEdit::editingFinished, this, &MainWindow::lineEditKullaniciYazmaIsiniBitirdi);
+    connect(ui->lineEdit, &QLineEdit::returnPressed, this, &MainWindow::lineEditKullaniciEntereBasti);
+    connect(ui->lineEdit, &QLineEdit::textChanged, this, &MainWindow::lineEditYaziDegistirildi);
+
+    connect(ui->checkBox, &QCheckBox::stateChanged, this, &MainWindow::qtSeverKontrol);
+
+    connect(ui->radioButton, &QRadioButton::clicked, this, &MainWindow::qtSevenVeSevmeyenRadio);
+    connect(ui->radioButton_2, &QRadioButton::clicked, this, &MainWindow::qtSevenVeSevmeyenRadio);
+
+    connect(ui->comboBox, &QComboBox::activated, this, &MainWindow::secilenSeceneginIndexi);
+    connect(ui->comboBox, &QComboBox::textActivated, this, &MainWindow::secilenSeceneginYazisi);
+
+    connect(ui->horizontalSlider, &QSlider::valueChanged, this, &MainWindow::yataySliderDegeri);
+    connect(ui->verticalSlider, &QSlider::valueChanged, this, &MainWindow::dikeySliderDegeri);
+
+    connect(ui->spinBox, &QSpinBox::valueChanged, this, &MainWindow::integerArtiriciKontrol);
+    connect(ui->doubleSpinBox, &QDoubleSpinBox::valueChanged, this, &MainWindow::doubleAriticKontrol);
+
+    std::thread *ilerlemeIsParcacigi = new std::thread(&MainWindow::ilerlemeBariYukseltme, this);
+    // Döngü işlemleri için genellikle ayrı iş parçacıkları kullanılır. Çünkü bir While döngüsü tüm kod akışını kitler ve pencereyi görüntüleyen bütün işlemlerde kitlenir. Ki bu durumlarda bazı işletim sistemleri uygulamanın çöktüğünü düşünerek kapatma bildirimi göndermektedir
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::fareBasti()
+{
+    qDebug() << "Fare butona bastı" << Qt::endl;
+}
+void MainWindow::fareTikladi()
+{
+    qDebug() << "Fare butona tıkladı" << Qt::endl;
+}
+
+void MainWindow::lineEditKullaniciYazmaIsiniBitirdi()
+{
+    qDebug() << "Kullanıcı yazma işini bitirdi" << Qt::endl;
+}
+void MainWindow::lineEditKullaniciEntereBasti()
+{
+    qDebug() << "Kullanıcı LineEdit'e Enter'e bastı" << Qt::endl;
+}
+void MainWindow::lineEditYaziDegistirildi(QString yeniYazi)
+{
+    qDebug() << "LineEdit'in yeni değeri; " << yeniYazi << Qt::endl;
+}
+
+void MainWindow::qtSeverKontrol(int deger)
+{
+    if(deger)
+        qDebug() << "Kullanıcı Qt'yi seviyor!" << Qt::endl;
+    else
+        qDebug() << "Kullanıcı Qt'yi sevmiyor, :(" << Qt::endl;
+}
+
+void MainWindow::qtSevenVeSevmeyenRadio()
+{
+    qtSevenRadioKontrol();
+}
+
+void MainWindow::qtSevenRadioKontrol()
+{
+    if(ui->radioButton->isChecked()) // Seçilimi diye kontrol için isChecked kullanılır
+    {
+        qDebug() << "Kullanıcı Qt'yi seviyor!" << Qt::endl;
+    }
+    else if (ui->radioButton_2->isChecked())
+    {
+        qDebug() << "Kullanıcı Qt'yi sevmiyor, :(" << Qt::endl;
+    }
+}
+
+void MainWindow::secilenSeceneginIndexi(int i)
+{
+    qDebug() << "ComboBox'a seçilen Index; " << i << Qt::endl;
+}
+void MainWindow::secilenSeceneginYazisi(QString secilen)
+{
+    qDebug() << "ComboBox'a seçilen seçenek; " << secilen << Qt::endl;
+}
+
+void MainWindow::yataySliderDegeri(int deger)
+{
+    qDebug() << "Yatay Slider'ın değeri; " << deger << Qt::endl;
+}
+void MainWindow::dikeySliderDegeri(int deger)
+{
+    qDebug() << "Dikey Slider'ın değeri; " << deger << Qt::endl;
+}
+
+void MainWindow::integerArtiriciKontrol(int deger)
+{
+    qDebug() << "Integer artıcı değeri; " << deger << Qt::endl;
+}
+void MainWindow::doubleAriticKontrol(double deger)
+{
+    qDebug() << "Double artıcı değeri; " << deger << Qt::endl;
+}
+
+void MainWindow::ilerlemeBariYukseltme()
+{
+    for(int i = 0; i < 10; i++)
+    {
+        QThread::msleep(100); // Qt'de iş parçacığını bekletme komutu. 100 milisaniye boyunca bekliyoruz
+
+        ui->progressBar->setProperty("value", ui->progressBar->value() + 10);
+        // Hangi akla hizmet bilinmez fakat kod tarafında görüntü ögelerin özelliklerini "setProperty" ile yapılır
+        // İlk parametre değeri düzenlenecek özelliğin ismi
+        // İkinci parametre ise özelliğin yeni değeri
+    }
+}</code></pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/30 Qt Widgetlar.html/32.mp4" alt="30.32" width="100%"></video>
+        </div>
+
+        <h2>QListWidget</h2>
+        <pre id="preh2">QListWidget, QComboBox'ın açılır penceresinje sahip olmayan versiyonudur. Seçenekler tek bir pencereden tüm seçenekler görünür ve seçilir. Seçilen seçeniği, seçeneğin nesne işaretçisiyle "itemActivated" sinyalini verir.</pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/30 Qt Widgetlar.html/33.mp4" alt="30.33" width="100%"></video>
+            <video controls src="../Bibliography/30 Qt Widgetlar.html/34.mp4" alt="30.34" width="100%"></video>
+        </div>
+
+        <pre id="codeh2">mainwindow.h
+
+<code class="language-cpp">#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include &lt;QMainWindow>
+#include &lt;QThread> // Thread için kütüphane
+#include &lt;QListWidget>
+
+QT_BEGIN_NAMESPACE
+namespace Ui {
+class MainWindow;
+}
+QT_END_NAMESPACE
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
+
+    void qtSevenRadioKontrol(); // Kontrol
+
+    void ilerlemeBariYukseltme();
+
+public slots:
+    void fareBasti(); // Pressed
+    void fareTikladi(); // Clicked
+
+    void lineEditKullaniciYazmaIsiniBitirdi(); // editingFinish
+    void lineEditKullaniciEntereBasti(); // returnPressed
+    void lineEditYaziDegistirildi(QString yeniYazi); // textChanged
+
+    void qtSeverKontrol(int deger); // stateChanged
+
+    void qtSevenVeSevmeyenRadio(); // radioButton -> clicked ve radioButton_2 -> clicked
+
+    void secilenSeceneginIndexi(int i); //comboBox -> activated
+    void secilenSeceneginYazisi(QString); // comboBox -> textActivated
+
+    void yataySliderDegeri(int); // horizontalSlider -> valueChanged
+    void dikeySliderDegeri(int); // verticalSlider -> valueChanged
+
+    void integerArtiriciKontrol(int); // spinBox -> valueChanged
+    void doubleAriticKontrol(double); // doubleSpinBox -> valueChanged
+
+    void aktifItem(QListWidgetItem*); // listWidget -> itemActivated
+private:
+    Ui::MainWindow *ui;
+};
+#endif // MAINWINDOW_H
+</code>
+
+mainwindow.cpp
+
+<code class="language-cpp">#include "mainwindow.h"
+#include "./ui_mainwindow.h"
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+    connect(ui->pushButton, &QPushButton::pressed, this, &MainWindow::fareBasti);
+    connect(ui->pushButton, &QPushButton::clicked, this, &MainWindow::fareTikladi);
+
+    connect(ui->lineEdit, &QLineEdit::editingFinished, this, &MainWindow::lineEditKullaniciYazmaIsiniBitirdi);
+    connect(ui->lineEdit, &QLineEdit::returnPressed, this, &MainWindow::lineEditKullaniciEntereBasti);
+    connect(ui->lineEdit, &QLineEdit::textChanged, this, &MainWindow::lineEditYaziDegistirildi);
+
+    connect(ui->checkBox, &QCheckBox::stateChanged, this, &MainWindow::qtSeverKontrol);
+
+    connect(ui->radioButton, &QRadioButton::clicked, this, &MainWindow::qtSevenVeSevmeyenRadio);
+    connect(ui->radioButton_2, &QRadioButton::clicked, this, &MainWindow::qtSevenVeSevmeyenRadio);
+
+    connect(ui->comboBox, &QComboBox::activated, this, &MainWindow::secilenSeceneginIndexi);
+    connect(ui->comboBox, &QComboBox::textActivated, this, &MainWindow::secilenSeceneginYazisi);
+
+    connect(ui->horizontalSlider, &QSlider::valueChanged, this, &MainWindow::yataySliderDegeri);
+    connect(ui->verticalSlider, &QSlider::valueChanged, this, &MainWindow::dikeySliderDegeri);
+
+    connect(ui->spinBox, &QSpinBox::valueChanged, this, &MainWindow::integerArtiriciKontrol);
+    connect(ui->doubleSpinBox, &QDoubleSpinBox::valueChanged, this, &MainWindow::doubleAriticKontrol);
+
+    std::thread *ilerlemeIsParcacigi = new std::thread(&MainWindow::ilerlemeBariYukseltme, this);
+    // Döngü işlemleri için genellikle ayrı iş parçacıkları kullanılır. Çünkü bir While döngüsü tüm kod akışını kitler ve pencereyi görüntüleyen bütün işlemlerde kitlenir. Ki bu durumlarda bazı işletim sistemleri uygulamanın çöktüğünü düşünerek kapatma bildirimi göndermektedir
+
+    connect(ui->listWidget, &QListWidget::itemActivated, this, &MainWindow::aktifItem);
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::fareBasti()
+{
+    qDebug() << "Fare butona bastı" << Qt::endl;
+}
+void MainWindow::fareTikladi()
+{
+    qDebug() << "Fare butona tıkladı" << Qt::endl;
+}
+
+void MainWindow::lineEditKullaniciYazmaIsiniBitirdi()
+{
+    qDebug() << "Kullanıcı yazma işini bitirdi" << Qt::endl;
+}
+void MainWindow::lineEditKullaniciEntereBasti()
+{
+    qDebug() << "Kullanıcı LineEdit'e Enter'e bastı" << Qt::endl;
+}
+void MainWindow::lineEditYaziDegistirildi(QString yeniYazi)
+{
+    qDebug() << "LineEdit'in yeni değeri; " << yeniYazi << Qt::endl;
+}
+
+void MainWindow::qtSeverKontrol(int deger)
+{
+    if(deger)
+        qDebug() << "Kullanıcı Qt'yi seviyor!" << Qt::endl;
+    else
+        qDebug() << "Kullanıcı Qt'yi sevmiyor, :(" << Qt::endl;
+}
+
+void MainWindow::qtSevenVeSevmeyenRadio()
+{
+    qtSevenRadioKontrol();
+}
+
+void MainWindow::qtSevenRadioKontrol()
+{
+    if(ui->radioButton->isChecked()) // Seçilimi diye kontrol için isChecked kullanılır
+    {
+        qDebug() << "Kullanıcı Qt'yi seviyor!" << Qt::endl;
+    }
+    else if (ui->radioButton_2->isChecked())
+    {
+        qDebug() << "Kullanıcı Qt'yi sevmiyor, :(" << Qt::endl;
+    }
+}
+
+void MainWindow::secilenSeceneginIndexi(int i)
+{
+    qDebug() << "ComboBox'a seçilen Index; " << i << Qt::endl;
+}
+void MainWindow::secilenSeceneginYazisi(QString secilen)
+{
+    qDebug() << "ComboBox'a seçilen seçenek; " << secilen << Qt::endl;
+}
+
+void MainWindow::yataySliderDegeri(int deger)
+{
+    qDebug() << "Yatay Slider'ın değeri; " << deger << Qt::endl;
+}
+void MainWindow::dikeySliderDegeri(int deger)
+{
+    qDebug() << "Dikey Slider'ın değeri; " << deger << Qt::endl;
+}
+
+void MainWindow::integerArtiriciKontrol(int deger)
+{
+    qDebug() << "Integer artıcı değeri; " << deger << Qt::endl;
+}
+void MainWindow::doubleAriticKontrol(double deger)
+{
+    qDebug() << "Double artıcı değeri; " << deger << Qt::endl;
+}
+
+void MainWindow::ilerlemeBariYukseltme()
+{
+    for(int i = 0; i < 10; i++)
+    {
+        QThread::msleep(100); // Qt'de iş parçacığını bekletme komutu. 100 milisaniye boyunca bekliyoruz
+
+        ui->progressBar->setProperty("value", ui->progressBar->value() + 10);
+        // Hangi akla hizmet bilinmez fakat kod tarafında görüntü ögelerin özelliklerini "setProperty" ile yapılır
+        // İlk parametre değeri düzenlenecek özelliğin ismi
+        // İkinci parametre ise özelliğin yeni değeri
+    }
+}
+
+void MainWindow::aktifItem(QListWidgetItem* item)
+{
+    qDebug() << "ListWidget'dan seçilen itemin değeri; " << item->text() << Qt::endl;
+}</code></pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/30 Qt Widgetlar.html/35.mp4" alt="30.35" width="100%"></video>
+        </div>
+
+        <h2>QTableWidget</h2>
+        <pre id="preh2">QTableWidget, tabloya benzer bir öge sunar. QListWidget'la ayni sinyallere sahiptir.</pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/30 Qt Widgetlar.html/36.mp4" alt="30.36" width="100%"></video>
+            <video controls src="../Bibliography/30 Qt Widgetlar.html/37.mp4" alt="30.37" width="100%"></video>
+        </div>
+
+        <pre id="codeh2">mainwindow.h
+
+<code class="language-cpp">#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include &lt;QMainWindow>
+#include &lt;QThread> // Thread için kütüphane
+#include &lt;QListWidget>
+#include &lt;QTableWidget>
+
+QT_BEGIN_NAMESPACE
+namespace Ui {
+class MainWindow;
+}
+QT_END_NAMESPACE
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
+
+    void qtSevenRadioKontrol(); // Kontrol
+
+    void ilerlemeBariYukseltme();
+
+public slots:
+    void fareBasti(); // Pressed
+    void fareTikladi(); // Clicked
+
+    void lineEditKullaniciYazmaIsiniBitirdi(); // editingFinish
+    void lineEditKullaniciEntereBasti(); // returnPressed
+    void lineEditYaziDegistirildi(QString yeniYazi); // textChanged
+
+    void qtSeverKontrol(int deger); // stateChanged
+
+    void qtSevenVeSevmeyenRadio(); // radioButton -> clicked ve radioButton_2 -> clicked
+
+    void secilenSeceneginIndexi(int i); //comboBox -> activated
+    void secilenSeceneginYazisi(QString); // comboBox -> textActivated
+
+    void yataySliderDegeri(int); // horizontalSlider -> valueChanged
+    void dikeySliderDegeri(int); // verticalSlider -> valueChanged
+
+    void integerArtiriciKontrol(int); // spinBox -> valueChanged
+    void doubleAriticKontrol(double); // doubleSpinBox -> valueChanged
+
+    void aktifItem(QListWidgetItem*); // listWidget -> itemActivated
+
+    void tabloldakiItem(QTableWidgetItem*); // tableWidget -> itemActivated
+private:
+    Ui::MainWindow *ui;
+};
+#endif // MAINWINDOW_H
+</code>
+
+mainwindow.cpp
+
+<code class="language-cpp">#include "mainwindow.h"
+#include "./ui_mainwindow.h"
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+    connect(ui->pushButton, &QPushButton::pressed, this, &MainWindow::fareBasti);
+    connect(ui->pushButton, &QPushButton::clicked, this, &MainWindow::fareTikladi);
+
+    connect(ui->lineEdit, &QLineEdit::editingFinished, this, &MainWindow::lineEditKullaniciYazmaIsiniBitirdi);
+    connect(ui->lineEdit, &QLineEdit::returnPressed, this, &MainWindow::lineEditKullaniciEntereBasti);
+    connect(ui->lineEdit, &QLineEdit::textChanged, this, &MainWindow::lineEditYaziDegistirildi);
+
+    connect(ui->checkBox, &QCheckBox::stateChanged, this, &MainWindow::qtSeverKontrol);
+
+    connect(ui->radioButton, &QRadioButton::clicked, this, &MainWindow::qtSevenVeSevmeyenRadio);
+    connect(ui->radioButton_2, &QRadioButton::clicked, this, &MainWindow::qtSevenVeSevmeyenRadio);
+
+    connect(ui->comboBox, &QComboBox::activated, this, &MainWindow::secilenSeceneginIndexi);
+    connect(ui->comboBox, &QComboBox::textActivated, this, &MainWindow::secilenSeceneginYazisi);
+
+    connect(ui->horizontalSlider, &QSlider::valueChanged, this, &MainWindow::yataySliderDegeri);
+    connect(ui->verticalSlider, &QSlider::valueChanged, this, &MainWindow::dikeySliderDegeri);
+
+    connect(ui->spinBox, &QSpinBox::valueChanged, this, &MainWindow::integerArtiriciKontrol);
+    connect(ui->doubleSpinBox, &QDoubleSpinBox::valueChanged, this, &MainWindow::doubleAriticKontrol);
+
+    std::thread *ilerlemeIsParcacigi = new std::thread(&MainWindow::ilerlemeBariYukseltme, this);
+    // Döngü işlemleri için genellikle ayrı iş parçacıkları kullanılır. Çünkü bir While döngüsü tüm kod akışını kitler ve pencereyi görüntüleyen bütün işlemlerde kitlenir. Ki bu durumlarda bazı işletim sistemleri uygulamanın çöktüğünü düşünerek kapatma bildirimi göndermektedir
+
+    connect(ui->listWidget, &QListWidget::itemActivated, this, &MainWindow::aktifItem);
+
+    connect(ui->tableWidget, &QTableWidget::itemActivated, this, &MainWindow::tabloldakiItem);
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::fareBasti()
+{
+    qDebug() << "Fare butona bastı" << Qt::endl;
+}
+void MainWindow::fareTikladi()
+{
+    qDebug() << "Fare butona tıkladı" << Qt::endl;
+}
+
+void MainWindow::lineEditKullaniciYazmaIsiniBitirdi()
+{
+    qDebug() << "Kullanıcı yazma işini bitirdi" << Qt::endl;
+}
+void MainWindow::lineEditKullaniciEntereBasti()
+{
+    qDebug() << "Kullanıcı LineEdit'e Enter'e bastı" << Qt::endl;
+}
+void MainWindow::lineEditYaziDegistirildi(QString yeniYazi)
+{
+    qDebug() << "LineEdit'in yeni değeri; " << yeniYazi << Qt::endl;
+}
+
+void MainWindow::qtSeverKontrol(int deger)
+{
+    if(deger)
+        qDebug() << "Kullanıcı Qt'yi seviyor!" << Qt::endl;
+    else
+        qDebug() << "Kullanıcı Qt'yi sevmiyor, :(" << Qt::endl;
+}
+
+void MainWindow::qtSevenVeSevmeyenRadio()
+{
+    qtSevenRadioKontrol();
+}
+
+void MainWindow::qtSevenRadioKontrol()
+{
+    if(ui->radioButton->isChecked()) // Seçilimi diye kontrol için isChecked kullanılır
+    {
+        qDebug() << "Kullanıcı Qt'yi seviyor!" << Qt::endl;
+    }
+    else if (ui->radioButton_2->isChecked())
+    {
+        qDebug() << "Kullanıcı Qt'yi sevmiyor, :(" << Qt::endl;
+    }
+}
+
+void MainWindow::secilenSeceneginIndexi(int i)
+{
+    qDebug() << "ComboBox'a seçilen Index; " << i << Qt::endl;
+}
+void MainWindow::secilenSeceneginYazisi(QString secilen)
+{
+    qDebug() << "ComboBox'a seçilen seçenek; " << secilen << Qt::endl;
+}
+
+void MainWindow::yataySliderDegeri(int deger)
+{
+    qDebug() << "Yatay Slider'ın değeri; " << deger << Qt::endl;
+}
+void MainWindow::dikeySliderDegeri(int deger)
+{
+    qDebug() << "Dikey Slider'ın değeri; " << deger << Qt::endl;
+}
+
+void MainWindow::integerArtiriciKontrol(int deger)
+{
+    qDebug() << "Integer artıcı değeri; " << deger << Qt::endl;
+}
+void MainWindow::doubleAriticKontrol(double deger)
+{
+    qDebug() << "Double artıcı değeri; " << deger << Qt::endl;
+}
+
+void MainWindow::ilerlemeBariYukseltme()
+{
+    for(int i = 0; i < 10; i++)
+    {
+        QThread::msleep(100); // Qt'de iş parçacığını bekletme komutu. 100 milisaniye boyunca bekliyoruz
+
+        ui->progressBar->setProperty("value", ui->progressBar->value() + 10);
+        // Hangi akla hizmet bilinmez fakat kod tarafında görüntü ögelerin özelliklerini "setProperty" ile yapılır
+        // İlk parametre değeri düzenlenecek özelliğin ismi
+        // İkinci parametre ise özelliğin yeni değeri
+    }
+}
+
+void MainWindow::aktifItem(QListWidgetItem* item)
+{
+    qDebug() << "ListWidget'dan seçilen itemin değeri; " << item->text() << Qt::endl;
+}
+
+void MainWindow::tabloldakiItem(QTableWidgetItem* item)
+{
+    qDebug() << "Tablodaki seçilen eleman;" << item->text() << Qt::endl;
+}</code></pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/30 Qt Widgetlar.html/38.mp4" alt="30.38" width="100%"></video>
+        </div>
+
+        <h2>QTreeWidget</h2>
+        <pre id="preh2">QTreeWidget, ağaç benzeri bir yapıda tablo ögesi sunar. QListWidget ile aynı sinyallere sahiptir.</pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/30 Qt Widgetlar.html/39.mp4" alt="30.39" width="100%"></video>
+            <video controls src="../Bibliography/30 Qt Widgetlar.html/40.mp4" alt="30.40" width="100%"></video>
+        </div>
+
+        <pre id="codeh2">mainwindow.h
+
+<code class="language-cpp">#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include &lt;QMainWindow>
+#include &lt;QThread> // Thread için kütüphane
+#include &lt;QListWidget>
+#include &lt;QTableWidget>
+#include &lt;QTreeWidget>
+
+QT_BEGIN_NAMESPACE
+namespace Ui {
+class MainWindow;
+}
+QT_END_NAMESPACE
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
+
+    void qtSevenRadioKontrol(); // Kontrol
+
+    void ilerlemeBariYukseltme();
+
+public slots:
+    void fareBasti(); // Pressed
+    void fareTikladi(); // Clicked
+
+    void lineEditKullaniciYazmaIsiniBitirdi(); // editingFinish
+    void lineEditKullaniciEntereBasti(); // returnPressed
+    void lineEditYaziDegistirildi(QString yeniYazi); // textChanged
+
+    void qtSeverKontrol(int deger); // stateChanged
+
+    void qtSevenVeSevmeyenRadio(); // radioButton -> clicked ve radioButton_2 -> clicked
+
+    void secilenSeceneginIndexi(int i); //comboBox -> activated
+    void secilenSeceneginYazisi(QString); // comboBox -> textActivated
+
+    void yataySliderDegeri(int); // horizontalSlider -> valueChanged
+    void dikeySliderDegeri(int); // verticalSlider -> valueChanged
+
+    void integerArtiriciKontrol(int); // spinBox -> valueChanged
+    void doubleAriticKontrol(double); // doubleSpinBox -> valueChanged
+
+    void aktifItem(QListWidgetItem*); // listWidget -> itemActivated
+
+    void tabloldakiItem(QTableWidgetItem*); // tableWidget -> itemActivated
+
+    void agacYapisindekiItem(QTreeWidgetItem*, int); // treeWidget -> itemActivated
+private:
+    Ui::MainWindow *ui;
+};
+#endif // MAINWINDOW_H
+</code>
+
+mainwindow.cpp
+
+<code class="language-cpp">#include "mainwindow.h"
+#include "./ui_mainwindow.h"
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+    connect(ui->pushButton, &QPushButton::pressed, this, &MainWindow::fareBasti);
+    connect(ui->pushButton, &QPushButton::clicked, this, &MainWindow::fareTikladi);
+
+    connect(ui->lineEdit, &QLineEdit::editingFinished, this, &MainWindow::lineEditKullaniciYazmaIsiniBitirdi);
+    connect(ui->lineEdit, &QLineEdit::returnPressed, this, &MainWindow::lineEditKullaniciEntereBasti);
+    connect(ui->lineEdit, &QLineEdit::textChanged, this, &MainWindow::lineEditYaziDegistirildi);
+
+    connect(ui->checkBox, &QCheckBox::stateChanged, this, &MainWindow::qtSeverKontrol);
+
+    connect(ui->radioButton, &QRadioButton::clicked, this, &MainWindow::qtSevenVeSevmeyenRadio);
+    connect(ui->radioButton_2, &QRadioButton::clicked, this, &MainWindow::qtSevenVeSevmeyenRadio);
+
+    connect(ui->comboBox, &QComboBox::activated, this, &MainWindow::secilenSeceneginIndexi);
+    connect(ui->comboBox, &QComboBox::textActivated, this, &MainWindow::secilenSeceneginYazisi);
+
+    connect(ui->horizontalSlider, &QSlider::valueChanged, this, &MainWindow::yataySliderDegeri);
+    connect(ui->verticalSlider, &QSlider::valueChanged, this, &MainWindow::dikeySliderDegeri);
+
+    connect(ui->spinBox, &QSpinBox::valueChanged, this, &MainWindow::integerArtiriciKontrol);
+    connect(ui->doubleSpinBox, &QDoubleSpinBox::valueChanged, this, &MainWindow::doubleAriticKontrol);
+
+    std::thread *ilerlemeIsParcacigi = new std::thread(&MainWindow::ilerlemeBariYukseltme, this);
+    // Döngü işlemleri için genellikle ayrı iş parçacıkları kullanılır. Çünkü bir While döngüsü tüm kod akışını kitler ve pencereyi görüntüleyen bütün işlemlerde kitlenir. Ki bu durumlarda bazı işletim sistemleri uygulamanın çöktüğünü düşünerek kapatma bildirimi göndermektedir
+
+    connect(ui->listWidget, &QListWidget::itemActivated, this, &MainWindow::aktifItem);
+
+    connect(ui->tableWidget, &QTableWidget::itemActivated, this, &MainWindow::tabloldakiItem);
+
+    connect(ui->treeWidget, &QTreeWidget::itemActivated, this, &MainWindow::agacYapisindekiItem);
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::fareBasti()
+{
+    qDebug() << "Fare butona bastı" << Qt::endl;
+}
+void MainWindow::fareTikladi()
+{
+    qDebug() << "Fare butona tıkladı" << Qt::endl;
+}
+
+void MainWindow::lineEditKullaniciYazmaIsiniBitirdi()
+{
+    qDebug() << "Kullanıcı yazma işini bitirdi" << Qt::endl;
+}
+void MainWindow::lineEditKullaniciEntereBasti()
+{
+    qDebug() << "Kullanıcı LineEdit'e Enter'e bastı" << Qt::endl;
+}
+void MainWindow::lineEditYaziDegistirildi(QString yeniYazi)
+{
+    qDebug() << "LineEdit'in yeni değeri; " << yeniYazi << Qt::endl;
+}
+
+void MainWindow::qtSeverKontrol(int deger)
+{
+    if(deger)
+        qDebug() << "Kullanıcı Qt'yi seviyor!" << Qt::endl;
+    else
+        qDebug() << "Kullanıcı Qt'yi sevmiyor, :(" << Qt::endl;
+}
+
+void MainWindow::qtSevenVeSevmeyenRadio()
+{
+    qtSevenRadioKontrol();
+}
+
+void MainWindow::qtSevenRadioKontrol()
+{
+    if(ui->radioButton->isChecked()) // Seçilimi diye kontrol için isChecked kullanılır
+    {
+        qDebug() << "Kullanıcı Qt'yi seviyor!" << Qt::endl;
+    }
+    else if (ui->radioButton_2->isChecked())
+    {
+        qDebug() << "Kullanıcı Qt'yi sevmiyor, :(" << Qt::endl;
+    }
+}
+
+void MainWindow::secilenSeceneginIndexi(int i)
+{
+    qDebug() << "ComboBox'a seçilen Index; " << i << Qt::endl;
+}
+void MainWindow::secilenSeceneginYazisi(QString secilen)
+{
+    qDebug() << "ComboBox'a seçilen seçenek; " << secilen << Qt::endl;
+}
+
+void MainWindow::yataySliderDegeri(int deger)
+{
+    qDebug() << "Yatay Slider'ın değeri; " << deger << Qt::endl;
+}
+void MainWindow::dikeySliderDegeri(int deger)
+{
+    qDebug() << "Dikey Slider'ın değeri; " << deger << Qt::endl;
+}
+
+void MainWindow::integerArtiriciKontrol(int deger)
+{
+    qDebug() << "Integer artıcı değeri; " << deger << Qt::endl;
+}
+void MainWindow::doubleAriticKontrol(double deger)
+{
+    qDebug() << "Double artıcı değeri; " << deger << Qt::endl;
+}
+
+void MainWindow::ilerlemeBariYukseltme()
+{
+    for(int i = 0; i < 10; i++)
+    {
+        QThread::msleep(100); // Qt'de iş parçacığını bekletme komutu. 100 milisaniye boyunca bekliyoruz
+
+        ui->progressBar->setProperty("value", ui->progressBar->value() + 10);
+        // Hangi akla hizmet bilinmez fakat kod tarafında görüntü ögelerin özelliklerini "setProperty" ile yapılır
+        // İlk parametre değeri düzenlenecek özelliğin ismi
+        // İkinci parametre ise özelliğin yeni değeri
+    }
+}
+
+void MainWindow::aktifItem(QListWidgetItem* item)
+{
+    qDebug() << "ListWidget'dan seçilen itemin değeri; " << item->text() << Qt::endl;
+}
+
+void MainWindow::tabloldakiItem(QTableWidgetItem* item)
+{
+    qDebug() << "Tablodaki seçilen eleman;" << item->text() << Qt::endl;
+}
+
+void MainWindow::agacYapisindekiItem(QTreeWidgetItem* item, int x)
+{
+    qDebug() << "Ağaç yapısındaki seçilen eleman; " << item->text(x);
+}</code></pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/30 Qt Widgetlar.html/41.mp4" alt="30.41" width="100%"></video>
+        </div>
+
+        <h2>Kaynakça</h2>
+        <ul>
+            <li><a href="https://stackoverflow.com/questions/61871927/run-a-function-with-a-delay-in-qt">https://stackoverflow.com/questions/61871927/run-a-function-with-a-delay-in-qt</a></li>
+        </ul>
     </div>
 
     <div style="height: 100px;"></div>
