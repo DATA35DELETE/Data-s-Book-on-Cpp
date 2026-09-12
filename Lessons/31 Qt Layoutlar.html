@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data's Book on Cpp</title>
+
+    <link rel="icon" type="image/x-icon" href="../Sources/favicon.png">
+
+    <script src="../Sources/JS/setBackgroundMedia.js"></script>
+
+    <link rel="stylesheet" href="../Sources/JS/hljs/vs2015.css">
+    <script src="../Sources/JS/hljs/highlight.min.js"></script>
+    <script>
+        window.onload = function() {
+            hljs.highlightAll();
+        };
+    </script>
+
+    <link rel="stylesheet" href="../Sources/CSS/main.css">
+</head>
+<body>
+    <h1>Layoutlar</h1>
+
+    <div style="height: 100px;"></div>
+    
+    <div id="mainDiv">
+        <h2>Layoutlar</h2>
+        <pre id="preh2">Layoutlar, bizlere pencerenin boyutuna göre genişleyen veya daralan yani uyum sağlayan Widget'lar sunar.</pre>
+
+        <pre id="preh2">Peki neden önemli? Çünkü adaptasyon! Her pencere istediğiniz uzunlukta veya genişilikte olmayabilir. Örneğin birisi pencereleri büyük sever, diğeri küçük. Normal şartlarda bu pek bir durum ifade etmez ama pencere tarafında ögelerimiz düzgün boyutlarda olmaya bilirler. Bunun en büyük örneği bilgisayar uygulamaları Qt üzerinden mobile taşınırken yaşanır. Bilgisayar ekranı (çoğu durumda) 1920x1080 piksel genişliğinde yani yataydır. Ama telefon ekranları dikeydir. Bu sebeble, çoğu öge ya ekrana yarım gözükür veya hiç gözükmezler. İşte tamda bu durumlarda Layoutlar bizim için bu sorunu çözerler. Layoutlar, türleriyle olmakla beraber pencerenin genişliğini ve uzunluğunu kontrol ederek, içlerindeki ögeleri otomatik olarak büyütür veya küçültür.</pre>
+
+        <pre id="preh2">Örnek olması için aşağıda iki adet örnek verilmiştir. İlki Layoutsuz, diğeri ise Layoutludur. Ayrıca "layoutlar" adında bir proje oluşturalım.</pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/31 Qt Layoutlar.html/1.mp4" alt="31.1" width="100%"></video>
+            <video controls src="../Bibliography/31 Qt Layoutlar.html/2.mp4" alt="31.2" width="100%"></video>
+        </div>
+
+        <h2>QHBoxLayout</h2>
+        <pre id="preh2">QHBoxLayout, içerisindeki ögeleri dikey olarak boyutlandırır. Hem öge hemde pencereye atanabilir durumdadır.</pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/31 Qt Layoutlar.html/3.mp4" alt="30.3" width="100%"></video>
+        </div>
+
+        <h2>QVBoxLayout</h2>
+        <pre id="preh2">QVBoxLayout, içerisindeki ögeleri yatay olarak boyutlandırır. Hem öge hemde pencereye atanabilir durumdadır.</pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/31 Qt Layoutlar.html/2.mp4" alt="30.4" width="100%"></video>
+        </div>
+
+        <h2>QFormLayout</h2>
+        <pre id="preh2">QFormLayout, içerisindeki ögeleri etiket-alan olarak ikili bir şekilde boyutlandırır. Etiket bilgi, alan ise bilginin aldığı kullanıcı verilerinin girildiği kısımdır. Yani Etiket QLabel iken, QButton ise alan olur. Hem öge hemde pencereye atanabilir durumdadır.</pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/31 Qt Layoutlar.html/4.mp4" alt="30.4" width="100%"></video>
+        </div>
+
+        <h2>QGridLayout</h2>
+        <pre id="preh2">QGridLayout, ögelere göre ekranı bölmelere yanı ızgaralara ayıran bir Layoutdur. Hem öge hemde pencereye atanabilir durumdadır.</pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/31 Qt Layoutlar.html/5.mp4" alt="30.5" width="100%"></video>
+        </div>
+
+        <h2>QStackedLayout</h2>
+        <pre id="preh2">Sayfa sayfa gibi bir görünüm sağlar. Ögeler farklı sayfalarda bulunabilir.</pre>
+
+        <pre id="codeh2">mainwindow.h
+
+<code class="language-cpp">#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include &lt;QMainWindow>
+
+QT_BEGIN_NAMESPACE
+namespace Ui {
+class MainWindow;
+}
+QT_END_NAMESPACE
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
+
+public slots:
+    void sifirinciSayfa();
+    void birinciSayfa();
+
+private:
+    Ui::MainWindow *ui;
+};
+#endif // MAINWINDOW_H
+</code>
+
+mainwindow.cpp
+
+<code class="language-cpp">#include "mainwindow.h"
+#include "./ui_mainwindow.h"
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+    connect(ui->pushButton, &QPushButton::clicked, this, &MainWindow::sifirinciSayfa);
+    connect(ui->pushButton_2, &QPushButton::clicked, this, &MainWindow::birinciSayfa);
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::sifirinciSayfa()
+{
+    ui->stackedWidget->setCurrentIndex(0);
+}
+void MainWindow::birinciSayfa()
+{
+    ui->stackedWidget->setCurrentIndex(1);
+}</code></pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/31 Qt Layoutlar.html/6.mp4" alt="30.6" width="100%"></video>
+        </div>
+
+        
+        <h2>Boşlukçu</h2>
+        <pre id="preh2">Boşlukçu, Layoutlarda bazı yerlere boş yapmamızı sağlayan bir ögedir. Kullanım yönünden yatay ve dikey olarak iki adet bulunur.</pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/31 Qt Layoutlar.html/7.mp4" alt="30.7" width="100%"></video>
+        </div>
+
+        <h2>Boyut Politikası</h2>
+        <pre id="preh2">Boyut politikası; Layoutlarda bir ögenin hangi şartlar altında olursa olsun, belirlenen boyutlarda bulunması kuralıdır. Hem minimum hemde maksimum durumları için politikaları vardır. Minimumda öge belirtilen değerlerin altına inemezken, maksimumda belirtilen değerlerin üstüne boyut olarak çıkamamasını sağlar.</pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/31 Qt Layoutlar.html/8.mp4" alt="30.8" width="100%"></video>
+        </div>
+    </div>
+
+
+    <div style="height: 100px;"></div>
+
+    <footer style="position: fixed; left: 0; bottom: 0; width: 100%; background: transparent; text-align: center; padding: 10px 0; z-index: 100;">
+        <div>
+            <a href="./30 Qt Widgetlar.html" style="margin-right: 20px; cursor:pointer;">
+                &larr; Önceki
+            </a>
+            <a href="" style="cursor:pointer;">
+                Sonraki &rarr;
+            </a>
+        </div>
+        <div>
+            <p>&copy; 2026 Data's Book</p>
+        </div>
+
+        <div style="position: absolute; right: 20px; bottom: 20px;">
+            <a href="./1 Cpp İçindekiler.html" style="text-decoration: none;">
+                İçindekiler
+            </a>
+        </div>
+    </footer>
+</body>
+</html>
+
+<!-- Muhammet Enes nam-ı diğer Data Delete tarafından sevgi ile yapıldı <3 -->

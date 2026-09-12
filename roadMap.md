@@ -528,7 +528,6 @@
 - **Spacer (Boşluk)**: `QSpacerItem`. `addStretch()`. Örnek.
 - **setSizePolicy**: Tanım. `QSizePolicy`. Expanding. Preferred. Örnek.
 - **İç İçe Layout Kullanımı**: Tanım. Örnek.
-- **Qt Designer ile Layout**: Tanım. `.ui` Dosyası. Örnek.
 
 ---
 
