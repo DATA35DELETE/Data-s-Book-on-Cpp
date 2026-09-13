@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data's Book on Cpp</title>
+
+    <link rel="icon" type="image/x-icon" href="../Sources/favicon.png">
+
+    <script src="../Sources/JS/setBackgroundMedia.js"></script>
+
+    <link rel="stylesheet" href="../Sources/JS/hljs/vs2015.css">
+    <script src="../Sources/JS/hljs/highlight.min.js"></script>
+    <script>
+        window.onload = function() {
+            hljs.highlightAll();
+        };
+    </script>
+
+    <link rel="stylesheet" href="../Sources/CSS/main.css">
+</head>
+<body>
+    <h1>Ana Pencere</h1>
+
+    <div style="height: 100px;"></div>
+    
+    <div id="mainDiv">
+        <h2>QMainWindow Nedir?</h2>
+        <pre id="preh2">QMainWindow, uygulamanın ilk olarak açılan penceresidir. Tüm bileşenler ana pencere yani QMainWindow sınıfında yer alır. Bu sayfada QMainWindow'dun yani ana pencerenin özelliklerini göreceğiz.</pre>
+
+        <pre id="preh2">Bu sayfada ana pencere ilgili özellikleri görüceğimiz için "anaPencere" adlı bir proje oluşturalım.</pre>
+
+        <h2>QMenuBar</h2>
+        <pre id="preh2">QMenuBar, pencerenin üst kısmında liste vari bir seçenek havuzu sunan yapıdır. İçerisine QMenu ve QMenu'lerin içlerinde QAction'ların kullanıcı ile etkileşime girebilmesini sağlar. Benzetme açısından çoğu uygulamada yukarıda çıkan "File" veya "Project" gibi kısımlar QMenuBar'dır.</pre>
+
+        <pre id="preh2">Peki QMenuBar niçin kullanılır? Genellikle Meta işlemler için kategörlü bir işlemler bütünü sağlar. Örnek olarak "File" yani dosya kısmında "Open File" işlemi ile bilgisayardan dosya açmamızı sağlar. Bu örnekte  QMenuBar "File", QAction ise "Open File" olur.</pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/32 Qt Ana Pencere.html/1.mp4" alt="32.1" width="100%"></video>
+        </div>
+
+        <pre id="codeh2">mainwindow.h
+
+<code class="language-cpp">#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include &lt;QMainWindow>
+
+QT_BEGIN_NAMESPACE
+namespace Ui {
+class MainWindow;
+}
+QT_END_NAMESPACE
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
+
+public slots:
+    void dosyaAcmaSecenegi(bool); // QAction -> triggered
+    void dosyaOkumaSecenegi(bool); // QAction -> triggered
+
+private:
+    Ui::MainWindow *ui;
+};
+#endif // MAINWINDOW_H
+</code>
+
+mainwindow.cpp
+
+<code class="language-cpp">#include "mainwindow.h"
+#include "./ui_mainwindow.h"
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+    connect(ui->actionDosya_A_3, &QAction::triggered, this, &MainWindow::dosyaAcmaSecenegi);
+    connect(ui->actionDosya_Oku, &QAction::triggered, this, &MainWindow::dosyaOkumaSecenegi);
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::dosyaAcmaSecenegi(bool deger)
+{
+    qDebug() << "Kullanıcı dosya açmak istiyor" << Qt::endl;
+}
+
+void MainWindow::dosyaOkumaSecenegi(bool deger)
+{
+    qDebug() << "Kullanıcı dosya okumak istiyor" << Qt::endl;
+}</code></pre>
+
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/32 Qt Ana Pencere.html/2.mp4" alt="32.2" width="100%"></video>
+        </div>
+
+        <h2>QToolBar</h2>
+        <pre id="preh2">QToolBar, içerisine ögeler ekliyebilceğimiz pencerecik olarak görev yapar. QToolBar'ı başındaki simgeden tutup ana pencerenin istediğim yerine koyabilceğimiz, kendisine özel bir Layout düzeni olan bir pencerecik elemanıdır. İçerisine öge ekleme işlemi kod tarafında yapılır.</pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/32 Qt Ana Pencere.html/3.mp4" alt="32.3" width="100%"></video>
+        </div> 
+
+        <pre id="codeh2">mainwindow.cpp
+
+<code class="language-cpp">#include "mainwindow.h"
+#include "./ui_mainwindow.h"
+
+#include &lt;QPushButton>
+#include &lt;QLabel>
+#include &lt;QLineEdit>
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+    QPushButton *button1 = new QPushButton(this); // QPushButton oluşturma
+    button1->setText("Bana bas");
+    ui->toolBar->addWidget(button1); // Toolbar'a eleman ekleme
+    QLabel *label1 = new QLabel("Bu bir QLabel"); // QLabel oluşturma
+    ui->toolBar->addWidget(label1);
+    QLineEdit *edit1 = new QLineEdit(this); // QLineEdit oluşturma
+    ui->toolBar->addWidget(edit1);
+
+    connect(ui->actionDosya_A_3, &QAction::triggered, this, &MainWindow::dosyaAcmaSecenegi);
+    connect(ui->actionDosya_Oku, &QAction::triggered, this, &MainWindow::dosyaOkumaSecenegi);
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::dosyaAcmaSecenegi(bool deger)
+{
+    qDebug() << "Kullanıcı dosya açmak istiyor" << Qt::endl;
+}
+
+void MainWindow::dosyaOkumaSecenegi(bool deger)
+{
+    qDebug() << "Kullanıcı dosya okumak istiyor" << Qt::endl;
+}</code></pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/32 Qt Ana Pencere.html/4.mp4" alt="31.4" width="100%"></video>
+        </div>
+
+        <h2>QStatusBar</h2>
+        <pre id="preh2">QStatusBar, ana pencerenin alt kısmında yer alan ve pencere hakkında mesaj yazdırabilceğimiz bir ögedir. Mesaj yazma işlemi kod tarafında gerçekleştirilir.</pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/32 Qt Ana Pencere.html/5.mp4" alt="32.5" width="100%"></video>
+        </div>
+
+        <pre id="codeh2">mainwindow.cpp
+
+<code class="language-cpp">#include "mainwindow.h"
+#include "./ui_mainwindow.h"
+
+#include &lt;QPushButton>
+#include &lt;QLabel>
+#include &lt;QLineEdit>
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+    QPushButton *button1 = new QPushButton(this); // QPushButton oluşturma
+    button1->setText("Bana bas");
+    ui->toolBar->addWidget(button1); // Toolbar'a eleman ekleme
+    QLabel *label1 = new QLabel("Bu bir QLabel"); // QLabel oluşturma
+    ui->toolBar->addWidget(label1);
+    QLineEdit *edit1 = new QLineEdit(this); // QLineEdit oluşturma
+    ui->toolBar->addWidget(edit1);
+
+    connect(ui->actionDosya_A_3, &QAction::triggered, this, &MainWindow::dosyaAcmaSecenegi);
+    connect(ui->actionDosya_Oku, &QAction::triggered, this, &MainWindow::dosyaOkumaSecenegi);
+
+    connect(ui->pushButton_2, &QPushButton::clicked, this,
+    [this]()
+    {
+        ui->statusbar->showMessage("Selamlar Herkese!");
+    });
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::dosyaAcmaSecenegi(bool deger)
+{
+    qDebug() << "Kullanıcı dosya açmak istiyor" << Qt::endl;
+}
+
+void MainWindow::dosyaOkumaSecenegi(bool deger)
+{
+    qDebug() << "Kullanıcı dosya okumak istiyor" << Qt::endl;
+}</code></pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/32 Qt Ana Pencere.html/6.mp4" alt="32.6" width="100%"></video>
+        </div>
+
+        <h2>QDockWidget</h2>
+        <pre id="preh2">QDockWidget, QToolBar'ın daha da gelişmiş bir versiyonudur. Kullanıcı tarafından küçültebilir veya büyültebilir, ana pencerenin dışında pencere olarak kullanılabilir ve istenilen Layout atanabilir bir ögedir.</pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/32 Qt Ana Pencere.html/7.mp4" alt="32.7" width="100%"></video>
+        </div>
+
+        <h2>Merkezi Widget Ayarlama</h2>
+        <pre id="preh2">Merkezi Widget, ana pencerenin görüntülediği ana Widget'tır.</pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/32 Qt Ana Pencere.html/8.mp4" alt="32.8" width="100%"></video>
+        </div>
+
+        <pre id="codeh2">mainwindow.cpp
+
+<code class="language-cpp">#include "mainwindow.h"
+#include "./ui_mainwindow.h"
+
+#include &lt;QPushButton>
+#include &lt;QLabel>
+#include &lt;QLineEdit>
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+    QPushButton *button1 = new QPushButton(this); // QPushButton oluşturma
+    button1->setText("Bana bas");
+    ui->toolBar->addWidget(button1); // Toolbar'a eleman ekleme
+    QLabel *label1 = new QLabel("Bu bir QLabel"); // QLabel oluşturma
+    ui->toolBar->addWidget(label1);
+    QLineEdit *edit1 = new QLineEdit(this); // QLineEdit oluşturma
+    ui->toolBar->addWidget(edit1);
+
+    connect(ui->actionDosya_A_3, &QAction::triggered, this, &MainWindow::dosyaAcmaSecenegi);
+    connect(ui->actionDosya_Oku, &QAction::triggered, this, &MainWindow::dosyaOkumaSecenegi);
+
+    connect(ui->pushButton_2, &QPushButton::clicked, this,
+    [this]()
+    {
+        ui->statusbar->showMessage("Yeni bir merkezi Widget seçildi!");
+
+        this->setCentralWidget(ui->widget); // Merkezi Widget ayarlama
+    });
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::dosyaAcmaSecenegi(bool deger)
+{
+    qDebug() << "Kullanıcı dosya açmak istiyor" << Qt::endl;
+}
+
+void MainWindow::dosyaOkumaSecenegi(bool deger)
+{
+    qDebug() << "Kullanıcı dosya okumak istiyor" << Qt::endl;
+}</code></pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/32 Qt Ana Pencere.html/9.mp4" alt="32.9" width="100%"></video>
+        </div>
+
+        <h2>Kısayol Atama</h2>
+        <pre id="preh2">QAction ile ana penceremize klavyeden kısayollar atayabiliriz. Kısayol atama işlemi kod tarafında gerçekleştirilir.</pre>
+
+        <pre id="codeh2">mainwindow.cpp
+
+<code class="language-cpp">#include "mainwindow.h"
+#include "./ui_mainwindow.h"
+
+#include &lt;QPushButton>
+#include &lt;QLabel>
+#include &lt;QLineEdit>
+#include &lt;QShortcut> // Kısayol kütüphanemiz
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+    QPushButton *button1 = new QPushButton(this); // QPushButton oluşturma
+    button1->setText("Bana bas");
+    ui->toolBar->addWidget(button1); // Toolbar'a eleman ekleme
+    QLabel *label1 = new QLabel("Bu bir QLabel"); // QLabel oluşturma
+    ui->toolBar->addWidget(label1);
+    QLineEdit *edit1 = new QLineEdit(this); // QLineEdit oluşturma
+    ui->toolBar->addWidget(edit1);
+
+    connect(ui->actionDosya_A_3, &QAction::triggered, this, &MainWindow::dosyaAcmaSecenegi);
+    connect(ui->actionDosya_Oku, &QAction::triggered, this, &MainWindow::dosyaOkumaSecenegi);
+
+    connect(ui->pushButton_2, &QPushButton::clicked, this,
+    [this]()
+    {
+        ui->statusbar->showMessage("Yeni bir merkezi Widget seçildi!");
+
+        this->setCentralWidget(ui->widget); // Merkezi Widget ayarlama
+    });
+
+    QShortcut *kisayol_YukariOk = new QShortcut(QKeySequence(Qt::Key_Up), this); // Kısayol oluşturuyoruz
+    // Qt::Key_Up; Klavyedeki tuşun Qt isim alanındaki karşılığı. Bu durumda yukarı ok oluyor
+    connect(kisayol_YukariOk, &QShortcut::activated, this,
+    [this]()
+    {
+        this->setCentralWidget(ui->widget);
+    }); // Bağlıyoruz
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::dosyaAcmaSecenegi(bool deger)
+{
+    qDebug() << "Kullanıcı dosya açmak istiyor" << Qt::endl;
+}
+
+void MainWindow::dosyaOkumaSecenegi(bool deger)
+{
+    qDebug() << "Kullanıcı dosya okumak istiyor" << Qt::endl;
+}</code></pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/32 Qt Ana Pencere.html/10.mp4" alt="32.10" width="100%"></video>
+        </div>
+
+        <h2>Ana Pencerenin Özellikleri</h2>
+        <pre id="preh2">Ana pencerenin bir çok özelliği istersek kod tarafında değiştirebiliriz. İkonu, başlığı veya boyutu gibi özellikleri rahatlıkla değiştirelebilir.</pre>
+
+        <pre id="codeh2">#include "mainwindow.h"
+#include "./ui_mainwindow.h"
+
+#include &lt;QPushButton>
+#include &lt;QLabel>
+#include &lt;QLineEdit>
+#include &lt;QShortcut>
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+    QPushButton *button1 = new QPushButton(this); // QPushButton oluşturma
+    button1->setText("Bana bas");
+    ui->toolBar->addWidget(button1); // Toolbar'a eleman ekleme
+    QLabel *label1 = new QLabel("Bu bir QLabel"); // QLabel oluşturma
+    ui->toolBar->addWidget(label1);
+    QLineEdit *edit1 = new QLineEdit(this); // QLineEdit oluşturma
+    ui->toolBar->addWidget(edit1);
+
+    connect(ui->actionDosya_A_3, &QAction::triggered, this, &MainWindow::dosyaAcmaSecenegi);
+    connect(ui->actionDosya_Oku, &QAction::triggered, this, &MainWindow::dosyaOkumaSecenegi);
+
+    connect(ui->pushButton_2, &QPushButton::clicked, this,
+    [this]()
+    {
+        ui->statusbar->showMessage("Yeni bir merkezi Widget seçildi!");
+
+        this->setCentralWidget(ui->widget); // Merkezi Widget ayarlama
+    });
+
+    QShortcut *kisayol_YukariOk = new QShortcut(QKeySequence(Qt::Key_Up), this); // Kısayol oluşturuyoruz
+    // Qt::Key_Up; Klavyedeki tuşun Qt isim alanındaki karşılığı. Bu durumda yukarı ok oluyor
+    connect(kisayol_YukariOk, &QShortcut::activated, this,
+    [this]()
+    {
+        this->setCentralWidget(ui->widget);
+    }); // Bağlıyoruz
+
+    // this işaretçisi bizim ana penceremiz olan MainWindow'u temsil eder
+
+    this->setWindowIcon(QIcon("C:\\Users\\DATA\\Pictures\\workAndData.png")); // Pencerenin ikonunu ayarlama
+    this->setWindowOpacity(0.5f); // Pencerenin opaklığını ayarlar
+    this->setWindowState(Qt::WindowFullScreen); // Ana pencerenin statüsünü ayarlar. Bu durumda Qt::WindowFullScreen, pencereyi kaplama modudur
+    this->setWindowTitle("Ana Pencere Özellikleri"); // Ana pencerenin başlığını ayarlar
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::dosyaAcmaSecenegi(bool deger)
+{
+    qDebug() << "Kullanıcı dosya açmak istiyor" << Qt::endl;
+}
+
+void MainWindow::dosyaOkumaSecenegi(bool deger)
+{
+    qDebug() << "Kullanıcı dosya okumak istiyor" << Qt::endl;
+}</pre>
+ 
+        <h2>Kaynakça</h2>
+        <ul>
+            <li><a href="https://runebook.dev/en/docs/qt/qtoolbar/addWidget">https://runebook.dev/en/docs/qt/qtoolbar/addWidget</a></li>
+            <li><a href="https://doc.qt.io/qt-6/qstatusbar.html">https://doc.qt.io/qt-6/qstatusbar.html</a></li>
+            <li><a href="https://stackoverflow.com/questions/4629629/assign-shortcut-keys-to-buttons-qt-c">https://stackoverflow.com/questions/4629629/assign-shortcut-keys-to-buttons-qt-c</a></li>
+        </ul>
+    </div>
+
+    <div style="height: 100px;"></div>
+
+    <footer style="position: fixed; left: 0; bottom: 0; width: 100%; background: transparent; text-align: center; padding: 10px 0; z-index: 100;">
+        <div>
+            <a href="./31 Qt Layoutlar.html" style="margin-right: 20px; cursor:pointer;">
+                &larr; Önceki
+            </a>
+            <a href="" style="cursor:pointer;">
+                Sonraki &rarr;
+            </a>
+        </div>
+        <div>
+            <p>&copy; 2026 Data's Book</p>
+        </div>
+
+        <div style="position: absolute; right: 20px; bottom: 20px;">
+            <a href="./1 Cpp İçindekiler.html" style="text-decoration: none;">
+                İçindekiler
+            </a>
+        </div>
+    </footer>
+</body>
+</html>
+
+<!-- Muhammet Enes nam-ı diğer Data Delete tarafından sevgi ile yapıldı <3 -->
