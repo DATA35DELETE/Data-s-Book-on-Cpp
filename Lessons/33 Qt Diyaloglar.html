@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data's Book on Cpp</title>
+
+    <link rel="icon" type="image/x-icon" href="../Sources/favicon.png">
+
+    <script src="../Sources/JS/setBackgroundMedia.js"></script>
+
+    <link rel="stylesheet" href="../Sources/JS/hljs/vs2015.css">
+    <script src="../Sources/JS/hljs/highlight.min.js"></script>
+    <script>
+        window.onload = function() {
+            hljs.highlightAll();
+        };
+    </script>
+
+    <link rel="stylesheet" href="../Sources/CSS/main.css">
+</head>
+<body>
+    <h1>Diyaloglar</h1>
+
+    <div style="height: 100px;"></div>
+    
+    <div id="mainDiv">
+        <h2>Diyalog Nedir?</h2>
+        <pre id="preh2">Diyalog, işlem için özel olarak kullanılan ve işlem bittiğinde kaybolan ve ana sistemi bilgi veya mesaj veren bir pencere yapısıdır.</pre>
+
+        <pre id="preh2">Peki neden kullanılır? Çünkü kolaylık! Grafiksel Kullanıcı Arayüzülü(GUI) uygulamalarda her bir iş için genellikle ayrı ayrı pencereler oluşturulur. Bu durum genellikle zaman kaybıdır. Özellikle kapsamlı seçim ekranları ve dosya ekranlarında bu durum oldukça yaygındır. Tabiki bu durumun çözümü diyaloglardır. Diyaloglar işletim sistemi tarafından sağlanan ve basit kodlarla tetiklenen, görüntülenen ve bilgi alıp-veren mini pencerelerdir.</pre>
+
+        <pre id="preh2">Bu sayfada diyalogları görüceğimiz için "diyaloglar" adında bir proje oluşturalım.</pre>
+
+        <h2>QMessageBox</h2>
+        <pre id="preh2">QMessageBox, </pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/33 Qt Diyaloglar.html/1.mp4" alt="33.1" width="100%"></video>
+        </div>
+
+        <pre id="codeh2">mainwindow.h
+
+<code class="language-cpp">#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include &lt;QMainWindow>
+
+QT_BEGIN_NAMESPACE
+namespace Ui {
+class MainWindow;
+}
+QT_END_NAMESPACE
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
+    
+public slots:
+    void messageBoxGoster();
+    
+private:
+    Ui::MainWindow *ui;
+};
+#endif // MAINWINDOW_H
+</code>
+
+mainwindow.cpp
+
+<code class="language-cpp>">#include "mainwindow.h"
+#include "./ui_mainwindow.h"
+
+#include &lt;QMessageBox> // QMessageBox için kütüphane
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+    connect(ui->pushButton, &QPushButton::clicked, this, &MainWindow::messageBoxGoster);
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::messageBoxGoster()
+{
+    QMessageBox mesajKutusu_KritikMesaj(
+        QMessageBox::Icon::Critical, // QMessageBox'ın modlarına göre bazı simgeler sunar. İçeriğe bağlı olarak kritik, bilgilendirme, ikonsuz, soru ve uyarı modları bulunmaktadır. Critical, kritik bilgileri bildirmede kullanılır
+        "Bir kritik mesajımız var!", // Mesaj kutusunun başlığının yazısı
+        "Bu mesaj bir QMessageBox'ın içerisindeki kritik mesajdır..." // Mesaj kutusunun içerisinde yazıcak olan yazı
+    ); // QMessageBox nesnini bu şekilde oluşturulur
+
+    mesajKutusu_KritikMesaj.exec(); // Mesaj kutusunu göstermek için
+
+    QMessageBox mesajKutusu_BilgilendiriciMesaj(
+        QMessageBox::Icon::Information, // Information, bilgilendirme durumlarında kullanılır
+        "Bir bilgilendirici mesajımız var!",
+        "Bu mesaj bir QMessageBox'ın içerisindeki bilgilendirici mesajdır..."
+        );
+
+    mesajKutusu_BilgilendiriciMesaj.exec();
+
+    QMessageBox mesajKutusu_Mesaj(
+        QMessageBox::Icon::NoIcon, // NoIcon, sadece mesaj vermek için kullanılır
+        "Bir mesajımız var!",
+        "Bu mesaj bir QMessageBox'ın içerisindeki mesajdır..."
+        );
+
+    mesajKutusu_Mesaj.exec();
+
+    QMessageBox mesajKutusu_SoruMesaji(
+        QMessageBox::Icon::Question, // Question, genelde bir bilginin bulunanaması veya istenilen bilginin alınamamasında kaynaklı sorunları bildirmek için kullanılır
+        "Bir sorunlu mesajımız var!",
+        "Bu mesaj bir QMessageBox'ın içerisindeki sorunlu mesajdır..."
+        );
+
+    mesajKutusu_SoruMesaji.exec();
+
+    QMessageBox mesajKutusu_UyarıcıMesaj(
+        QMessageBox::Icon::Warning, // Warning, uyarı mesajları için kullanılır
+        "Bir sorunlu mesajımız var!",
+        "Bu mesaj bir QMessageBox'ın içerisindeki sorunlu mesajdır..."
+        );
+
+    mesajKutusu_UyarıcıMesaj.exec();
+}
+</code></pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/33 Qt Diyaloglar.html/2.mp4" alt="33.2" width="100%"></video>
+        </div>
+
+        <h2>QFileDialog</h2>
+        <pre id="preh2">QFileDialog; dosya açma, kaydetme ve klasör seçme gibi işlemler için özel olarak sağlanan bir diyalogdur. Genelde dosya işlemleri için QFileDialog kullanılır.</pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/33 Qt Diyaloglar.html/3.mp4" alt="33.3" width="100%"></video>
+        </div>
+
+        <pre id="codeh2">mainwindow.h
+
+<code class="language-cpp">#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include &lt;QMainWindow>
+
+QT_BEGIN_NAMESPACE
+namespace Ui {
+class MainWindow;
+}
+QT_END_NAMESPACE
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
+
+public slots:
+    void messageBoxGoster();
+    void fileDialogGoster();
+
+private:
+    Ui::MainWindow *ui;
+};
+#endif // MAINWINDOW_H
+</code>
+
+mainwindow.cpp
+
+<code class="language-cpp">#include "mainwindow.h"
+#include "./ui_mainwindow.h"
+
+#include &lt;QMessageBox> // QMessageBox için kütüphane
+#include &lt;QFileDialog> // QFileDialog için kütüphane
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+    connect(ui->pushButton, &QPushButton::clicked, this, &MainWindow::messageBoxGoster);
+    connect(ui->pushButton_2, &QPushButton::clicked, this, &MainWindow::fileDialogGoster);
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::messageBoxGoster()
+{
+    QMessageBox mesajKutusu_KritikMesaj(
+        QMessageBox::Icon::Critical, // QMessageBox'ın modlarına göre bazı simgeler sunar. İçeriğe bağlı olarak kritik, bilgilendirme, ikonsuz, soru ve uyarı modları bulunmaktadır. Critical, kritik bilgileri bildirmede kullanılır
+        "Bir kritik mesajımız var!", // Mesaj kutusunun başlığının yazısı
+        "Bu mesaj bir QMessageBox'ın içerisindeki kritik mesajdır..." // Mesaj kutusunun içerisinde yazıcak olan yazı
+    ); // QMessageBox nesnini bu şekilde oluşturulur
+
+    mesajKutusu_KritikMesaj.exec(); // Mesaj kutusunu göstermek için
+
+    QMessageBox mesajKutusu_BilgilendiriciMesaj(
+        QMessageBox::Icon::Information, // Information, bilgilendirme durumlarında kullanılır
+        "Bir bilgilendirici mesajımız var!",
+        "Bu mesaj bir QMessageBox'ın içerisindeki bilgilendirici mesajdır..."
+        );
+
+    mesajKutusu_BilgilendiriciMesaj.exec();
+
+    QMessageBox mesajKutusu_Mesaj(
+        QMessageBox::Icon::NoIcon, // NoIcon, sadece mesaj vermek için kullanılır
+        "Bir mesajımız var!",
+        "Bu mesaj bir QMessageBox'ın içerisindeki mesajdır..."
+        );
+
+    mesajKutusu_Mesaj.exec();
+
+    QMessageBox mesajKutusu_SoruMesaji(
+        QMessageBox::Icon::Question, // Question, genelde bir bilginin bulunanaması veya istenilen bilginin alınamamasında kaynaklı sorunları bildirmek için kullanılır
+        "Bir sorunlu mesajımız var!",
+        "Bu mesaj bir QMessageBox'ın içerisindeki sorunlu mesajdır..."
+        );
+
+    mesajKutusu_SoruMesaji.exec();
+
+    QMessageBox mesajKutusu_UyarıcıMesaj(
+        QMessageBox::Icon::Warning, // Warning, uyarı mesajları için kullanılır
+        "Bir sorunlu mesajımız var!",
+        "Bu mesaj bir QMessageBox'ın içerisindeki sorunlu mesajdır..."
+        );
+
+    mesajKutusu_UyarıcıMesaj.exec();
+}
+
+void MainWindow::fileDialogGoster()
+{
+    QFileDialog dosyaEkrani; // Dosya seçim ekranı oluşturma
+    dosyaEkrani.exec(); // Dosya seçim ekranını gösterme
+
+    if(!dosyaEkrani.selectedFiles().isEmpty()) // Eğer kullanıcı dosya seçim ekranında bir dosya seçilirse
+    {
+        qDebug() << "Seçilen dosyanın yolu; " << dosyaEkrani.selectedFiles().at(0).toStdString() << Qt::endl
+        << "Seçilen dosyanın Url'si; " << dosyaEkrani.selectedUrls().at(0) << Qt::endl;
+    }
+    else // Seçilmesze
+    {
+        qDebug() << "Herhangi bir dosya seçilmedi!" << Qt::endl;
+    }
+
+    QFileDialog dosyaEkrani2; // Dosya seçim ekranı oluşturma
+    dosyaEkrani2.setNameFilters({"Fotoğraflar (*.png *.jpeg *.jpg)", "Uygulamalar (*.exe *.com)", "Metin Dosyası (*.txt)"}); // Filtre ayarlama
+    dosyaEkrani2.exec();
+
+    if(!dosyaEkrani2.selectedFiles().isEmpty())
+    {
+        qDebug() << "Seçilen dosyanın yolu; " << dosyaEkrani2.selectedFiles().at(0).toStdString() << Qt::endl
+        << "Seçilen dosyanın Url'si; " << dosyaEkrani2.selectedUrls().at(0) << Qt::endl;
+    }
+    else
+    {
+        qDebug() << "Herhangi bir dosya seçilmedi!" << Qt::endl;
+    }
+
+    QFileDialog klasorEkrani;
+    klasorEkrani.setFileMode(QFileDialog::FileMode::Directory); // Klasör seçtirmek için
+    klasorEkrani.exec();
+
+    if(!klasorEkrani.selectedFiles().isEmpty())
+    {
+        qDebug() << "Seçilen dosyanın yolu; " << klasorEkrani.selectedFiles().at(0).toStdString() << Qt::endl
+        << "Seçilen dosyanın Url'si; " << klasorEkrani.selectedUrls().at(0) << Qt::endl;
+    }
+    else
+    {
+        qDebug() << "Herhangi bir dosya seçilmedi!" << Qt::endl;
+    }
+
+    QFileDialog dosyaEkrani_Kaydetme;
+    dosyaEkrani_Kaydetme.setAcceptMode(QFileDialog::AcceptMode::AcceptSave); // Kaydetme moduna ayarlama
+    dosyaEkrani_Kaydetme.exec();
+
+    if(!dosyaEkrani_Kaydetme.selectedFiles().isEmpty())
+    {
+        qDebug() << "Kayıt edilen dosyanın yolu; " << dosyaEkrani_Kaydetme.selectedFiles().at(0).toStdString() << Qt::endl
+        << "Kayıt edilen dosyanın Url'si; " << dosyaEkrani_Kaydetme.selectedUrls().at(0) << Qt::endl;
+    }
+    else
+    {
+        qDebug() << "Herhangi bir dosya kayıt edilmedi!" << Qt::endl;
+    }
+}</code></pre>
+
+    <div id="divh2Vid">
+        <video controls src="../Bibliography/33 Qt Diyaloglar.html/4.mp4" alt="33.4" width="100%"></video>
+    </div>
+
+    <h2>QColorDialog</h2>
+    <pre id="preh2">QColorDialog, renk seçme diyalog sağlar. Seçilen rengin QColor sınıfını verir.</pre>
+
+    <div id="divh2Vid">
+        <video controls src="../Bibliography/33 Qt Diyaloglar.html/5.mp4" alt="33.5" width="100%"></video>
+    </div>
+
+    <pre id="codeh2">mainwindow.h
+
+<code class="language-cpp">#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include &lt;QMainWindow>
+
+QT_BEGIN_NAMESPACE
+namespace Ui {
+class MainWindow;
+}
+QT_END_NAMESPACE
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
+
+public slots:
+    void messageBoxGoster();
+    void fileDialogGoster();
+    void colorDialogGoster();
+
+private:
+    Ui::MainWindow *ui;
+};
+#endif // MAINWINDOW_H
+</code>
+
+mainwindow.cpp
+
+<code class="language-cpp">#include "mainwindow.h"
+#include "./ui_mainwindow.h"
+
+#include &lt;QMessageBox> // QMessageBox için kütüphane
+#include &lt;QFileDialog> // QFileDialog için kütüphane
+#include &lt;QColorDialog> // QColorDialog için kütüphane
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+    connect(ui->pushButton, &QPushButton::clicked, this, &MainWindow::messageBoxGoster);
+    connect(ui->pushButton_2, &QPushButton::clicked, this, &MainWindow::fileDialogGoster);
+    connect(ui->pushButton_3, &QPushButton::clicked, this, &MainWindow::colorDialogGoster);
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::messageBoxGoster()
+{
+    QMessageBox mesajKutusu_KritikMesaj(
+        QMessageBox::Icon::Critical, // QMessageBox'ın modlarına göre bazı simgeler sunar. İçeriğe bağlı olarak kritik, bilgilendirme, ikonsuz, soru ve uyarı modları bulunmaktadır. Critical, kritik bilgileri bildirmede kullanılır
+        "Bir kritik mesajımız var!", // Mesaj kutusunun başlığının yazısı
+        "Bu mesaj bir QMessageBox'ın içerisindeki kritik mesajdır..." // Mesaj kutusunun içerisinde yazıcak olan yazı
+    ); // QMessageBox nesnini bu şekilde oluşturulur
+
+    mesajKutusu_KritikMesaj.exec(); // Mesaj kutusunu göstermek için
+
+    QMessageBox mesajKutusu_BilgilendiriciMesaj(
+        QMessageBox::Icon::Information, // Information, bilgilendirme durumlarında kullanılır
+        "Bir bilgilendirici mesajımız var!",
+        "Bu mesaj bir QMessageBox'ın içerisindeki bilgilendirici mesajdır..."
+        );
+
+    mesajKutusu_BilgilendiriciMesaj.exec();
+
+    QMessageBox mesajKutusu_Mesaj(
+        QMessageBox::Icon::NoIcon, // NoIcon, sadece mesaj vermek için kullanılır
+        "Bir mesajımız var!",
+        "Bu mesaj bir QMessageBox'ın içerisindeki mesajdır..."
+        );
+
+    mesajKutusu_Mesaj.exec();
+
+    QMessageBox mesajKutusu_SoruMesaji(
+        QMessageBox::Icon::Question, // Question, genelde bir bilginin bulunanaması veya istenilen bilginin alınamamasında kaynaklı sorunları bildirmek için kullanılır
+        "Bir sorunlu mesajımız var!",
+        "Bu mesaj bir QMessageBox'ın içerisindeki sorunlu mesajdır..."
+        );
+
+    mesajKutusu_SoruMesaji.exec();
+
+    QMessageBox mesajKutusu_UyarıcıMesaj(
+        QMessageBox::Icon::Warning, // Warning, uyarı mesajları için kullanılır
+        "Bir sorunlu mesajımız var!",
+        "Bu mesaj bir QMessageBox'ın içerisindeki sorunlu mesajdır..."
+        );
+
+    mesajKutusu_UyarıcıMesaj.exec();
+}
+
+void MainWindow::fileDialogGoster()
+{
+    QFileDialog dosyaEkrani; // Dosya seçim ekranı oluşturma
+    dosyaEkrani.exec(); // Dosya seçim ekranını gösterme
+
+    if(!dosyaEkrani.selectedFiles().isEmpty()) // Eğer kullanıcı dosya seçim ekranında bir dosya seçilirse
+    {
+        qDebug() << "Seçilen dosyanın yolu; " << dosyaEkrani.selectedFiles().at(0).toStdString() << Qt::endl
+        << "Seçilen dosyanın Url'si; " << dosyaEkrani.selectedUrls().at(0) << Qt::endl;
+    }
+    else // Seçilmesze
+    {
+        qDebug() << "Herhangi bir dosya seçilmedi!" << Qt::endl;
+    }
+
+    QFileDialog dosyaEkrani2; // Dosya seçim ekranı oluşturma
+    dosyaEkrani2.setNameFilters({"Fotoğraflar (*.png *.jpeg *.jpg)", "Uygulamalar (*.exe *.com)", "Metin Dosyası (*.txt)"}); // Filtre ayarlama
+    dosyaEkrani2.exec();
+
+    if(!dosyaEkrani2.selectedFiles().isEmpty())
+    {
+        qDebug() << "Seçilen dosyanın yolu; " << dosyaEkrani2.selectedFiles().at(0).toStdString() << Qt::endl
+        << "Seçilen dosyanın Url'si; " << dosyaEkrani2.selectedUrls().at(0) << Qt::endl;
+    }
+    else
+    {
+        qDebug() << "Herhangi bir dosya seçilmedi!" << Qt::endl;
+    }
+
+    QFileDialog klasorEkrani;
+    klasorEkrani.setFileMode(QFileDialog::FileMode::Directory); // Klasör seçtirmek için
+    klasorEkrani.exec();
+
+    if(!klasorEkrani.selectedFiles().isEmpty())
+    {
+        qDebug() << "Seçilen dosyanın yolu; " << klasorEkrani.selectedFiles().at(0).toStdString() << Qt::endl
+        << "Seçilen dosyanın Url'si; " << klasorEkrani.selectedUrls().at(0) << Qt::endl;
+    }
+    else
+    {
+        qDebug() << "Herhangi bir dosya seçilmedi!" << Qt::endl;
+    }
+
+    QFileDialog dosyaEkrani_Kaydetme;
+    dosyaEkrani_Kaydetme.setAcceptMode(QFileDialog::AcceptMode::AcceptSave); // Kaydetme moduna ayarlama
+    dosyaEkrani_Kaydetme.exec();
+
+    if(!dosyaEkrani_Kaydetme.selectedFiles().isEmpty())
+    {
+        qDebug() << "Kayıt edilen dosyanın yolu; " << dosyaEkrani_Kaydetme.selectedFiles().at(0).toStdString() << Qt::endl
+        << "Kayıt edilen dosyanın Url'si; " << dosyaEkrani_Kaydetme.selectedUrls().at(0) << Qt::endl;
+    }
+    else
+    {
+        qDebug() << "Herhangi bir dosya kayıt edilmedi!" << Qt::endl;
+    }
+}
+
+void MainWindow::colorDialogGoster()
+{
+    QColorDialog renkSecimiEkrani; // QColorDialog oluşturma
+    renkSecimiEkrani.exec(); // QColorDialog çalıştırma
+
+    if(renkSecimiEkrani.selectedColor().isValid()) // Renk seçilmiş ise
+    {
+        qDebug() << "Seçilen renk; " << renkSecimiEkrani.selectedColor() // Seçilen rengin QColor sınıfını alır
+        << Qt::endl;
+    }
+    else // Seçilmiş değil ise
+    {
+        qDebug() << "Renk seçilmedi!" << Qt::endl;
+    }
+
+    QColorDialog renkSecimiEkrani2;
+    renkSecimiEkrani2.exec();
+
+    if(renkSecimiEkrani2.selectedColor().isValid())
+    {
+        qDebug() << "Seçilen renk; " << renkSecimiEkrani2.selectedColor() << Qt::endl;
+    }
+    else
+    {
+        qDebug() << "Renk seçilmedi!" << Qt::endl;
+    }
+}</code></pre>
+
+    <div id="divh2Vid">
+        <video controls src="../Bibliography/33 Qt Diyaloglar.html/6.mp4" alt="33.6" width="100%"></video>
+    </div>
+
+    <h2>QFontDialog</h2>
+    <pre id="preh2">QFontDialog, font seçme diyalog sağlar. Seçilen fontun QFont sınıfını verir.</pre>
+
+    <div id="divh2Vid">
+        <video controls src="../Bibliography/33 Qt Diyaloglar.html/7.mp4" alt="33.7" width="100%"></video>
+    </div>
+
+    <pre id="codeh2">mainwindow.h
+
+<code class="language-cpp">#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include &lt;QMainWindow>
+
+QT_BEGIN_NAMESPACE
+namespace Ui {
+class MainWindow;
+}
+QT_END_NAMESPACE
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
+
+public slots:
+    void messageBoxGoster();
+    void fileDialogGoster();
+    void colorDialogGoster();
+    void fontDialogGoster();
+
+private:
+    Ui::MainWindow *ui;
+};
+#endif // MAINWINDOW_H
+</code>
+
+mainwindow.cpp
+
+<code class="language-cpp">#include "mainwindow.h"
+#include "./ui_mainwindow.h"
+
+#include <QMessageBox> // QMessageBox için kütüphane
+#include <QFileDialog> // QFileDialog için kütüphane
+#include <QColorDialog> // QColorDialog için kütüphane
+#include <QFontDialog> // QFontDialog için kütüphane
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+    connect(ui->pushButton, &QPushButton::clicked, this, &MainWindow::messageBoxGoster);
+    connect(ui->pushButton_2, &QPushButton::clicked, this, &MainWindow::fileDialogGoster);
+    connect(ui->pushButton_3, &QPushButton::clicked, this, &MainWindow::colorDialogGoster);
+    connect(ui->pushButton_4, &QPushButton::clicked, this, &MainWindow::fontDialogGoster);
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::messageBoxGoster()
+{
+    QMessageBox mesajKutusu_KritikMesaj(
+        QMessageBox::Icon::Critical, // QMessageBox'ın modlarına göre bazı simgeler sunar. İçeriğe bağlı olarak kritik, bilgilendirme, ikonsuz, soru ve uyarı modları bulunmaktadır. Critical, kritik bilgileri bildirmede kullanılır
+        "Bir kritik mesajımız var!", // Mesaj kutusunun başlığının yazısı
+        "Bu mesaj bir QMessageBox'ın içerisindeki kritik mesajdır..." // Mesaj kutusunun içerisinde yazıcak olan yazı
+    ); // QMessageBox nesnini bu şekilde oluşturulur
+
+    mesajKutusu_KritikMesaj.exec(); // Mesaj kutusunu göstermek için
+
+    QMessageBox mesajKutusu_BilgilendiriciMesaj(
+        QMessageBox::Icon::Information, // Information, bilgilendirme durumlarında kullanılır
+        "Bir bilgilendirici mesajımız var!",
+        "Bu mesaj bir QMessageBox'ın içerisindeki bilgilendirici mesajdır..."
+        );
+
+    mesajKutusu_BilgilendiriciMesaj.exec();
+
+    QMessageBox mesajKutusu_Mesaj(
+        QMessageBox::Icon::NoIcon, // NoIcon, sadece mesaj vermek için kullanılır
+        "Bir mesajımız var!",
+        "Bu mesaj bir QMessageBox'ın içerisindeki mesajdır..."
+        );
+
+    mesajKutusu_Mesaj.exec();
+
+    QMessageBox mesajKutusu_SoruMesaji(
+        QMessageBox::Icon::Question, // Question, genelde bir bilginin bulunanaması veya istenilen bilginin alınamamasında kaynaklı sorunları bildirmek için kullanılır
+        "Bir sorunlu mesajımız var!",
+        "Bu mesaj bir QMessageBox'ın içerisindeki sorunlu mesajdır..."
+        );
+
+    mesajKutusu_SoruMesaji.exec();
+
+    QMessageBox mesajKutusu_UyarıcıMesaj(
+        QMessageBox::Icon::Warning, // Warning, uyarı mesajları için kullanılır
+        "Bir sorunlu mesajımız var!",
+        "Bu mesaj bir QMessageBox'ın içerisindeki sorunlu mesajdır..."
+        );
+
+    mesajKutusu_UyarıcıMesaj.exec();
+}
+
+void MainWindow::fileDialogGoster()
+{
+    QFileDialog dosyaEkrani; // Dosya seçim ekranı oluşturma
+    dosyaEkrani.exec(); // Dosya seçim ekranını gösterme
+
+    if(!dosyaEkrani.selectedFiles().isEmpty()) // Eğer kullanıcı dosya seçim ekranında bir dosya seçilirse
+    {
+        qDebug() << "Seçilen dosyanın yolu; " << dosyaEkrani.selectedFiles().at(0).toStdString() << Qt::endl
+        << "Seçilen dosyanın Url'si; " << dosyaEkrani.selectedUrls().at(0) << Qt::endl;
+    }
+    else // Seçilmesze
+    {
+        qDebug() << "Herhangi bir dosya seçilmedi!" << Qt::endl;
+    }
+
+    QFileDialog dosyaEkrani2; // Dosya seçim ekranı oluşturma
+    dosyaEkrani2.setNameFilters({"Fotoğraflar (*.png *.jpeg *.jpg)", "Uygulamalar (*.exe *.com)", "Metin Dosyası (*.txt)"}); // Filtre ayarlama
+    dosyaEkrani2.exec();
+
+    if(!dosyaEkrani2.selectedFiles().isEmpty())
+    {
+        qDebug() << "Seçilen dosyanın yolu; " << dosyaEkrani2.selectedFiles().at(0).toStdString() << Qt::endl
+        << "Seçilen dosyanın Url'si; " << dosyaEkrani2.selectedUrls().at(0) << Qt::endl;
+    }
+    else
+    {
+        qDebug() << "Herhangi bir dosya seçilmedi!" << Qt::endl;
+    }
+
+    QFileDialog klasorEkrani;
+    klasorEkrani.setFileMode(QFileDialog::FileMode::Directory); // Klasör seçtirmek için
+    klasorEkrani.exec();
+
+    if(!klasorEkrani.selectedFiles().isEmpty())
+    {
+        qDebug() << "Seçilen dosyanın yolu; " << klasorEkrani.selectedFiles().at(0).toStdString() << Qt::endl
+        << "Seçilen dosyanın Url'si; " << klasorEkrani.selectedUrls().at(0) << Qt::endl;
+    }
+    else
+    {
+        qDebug() << "Herhangi bir dosya seçilmedi!" << Qt::endl;
+    }
+
+    QFileDialog dosyaEkrani_Kaydetme;
+    dosyaEkrani_Kaydetme.setAcceptMode(QFileDialog::AcceptMode::AcceptSave); // Kaydetme moduna ayarlama
+    dosyaEkrani_Kaydetme.exec();
+
+    if(!dosyaEkrani_Kaydetme.selectedFiles().isEmpty())
+    {
+        qDebug() << "Kayıt edilen dosyanın yolu; " << dosyaEkrani_Kaydetme.selectedFiles().at(0).toStdString() << Qt::endl
+        << "Kayıt edilen dosyanın Url'si; " << dosyaEkrani_Kaydetme.selectedUrls().at(0) << Qt::endl;
+    }
+    else
+    {
+        qDebug() << "Herhangi bir dosya kayıt edilmedi!" << Qt::endl;
+    }
+}
+
+void MainWindow::colorDialogGoster()
+{
+    QColorDialog renkSecimiEkrani; // QColorDialog oluşturma
+    renkSecimiEkrani.exec(); // QColorDialog çalıştırma
+
+    if(renkSecimiEkrani.selectedColor().isValid()) // Renk seçilmiş ise
+    {
+        qDebug() << "Seçilen renk; " << renkSecimiEkrani.selectedColor() // Seçilen rengin QColor sınıfını alır
+        << Qt::endl;
+    }
+    else // Seçilmiş değil ise
+    {
+        qDebug() << "Renk seçilmedi!" << Qt::endl;
+    }
+
+    QColorDialog renkSecimiEkrani2;
+    renkSecimiEkrani2.exec();
+
+    if(renkSecimiEkrani2.selectedColor().isValid())
+    {
+        qDebug() << "Seçilen renk; " << renkSecimiEkrani2.selectedColor() << Qt::endl;
+    }
+    else
+    {
+        qDebug() << "Renk seçilmedi!" << Qt::endl;
+    }
+}
+
+void MainWindow::fontDialogGoster()
+{
+    QFontDialog fontSecmeEkrani; // Font seçme ekranı oluşturur
+    fontSecmeEkrani.exec(); // Diyaloğu çalıştır
+
+
+    qDebug() << fontSecmeEkrani.selectedFont() // QFont sınıfını ekrana yazdırma
+    << Qt::endl;
+}</code></pre>
+
+    <div id="divh2Vid">
+        <video controls src="../Bibliography/33 Qt Diyaloglar.html/8.mp4" alt="33.8" width="100%"></video>
+    </div>
+
+    <h2>QInputDialog</h2>
+    <pre id="preh2">QInputDialog, diyalog şekinde kullanıcıdan Integer, Double ve QString alabilmemizi sağlar.</pre>
+
+    <div id="divh2Vid">
+        <video controls src="../Bibliography/33 Qt Diyaloglar.html/9.mp4" alt="33.9" width="100%"></video>
+    </div>
+
+    <pre id="codeh2">mainwindow.h
+
+<code class="language-cpp">#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include &lt;QMainWindow>
+
+QT_BEGIN_NAMESPACE
+namespace Ui {
+class MainWindow;
+}
+QT_END_NAMESPACE
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
+
+public slots:
+    void messageBoxGoster();
+    void fileDialogGoster();
+    void colorDialogGoster();
+    void fontDialogGoster();
+    void inputDialogGoster();
+
+private:
+    Ui::MainWindow *ui;
+};
+#endif // MAINWINDOW_H
+</code>
+
+mainwindow.cpp
+
+<code class="language-cpp">#include "mainwindow.h"
+#include "./ui_mainwindow.h"
+
+#include &lt;QMessageBox> // QMessageBox için kütüphane
+#include &lt;QFileDialog> // QFileDialog için kütüphane
+#include &lt;QColorDialog> // QColorDialog için kütüphane
+#include &lt;QFontDialog> // QFontDialog için kütüphane
+#include &lt;QInputDialog> // QInputDialog için kütüphane
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+    connect(ui->pushButton, &QPushButton::clicked, this, &MainWindow::messageBoxGoster);
+    connect(ui->pushButton_2, &QPushButton::clicked, this, &MainWindow::fileDialogGoster);
+    connect(ui->pushButton_3, &QPushButton::clicked, this, &MainWindow::colorDialogGoster);
+    connect(ui->pushButton_4, &QPushButton::clicked, this, &MainWindow::fontDialogGoster);
+    connect(ui->pushButton_5, &QPushButton::clicked, this, &MainWindow::inputDialogGoster);
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::messageBoxGoster()
+{
+    QMessageBox mesajKutusu_KritikMesaj(
+        QMessageBox::Icon::Critical, // QMessageBox'ın modlarına göre bazı simgeler sunar. İçeriğe bağlı olarak kritik, bilgilendirme, ikonsuz, soru ve uyarı modları bulunmaktadır. Critical, kritik bilgileri bildirmede kullanılır
+        "Bir kritik mesajımız var!", // Mesaj kutusunun başlığının yazısı
+        "Bu mesaj bir QMessageBox'ın içerisindeki kritik mesajdır..." // Mesaj kutusunun içerisinde yazıcak olan yazı
+    ); // QMessageBox nesnini bu şekilde oluşturulur
+
+    mesajKutusu_KritikMesaj.exec(); // Mesaj kutusunu göstermek için
+
+    QMessageBox mesajKutusu_BilgilendiriciMesaj(
+        QMessageBox::Icon::Information, // Information, bilgilendirme durumlarında kullanılır
+        "Bir bilgilendirici mesajımız var!",
+        "Bu mesaj bir QMessageBox'ın içerisindeki bilgilendirici mesajdır..."
+        );
+
+    mesajKutusu_BilgilendiriciMesaj.exec();
+
+    QMessageBox mesajKutusu_Mesaj(
+        QMessageBox::Icon::NoIcon, // NoIcon, sadece mesaj vermek için kullanılır
+        "Bir mesajımız var!",
+        "Bu mesaj bir QMessageBox'ın içerisindeki mesajdır..."
+        );
+
+    mesajKutusu_Mesaj.exec();
+
+    QMessageBox mesajKutusu_SoruMesaji(
+        QMessageBox::Icon::Question, // Question, genelde bir bilginin bulunanaması veya istenilen bilginin alınamamasında kaynaklı sorunları bildirmek için kullanılır
+        "Bir sorunlu mesajımız var!",
+        "Bu mesaj bir QMessageBox'ın içerisindeki sorunlu mesajdır..."
+        );
+
+    mesajKutusu_SoruMesaji.exec();
+
+    QMessageBox mesajKutusu_UyarıcıMesaj(
+        QMessageBox::Icon::Warning, // Warning, uyarı mesajları için kullanılır
+        "Bir sorunlu mesajımız var!",
+        "Bu mesaj bir QMessageBox'ın içerisindeki sorunlu mesajdır..."
+        );
+
+    mesajKutusu_UyarıcıMesaj.exec();
+}
+
+void MainWindow::fileDialogGoster()
+{
+    QFileDialog dosyaEkrani; // Dosya seçim ekranı oluşturma
+    dosyaEkrani.exec(); // Dosya seçim ekranını gösterme
+
+    if(!dosyaEkrani.selectedFiles().isEmpty()) // Eğer kullanıcı dosya seçim ekranında bir dosya seçilirse
+    {
+        qDebug() << "Seçilen dosyanın yolu; " << dosyaEkrani.selectedFiles().at(0).toStdString() << Qt::endl
+        << "Seçilen dosyanın Url'si; " << dosyaEkrani.selectedUrls().at(0) << Qt::endl;
+    }
+    else // Seçilmesze
+    {
+        qDebug() << "Herhangi bir dosya seçilmedi!" << Qt::endl;
+    }
+
+    QFileDialog dosyaEkrani2; // Dosya seçim ekranı oluşturma
+    dosyaEkrani2.setNameFilters({"Fotoğraflar (*.png *.jpeg *.jpg)", "Uygulamalar (*.exe *.com)", "Metin Dosyası (*.txt)"}); // Filtre ayarlama
+    dosyaEkrani2.exec();
+
+    if(!dosyaEkrani2.selectedFiles().isEmpty())
+    {
+        qDebug() << "Seçilen dosyanın yolu; " << dosyaEkrani2.selectedFiles().at(0).toStdString() << Qt::endl
+        << "Seçilen dosyanın Url'si; " << dosyaEkrani2.selectedUrls().at(0) << Qt::endl;
+    }
+    else
+    {
+        qDebug() << "Herhangi bir dosya seçilmedi!" << Qt::endl;
+    }
+
+    QFileDialog klasorEkrani;
+    klasorEkrani.setFileMode(QFileDialog::FileMode::Directory); // Klasör seçtirmek için
+    klasorEkrani.exec();
+
+    if(!klasorEkrani.selectedFiles().isEmpty())
+    {
+        qDebug() << "Seçilen dosyanın yolu; " << klasorEkrani.selectedFiles().at(0).toStdString() << Qt::endl
+        << "Seçilen dosyanın Url'si; " << klasorEkrani.selectedUrls().at(0) << Qt::endl;
+    }
+    else
+    {
+        qDebug() << "Herhangi bir dosya seçilmedi!" << Qt::endl;
+    }
+
+    QFileDialog dosyaEkrani_Kaydetme;
+    dosyaEkrani_Kaydetme.setAcceptMode(QFileDialog::AcceptMode::AcceptSave); // Kaydetme moduna ayarlama
+    dosyaEkrani_Kaydetme.exec();
+
+    if(!dosyaEkrani_Kaydetme.selectedFiles().isEmpty())
+    {
+        qDebug() << "Kayıt edilen dosyanın yolu; " << dosyaEkrani_Kaydetme.selectedFiles().at(0).toStdString() << Qt::endl
+        << "Kayıt edilen dosyanın Url'si; " << dosyaEkrani_Kaydetme.selectedUrls().at(0) << Qt::endl;
+    }
+    else
+    {
+        qDebug() << "Herhangi bir dosya kayıt edilmedi!" << Qt::endl;
+    }
+}
+
+void MainWindow::colorDialogGoster()
+{
+    QColorDialog renkSecimiEkrani; // QColorDialog oluşturma
+    renkSecimiEkrani.exec(); // QColorDialog çalıştırma
+
+    if(renkSecimiEkrani.selectedColor().isValid()) // Renk seçilmiş ise
+    {
+        qDebug() << "Seçilen renk; " << renkSecimiEkrani.selectedColor() // Seçilen rengin QColor sınıfını alır
+        << Qt::endl;
+    }
+    else // Seçilmiş değil ise
+    {
+        qDebug() << "Renk seçilmedi!" << Qt::endl;
+    }
+
+    QColorDialog renkSecimiEkrani2;
+    renkSecimiEkrani2.exec();
+
+    if(renkSecimiEkrani2.selectedColor().isValid())
+    {
+        qDebug() << "Seçilen renk; " << renkSecimiEkrani2.selectedColor() << Qt::endl;
+    }
+    else
+    {
+        qDebug() << "Renk seçilmedi!" << Qt::endl;
+    }
+}
+
+void MainWindow::fontDialogGoster()
+{
+    QFontDialog fontSecmeEkrani; // Font seçme ekranı oluşturur
+    fontSecmeEkrani.exec(); // Diyaloğu çalıştır
+
+    qDebug() << fontSecmeEkrani.selectedFont() // QFont sınıfını ekrana yazdırma
+    << Qt::endl;
+}
+
+void MainWindow::inputDialogGoster()
+{
+    QInputDialog girdiAlmaEkrani_QStringAlma; // Girdi alma diyaloğunu oluşturma
+    girdiAlmaEkrani_QStringAlma.setInputMode(QInputDialog::InputMode::TextInput); // QString girdisi ayarlama
+    girdiAlmaEkrani_QStringAlma.setLabelText("Bir yazı verisi giriniz"); // Girdi istenilen diyaloğun yazsını ayarlama
+
+    girdiAlmaEkrani_QStringAlma.exec(); // Diyaloğu çalıştır
+
+    qDebug() << "Girilen veri; " << girdiAlmaEkrani_QStringAlma.textValue() // QString verisini almak için
+    << Qt::endl;
+
+    QInputDialog girdiAlmaEkrani_IntegerAlma;
+    girdiAlmaEkrani_IntegerAlma.setInputMode(QInputDialog::InputMode::IntInput); // Integer girdisi ayarlama
+    girdiAlmaEkrani_IntegerAlma.setLabelText("Bir tam sayı verisi giriniz");
+
+    girdiAlmaEkrani_IntegerAlma.exec();
+
+    qDebug() << "Girilen veri; "  << girdiAlmaEkrani_IntegerAlma.intValue() // Integer verisini almak için
+    << Qt::endl;
+
+    QInputDialog girdiAlmaEkrani_DoubleAlma;
+    girdiAlmaEkrani_DoubleAlma.setInputMode(QInputDialog::InputMode::DoubleInput); // Double girdisi ayarlama
+    girdiAlmaEkrani_DoubleAlma.setLabelText("Bir ondalıklı sayı verisi giriniz");
+
+    girdiAlmaEkrani_DoubleAlma.exec();
+
+    qDebug() << "Girilen veri; "  << girdiAlmaEkrani_DoubleAlma.doubleValue() // Double verisini almak için
+    << Qt::endl;
+}</code></pre>
+
+    <div id="divh2Vid">
+        <video controls src="../Bibliography/33 Qt Diyaloglar.html/10.mp4" alt="33.10" width="100%"></video>
+    </div>
+
+    <h2>Kaynakça</h2>
+    <ul>
+        <li><a href="https://doc.qt.io/archives/qt-5.15/qmessagebox.html">https://doc.qt.io/archives/qt-5.15/qmessagebox.html</a></li>
+        <li><a href="https://doc.qt.io/qt-6/qfiledialog.html">https://doc.qt.io/qt-6/qfiledialog.html</a></li>
+    </ul>
+
+    </div>
+
+    <div style="height: 100px;"></div>
+
+    <footer style="position: fixed; left: 0; bottom: 0; width: 100%; background: transparent; text-align: center; padding: 10px 0; z-index: 100;">
+        <div>
+            <a href="./32 Qt Ana Pencere.html" style="margin-right: 20px; cursor:pointer;">
+                &larr; Önceki
+            </a>
+            <a href="" style="cursor:pointer;">
+                Sonraki &rarr;
+            </a>
+        </div>
+        <div>
+            <p>&copy; 2026 Data's Book</p>
+        </div>
+
+        <div style="position: absolute; right: 20px; bottom: 20px;">
+            <a href="./1 Cpp İçindekiler.html" style="text-decoration: none;">
+                İçindekiler
+            </a>
+        </div>
+    </footer>
+</body>
+</html>
+
+<!-- Muhammet Enes nam-ı diğer Data Delete tarafından sevgi ile yapıldı <3 -->
