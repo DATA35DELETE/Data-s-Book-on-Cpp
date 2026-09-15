@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data's Book on Cpp</title>
+
+    <link rel="icon" type="image/x-icon" href="../Sources/favicon.png">
+
+    <script src="../Sources/JS/setBackgroundMedia.js"></script>
+
+    <link rel="stylesheet" href="../Sources/JS/hljs/vs2015.css">
+    <script src="../Sources/JS/hljs/highlight.min.js"></script>
+    <script>
+        window.onload = function() {
+            hljs.highlightAll();
+        };
+    </script>
+
+    <link rel="stylesheet" href="../Sources/CSS/main.css">
+</head>
+<body>
+    <h1>Stil ve Tema</h1>
+
+    <div style="height: 100px;"></div>
+    
+    <div id="mainDiv">
+        <h2>QSS</h2>
+        <pre id="preh2">QSS yani Qt Style Sheets(Qt Stil Dili), Qt Widget kütüphanesindeki ögeler için CSS benzeri bir stil dilidir. Tıpkı CSS gibi yazılır ve CSS gibi stilleme işlemi gerçekleştirilir.</pre>
+
+        <pre id="preh2">Ögelerin isimleri Id, sahip oldukları tür ise Class olarak geçmektedir. Stillemek istediğimiz ögenin veya ögelerin bu iki özellikle ile stilleyebiliriz.</pre>
+
+        <pre id="preh2">BU sayfada "Stil ve Tema" konusunu görceğimiz için "stilVeTema" adlı projemizi açalım.</pre>
+
+        <h2>QSS Dosyası Bağlama</h2>
+        <pre id="preh2">QSS dosyası bağlamak için Qt'nin Assets sistemini kullanmamız gerekir. Peki nedir bu Assets sistemi? Kısacası tanımlanan dosyaların bilgilerini uygulamanın içerisine gömen bir sistemdir. Böylelikle sistem dosyalarını ayrı bir dosya yerine uygulamanın içerisine gömülmüş şekilde kullanılır.</pre>
+
+        <pre id="codeh2">İlk olarak Assets sistemi için assets.qrc adlı bir dosya oluşturalım. Daha sonra main.qss adlı bir dosya oluşturalım ve main.qrc dosyasına ekliyelim. Ardından main.cpp dosyasının içeriğini şu şekilde değiştirelim;
+
+<code class="language-cpp">#include "mainwindow.h"
+
+#include &lt;QApplication>
+#include &lt;QFile>
+
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+
+    QFile qssSource(":/main.qss"); // main.qrc'deki main.qss dosyasına erişiyoruz
+    QString source; // Kaynak kod
+    QString sourceBuffer; // Kaynak kodu okumak için ara bellek
+
+    qssSource.open(QFile::OpenModeFlag::ReadOnly); // Dosyayı sadece okuma modunda açıyoruz
+
+    while((sourceBuffer = qssSource.readLine(500)) != nullptr) // 500 karakterlik sınır ile ile her satırı okuyoruz
+    {
+        source += sourceBuffer; // Ara belleğe atanan veriyi kaynak koduna ekliyoruz
+    }
+
+    qssSource.close(); // Dosyayı kapattık
+
+    a.setStyleSheet(source); // Uygulamamızın genel QSS'nini bizim kendi okuduğumuz main.qss dosyasındaki kaynağını ayarlıyoruz
+
+    MainWindow w;
+    w.show();
+    return QApplication::exec();
+}</code></pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/34 Qt Stil ve Tema.html/1.mp4" alt="34.1" width="100%"></video>
+        </div>
+
+        <h2>Stilleme</h2>
+        <pre id="codeh2">Stillemek için bir çok seçenek bulunmaktadır. Bunlardan bir çoğu aşağıdaki main.qss kodunda verilmiştir;
+
+<code class="language-css">* { /* "*" işareti bütün ögeler anlamına gelir */
+
+    background-color: red; /* Arka planı renklendirmek için renklerin İngilizce isimleri */
+    /* background-color: #ffffff;  veya rengin HEX kodu girilir  */
+    color: white; /* Yazı rengini ayarlamak için */
+}
+
+QPushButton{ /* Bu özellikler sadece QPushButton yani buttonlara özel olarak uygulanır */
+
+    border: 2px solid blue; /* Ögenin etrafına 5 piksel kalınlığında mavi bir çerçeve çizer */
+    border-radius: 10px; /* Çerçeveyi 10 piksel olucak şekilde ovallaştırır*/
+}
+
+QPushButton:hover{ /* ":" karakteri ile "Eğer bir olay varsa şunu yap" emridir. Bu örnekte "hover" "Fare üzerinde geldiğinde" demektir */
+
+    background-color: gray;
+}
+
+QLabel{
+
+    background-color: yellow;
+    color: black;
+
+}
+
+#label{ /* "label" etiketine sahip bir ögenin özelliğini tanımlıyoruz */
+
+    background-color: green; /* Etiket üzerinden yapılan değişiklikler her zaman diğer özelliklerden üstün gelir */
+    color: red;
+
+    margin: 6px; /* Dış kısımdan 6 piksel boşluk bırakır */
+    padding: 2px; /* İç kısımdan 2 piksellik boşluk bırakır */
+
+}</code></pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/34 Qt Stil ve Tema.html/2.mp4" alt="34.2" width="100%"></video>
+        </div>
+
+        <h2>Font Ayarlama</h2>
+        <pre id="preh2">Herhangi bir ögenin yazı kısmındaki fontu ayarlamak istersek, mainwindow.ui üzerinden gözlemleyelim;</pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/34 Qt Stil ve Tema.html/3.mp4" alt="34.3" width="100%"></video>
+        </div>
+
+        <h2>Aydınlık/Karanlık Tema Ayarlama</h2>
+        <pre id="codeh2">Bu iki temada işletim sistemi tarafından verilen hazır bir renk paketidir. Bu sebeble main.qrc dosyasının içeriğini temizleyelim. Aydından tema için herhangi bir ayarlamaya gerek kalmaz. Zaten çoğu işletim sistemi varsayılan olarak aydınlık tema kullanılır. Ama eğer biz karanlık tema istersek main.cpp üzerinde bazı değişiklikler yapmamız gerekir;
+
+<code class="language-cpp">#include "mainwindow.h"
+
+#include &lt;QApplication>
+
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+    
+    a.setStyle("fusion"); // Uygulamanın genel temasını ayarlar. Fusion genelde karanlı tema için kullanılır
+    
+    MainWindow w;
+    w.show();
+    return QApplication::exec();
+}
+</code></pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/34 Qt Stil ve Tema.html/4.mp4" alt="34.4" width="100%"></video>
+        </div>
+
+        <h2>Kaynakça</h2>
+        <ul>
+            <li><a href="https://www.w3schools.com/Css/">https://www.w3schools.com/Css/</a></li>
+        </ul>
+
+    </div>
+
+    <div style="height: 100px;"></div>
+
+    <footer style="position: fixed; left: 0; bottom: 0; width: 100%; background: transparent; text-align: center; padding: 10px 0; z-index: 100;">
+        <div>
+            <a href="./33 Qt Diyaloglar.html" style="margin-right: 20px; cursor:pointer;">
+                &larr; Önceki
+            </a>
+            <a href="" style="cursor:pointer;">
+                Sonraki &rarr;
+            </a>
+        </div>
+        <div>
+            <p>&copy; 2026 Data's Book</p>
+        </div>
+
+        <div style="position: absolute; right: 20px; bottom: 20px;">
+            <a href="./1 Cpp İçindekiler.html" style="text-decoration: none;">
+                İçindekiler
+            </a>
+        </div>
+    </footer>
+</body>
+</html>
+
+<!-- Muhammet Enes nam-ı diğer Data Delete tarafından sevgi ile yapıldı <3 -->

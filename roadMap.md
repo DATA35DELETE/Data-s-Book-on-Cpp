@@ -566,7 +566,6 @@
   - **Özellik Değiştirme**: `color`, `background-color`, `border`, `font`. Örnek.
   - **Pseudo-State**: `:hover`, `:pressed`, `:disabled`, `:checked`. Örnek.
   - **Harici QSS Dosyası Yükleme**: Tanım. Örnek.
-- **QPalette**: Tanım. Renk Rolleri. Örnek.
 - **QFont**: Tanım. Yazı Tipi Ayarları. Örnek.
 - **Dark/Light Tema Yapımı**: Tanım. QSS ile Uygulama. Örnek.
 
