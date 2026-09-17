@@ -46,7 +46,85 @@
         <h2>QStandardItemModel</h2>
         <pre id="preh2">Genel olarak en çok tercih edilen Model-View sınıfıdır. Gayet basittir. Row yani satır ve Column yani sütün ile tablo gibi bir yapı sunar. Aynı anda TableView, ListView ve TreeView'de tanımlanma olanağa sağlar.</pre>
 
-        
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/35 Qt Model ve View.html/1.mp4" alt="35.1" width="100%"></video>
+        </div>
+
+        <pre id="codeh2">mainwindow.cpp
+
+<code class="language-cpp">#include "mainwindow.h"
+#include "./ui_mainwindow.h"
+
+#include &lt;QStandardItemModel> // QStandardItemModel kütüphanesi
+#include &lt;QMessageBox>
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+    QStandardItemModel *listModel = new QStandardItemModel(); // İki adet Model oluşturduk
+    QStandardItemModel *tableModel = new QStandardItemModel();
+
+    ui->listView->setModel(listModel); // Daha sonra View özelliği olan istediğimiz bir ögenini View kısmını uygun Model'lere bağladık
+    ui->tableView->setModel(tableModel);
+
+    connect(ui->pushButton, &QPushButton::clicked, this,
+    [listModel]()
+    {
+        listModel->appendRow(new QStandardItem("item")); // Model'le eleman ekliyoruz. Aynı zamanda View kısmıda bu bilgiyi görüntülicek
+        // Aynı zamanda bu öge ListView olduğu için "row" yani satır ekledik ki görüntülesin
+
+        // Ayrıca bu Model'lere bir öge ekliceğimiz zaman QStandardItem sınıfından eklenir
+    });
+    connect(ui->pushButton_3, &QPushButton::clicked, this,
+    [tableModel]()
+    {
+        // Aynı şekilde tableView içinde yaptık. Fakat hangi akla hizmet bilinmez Model'lere "column" yani sütün eklemek için QList ile QStandardItem nesnesi eklenir
+
+        tableModel->appendRow(new QStandardItem("row"));
+        QList<QStandardItem*> *item = new QList<QStandardItem*>();
+        item->append(new QStandardItem("column"));
+        tableModel->appendColumn(*item);
+    });
+
+    connect(ui->pushButton_2, &QPushButton::clicked, this,
+    [listModel]()
+    {
+        QMessageBox *mesajKutusu = new QMessageBox
+            (
+            QMessageBox::Icon::Information,
+            "Mevcut Sayi",
+            QString::number((double)listModel->rowCount())
+            );
+        mesajKutusu->exec();
+
+        // Ne kadar satır olduğunu bulup QMessageBox ile görüntüliyoruz
+    });
+    connect(ui->pushButton_4, &QPushButton::clicked, this,
+    [tableModel]()
+    {
+        QMessageBox *mesajKutusu = new QMessageBox
+        (
+            QMessageBox::Icon::Information,
+            "Mevcut Sayi",
+            QString::number((double)tableModel->columnCount())
+        );
+        mesajKutusu->exec();
+
+        // Ne kadar sütün olduğunu bulup QMessageBox ile görüntüliyoruz
+    });
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}</code></pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/35 Qt Model ve View.html/2.mp4" alt="35.2" width="100%"></video>
+        </div>
 
         <h2>Kaynakça</h2>
         <ul>
