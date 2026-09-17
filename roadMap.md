@@ -573,15 +573,11 @@
 
 ### Qt : Model/View Mimarisi
 - **Model/View Nedir?**: Tanım. MVC ile Karşılaştırma. Neden Kullanılır?
-- **QAbstractItemModel**: Tanım. Temel Sınıf. Örnek.
 - **QStandardItemModel**: Tanım. Kullanımı. Örnek.
   > Metodları
 - **QListView**: Tanım. Model Bağlama. Örnek.
 - **QTableView**: Tanım. Model Bağlama. Örnek.
 - **QTreeView**: Tanım. Model Bağlama. Örnek.
-- **QSortFilterProxyModel**: Tanım. Filtreleme ve Sıralama. Örnek.
-- **Özel Model Yazma**: `QAbstractTableModel` Türetme. `rowCount`. `columnCount`. `data`. Örnek.
-- **QItemDelegate**: Tanım. Özel Hücre Render. Örnek.
 
 ---
 

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data's Book on Cpp</title>
+
+    <link rel="icon" type="image/x-icon" href="../Sources/favicon.png">
+
+    <script src="../Sources/JS/setBackgroundMedia.js"></script>
+
+    <link rel="stylesheet" href="../Sources/JS/hljs/vs2015.css">
+    <script src="../Sources/JS/hljs/highlight.min.js"></script>
+    <script>
+        window.onload = function() {
+            hljs.highlightAll();
+        };
+    </script>
+
+    <link rel="stylesheet" href="../Sources/CSS/main.css">
+    
+    <meta name="description" content="C++ programlama diliyle ilgili tüm konuları kapsayan, başlangıç seviyesinden profesyonel seviyeye kadar, Qt6’dan Unreal Engine’e kadar uzanan kapsamlı bir dokümantasyon">
+    <meta name="keywords" content="C++, Cpp, Qt, Unreal Engine, Document, Doc, Education, Edu, Dev, Development">
+    <meta name="author" content="Data Delete - Muhammet Enes Karaboğa">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Data's Book on Cpp">
+    <meta name="twitter:description" content="C++ programlama diliyle ilgili tüm konuları kapsayan, başlangıç seviyesinden profesyonel seviyeye kadar, Qt6’dan Unreal Engine’e kadar uzanan kapsamlı bir dokümantasyon">
+    <meta name="twitter:image" content="../../Media/image/depressiveData.png">
+</head>
+<body>
+    <h1>Model ve View</h1>
+
+    <div style="height: 100px;"></div>
+    
+    <div id="mainDiv">
+        <h1>Model ve View Nedir?</h1>
+        <pre id="preh2">Model ve View; Model, kod kısmına denilirken View ise pencerede görüntülenen kısıma denir.</pre>
+
+        <pre id="preh2">Mantığı ise çok basittir. Kod tarafında "setProperty" yerine direkt grafiksel ögenin kaynağını kodundaki bir Model sınıfa bağlıyoruz. Böylelikle her değişiklikte "setProperty" yerine öge kendinin Model'ine göre kendi kendini yeniler. Böylelikle ekstra bir uğraşta bulunmayız.</pre>
+
+        <pre id="preh2">Genel olarak diğer bu tarz dilli grafik arayüzü sistemlerinde MVVM(Model-View View-Model) veya MVC(Model-View-Controller) kullanılır. MVVM, iki işlem için ayrı ayrı sistem kullanılır. Model tarafını yani kod tarafındaki veriyi View'e yani grafiksel ögeye aktarmak için MV yani Model-View, View'deki veriyi Model'e aktarmak için ise VM yani View-Model kullanılır. MVC ise MVVM ile neredeyse aynıdır. Sadece iki işlem için tek sistem kullanır. Model'den View'e aktarılcak veriyi ve View'den Model'e aktarılcak veriyide "Controller" sistemi veya köprüsü kullanılır.</pre>
+
+        <pre id="preh2">Peki Qt'nin burada farklı yaptığı işlem nedir? Qt ise C'den miras gelen C++'da daha da güçlenen işaretçiler yapısı ile Model-View bağlantısını sağlar. Böylelikle Model'in kaynağına yazarken bir nevi View'inde kaynağına yazmaktadır.</pre>
+
+        <h2>QStandardItemModel</h2>
+        <pre id="preh2">Genel olarak en çok tercih edilen Model-View sınıfıdır. Gayet basittir. Row yani satır ve Column yani sütün ile tablo gibi bir yapı sunar. Aynı anda TableView, ListView ve TreeView'de tanımlanma olanağa sağlar.</pre>
+
+        
+
+        <h2>Kaynakça</h2>
+        <ul>
+            <li><a href="https://doc.qt.io/qt-6/model-view-programming.html">https://doc.qt.io/qt-6/model-view-programming.html</a></li>
+        </ul>
+    </div>
+
+    <div style="height: 100px;"></div>
+
+    <footer style="position: fixed; left: 0; bottom: 0; width: 100%; background: transparent; text-align: center; padding: 10px 0; z-index: 100;">
+        <div>
+            <a href="./34 Qt Stil ve Tema.html" style="margin-right: 20px; cursor:pointer;">
+                &larr; Önceki
+            </a>
+            <a href="" style="cursor:pointer;">
+                Sonraki &rarr;
+            </a>
+        </div>
+        <div>
+            <p>&copy; 2026 Data's Book</p>
+        </div>
+
+        <div style="position: absolute; right: 20px; bottom: 20px;">
+            <a href="./1 Cpp İçindekiler.html" style="text-decoration: none;">
+                İçindekiler
+            </a>
+        </div>
+    </footer>
+</body>
+</html>
+
+<!-- Muhammet Enes nam-ı diğer Data Delete tarafından sevgi ile yapıldı <3 -->
