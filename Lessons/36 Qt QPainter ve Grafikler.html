@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data's Book on Cpp</title>
+
+    <link rel="icon" type="image/x-icon" href="../Sources/favicon.png">
+
+    <script src="../Sources/JS/setBackgroundMedia.js"></script>
+
+    <link rel="stylesheet" href="../Sources/JS/hljs/vs2015.css">
+    <script src="../Sources/JS/hljs/highlight.min.js"></script>
+    <script>
+        window.onload = function() {
+            hljs.highlightAll();
+        };
+    </script>
+
+    <link rel="stylesheet" href="../Sources/CSS/main.css">
+    
+    <meta name="description" content="C++ programlama diliyle ilgili tüm konuları kapsayan, başlangıç seviyesinden profesyonel seviyeye kadar, Qt6’dan Unreal Engine’e kadar uzanan kapsamlı bir dokümantasyon">
+    <meta name="keywords" content="C++, Cpp, Qt, Unreal Engine, Document, Doc, Education, Edu, Dev, Development">
+    <meta name="author" content="Data Delete - Muhammet Enes Karaboğa">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Data's Book on Cpp">
+    <meta name="twitter:description" content="C++ programlama diliyle ilgili tüm konuları kapsayan, başlangıç seviyesinden profesyonel seviyeye kadar, Qt6’dan Unreal Engine’e kadar uzanan kapsamlı bir dokümantasyon">
+    <meta name="twitter:image" content="../../Media/image/depressiveData.png">
+</head>
+<body>
+    <h1>QPainter ve Grafikler</h1>
+
+    <div style="height: 100px;"></div>
+    
+    <div id="mainDiv">
+        <h2>QPainter Nedir?</h2>
+        <pre id="preh2">QPainter; üzerine resim çizdirip, yazı yazdırabildiğimiz bir nesnedir. Kolaylık sağlayan fonksiyonları ile sadece konumu, boyutunu ve içeriği yazarak QPainter'ın içerisine bileşenler yazabiliriz.</pre>
+
+        <pre id="preh2">Peki neden QPainter? Aslında soruda cevap saklıdır. "Painter" yani çizici veya ressem anlamına gelen bu nesne, kullanıcı yahut programcı tarafından çizim işleri için sıklıkla kullanılır.</pre>
+
+        <pre id="preh2">Bu sayfada QPainter'ı öğreneceğimiz için "qpainter" adlı bir proje açalım.</pre>
+
+        <h2>QPainter</h2>
+        <pre id="codeh2">İlk olarak mainwindow.h ve mainwindow.cpp içeriklerini değiştirelim;
+
+mainwindow.h
+
+<code class="language-cpp">#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include &lt;QMainWindow>
+#include &lt;QPainter> // Kütüphaneler
+#include &lt;QPaintEvent>
+
+
+QT_BEGIN_NAMESPACE
+namespace Ui {
+class MainWindow;
+}
+QT_END_NAMESPACE
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
+
+protected:
+    void paintEvent(QPaintEvent*); // paintEvent, hangi akla hizmet bilinmez ama QPainter işlemlerinin büyük kısmı paintEvent fonksiyonunda gerçekleşir. Ayrıca bu fonksiyona biz Override yani üzerine yazıyoruz
+
+private:
+    Ui::MainWindow *ui;
+};
+#endif // MAINWINDOW_H
+</code>
+
+mainwindow.cpp
+
+<code class="language-cpp">#include "mainwindow.h"
+#include "./ui_mainwindow.h"
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::paintEvent(QPaintEvent *) // Fonksiyonumuz
+{
+    QPainter painter(this); // QPainter nesnemiz, this çünkü çizimler direkt olarak kendi penceremizde gözükücek
+    painter.drawLine(0,100,300,100); // Örnek olarak bir çizgi çizdirelim
+    // 0; Çizgi başlangıç noktasının x'si
+    // 100; Çizgi başlangıç noktasının y'si
+    // 300; Çizgi bitiş noktasının x'si
+    // 100; Çizgi bitiş noktasının y'si
+}</code>
+
+Çıktısı;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/36 Qt QPainter ve Grafikler/1.png" alt="36.1" width="100%">
+        </div>
+
+        <pre id="preh2">Gördüğünüz gibi ekranımızın sol üst köşesinde 300 piksellik bir çizgi oluşturduk.</pre>
+
+        <pre id="codeh2">Bunun gibi bir çok işlevi görelim;
+
+mainwindow.cpp
+<code class="language-cpp">#include "mainwindow.h"
+#include "./ui_mainwindow.h"
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::paintEvent(QPaintEvent *) // Fonksiyonumuz
+{
+    QPainter painter(this); // QPainter nesnemiz, this çünkü çizimler direkt olarak kendi penceremizde gözükücek
+
+    painter.setPen(Qt::red); // Kalem ayarlar. Ondan sonraki renksiz çizimleri belirtilen renge göre çizer
+
+    painter.drawLine(0,100,300,100); // Örnek olarak bir çizgi çizdirelim
+    // 0; Çizgi başlangıç noktasının x'si
+    // 100; Çizgi başlangıç noktasının y'si
+    // 300; Çizgi bitiş noktasının x'si
+    // 100; Çizgi bitiş noktasının y'si
+
+    painter.setPen(Qt::blue);
+
+    painter.setFont(QFont("Calibri", 24)); // Fontunu ayarlar
+
+    painter.drawText(rect(), Qt::AlignHCenter, "Selamlar"); // Yazı yazdırtır
+    // rect(); Çizilebilir alan olarak pencerenin boyutunu gönderiyoruz
+    // Qt::AlignHCenter; Neresinde çizilcek
+    // "Selamlar"; Yazı
+
+    painter.drawRect(10, 200, 100, 100); // İçi boş dikdörtgen çizmemizi sağlar
+    // 10; Dikdörtgen başlangıç noktasının x'si
+    // 200; Dikdörtgen başlangıç noktasının y'si
+    // 100; Dikdörtgenin uzunluğu
+    // 100; Dikdörtgenin yüksekliği
+
+    painter.fillRect(QRect(120, 200, 100, 100), QBrush(Qt::yellow)); // İçi dolu dikdörtgen çizmemizi sağlar
+    // QRect(120, 200, 100, 100); Dikdörtgen bilgileri
+    // QBrush(Qt::yellow); İçinin rengi
+
+    painter.setPen(Qt::green);
+
+    painter.drawRoundedRect(QRect(230, 200, 100, 100), 50.5, 33.2); // İçi boş köşelerinin yuvarlatılmış dikdörtgen çizmemizi sağlar
+    // QRect(220, 200, 100, 100); Dikdörtgen
+    // 50.5; Yataydan yapılcak yumuşatma pikselleri
+    // 33.2; Dikeyden yapılcak yumuşatma pikselleri
+
+    painter.setPen(Qt::GlobalColor::magenta);
+
+    painter.drawEllipse(10, 320, 100, 100); // Daire çizmemizi sağlar
+    // 10; Daire başlangıç noktasının x'si
+    // 320; Daire başlangıç noktasının y'si
+    // 100; Dairenin uzunluğu
+    // 100; Dairenin yüksekliği
+
+    painter.drawImage(QRect(120, 320, 100, 100) ,QImage("C:\\Users\\DATA\\Pictures\\workAndData.png")); // Belirtilen fotoğraf dosyasını belirli boyutlarda çizer
+    // QRect(120, 320, 100, 100); Çizim alanı bilgisi
+    // QImage("C:\\Users\\DATA\\Pictures\\workAndData.png"); Çizilcek fotoğrafın QColor ile yolu
+
+    painter.setPen(Qt::GlobalColor::black);
+
+    painter.drawPolygon(QPolygon({QPoint(230, 320), QPoint(280, 320), QPoint(230, 420)})); // Çokgen çizmemizi sağlar
+    // QPoint(230, 320); Kordinat düzleminde konum belirtir
+    // {QPoint(230, 320), QPoint(280, 320), QPoint(230, 420)}; Bu listede istenilen miktarda nokta konulabilir
+}</code>
+
+Çıktı;</pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/36 Qt QPainter ve Grafikler/2.mp4" alt="36.2" width="100%"></video>
+        </div>
+
+        <h2>QPixmap vs QImage vs QIcon</h2>
+        <pre id="preh2">Bu üç nesnenin görevi resimleri yönetmek olsada yöntemleri birbirlerinen farklıdır.</pre>
+
+        <pre id="preh2">QPixmap, fotoğrafların piksellerini görüntülenecek olan ögenin genişliğini ve yükseliğine göre fotoğrafı ayarlayan bir sınıftır. Yani otomatik bir boyutlandırıcı gibi çalışır. Bu sebeble QLabel'lerde sıklıkla kullanılır.</pre>
+
+        <pre id="preh2">QImage, fotoğrafların görüntülenecek olan ögeden bağımsız olarak piksellere tam erişim sağlatan bir sınıftır. Boyutu önceden tanımlı fotoğraf ögelerinde kullanılır.</pre>
+
+        <pre id="preh2">QIcon, yazıların yanına fotoğraf eklemek için kullanılır. Boyutlandıralabilir özelliği sayesinde QPixmap'e benzemektedir. Kendine has özelliği ise yazıların yanına tıpkı yaz gibi davranan bir fotoğraf sağlamasıdır. Bu sebeble QPushButton ögesinde sıklıkla kullanılır.</pre>
+
+        <h2>Kaynakça</h2>
+        <ul>
+            <li><a href="https://doc.qt.io/qt-6/qpainter.html">https://doc.qt.io/qt-6/qpainter.html</a></li>
+            <li><a href="https://wiki.qt.io/How_to_use_QPainter#QPen_and_QBrush">https://wiki.qt.io/How_to_use_QPainter#QPen_and_QBrush</a></li>
+            <li><a href="https://stackoverflow.com/questions/14101297/qt-beginner-qpainter-and-qrect">https://stackoverflow.com/questions/14101297/qt-beginner-qpainter-and-qrect</a></li>
+            <li><a href="https://stackoverflow.com/questions/10307860/what-is-the-difference-between-qimage-and-qpixmap">https://stackoverflow.com/questions/10307860/what-is-the-difference-between-qimage-and-qpixmap</a></li>
+            <li><a href="https://stackoverflow.com/questions/29196610/qt-drawing-a-filled-rounded-rectangle-with-border">https://stackoverflow.com/questions/29196610/qt-drawing-a-filled-rounded-rectangle-with-border</a></li>
+        </ul>
+    </div>
+
+    <div style="height: 100px;"></div>
+
+    <footer style="position: fixed; left: 0; bottom: 0; width: 100%; background: transparent; text-align: center; padding: 10px 0; z-index: 100;">
+        <div>
+            <a href="./35 Qt Model ve View.html" style="margin-right: 20px; cursor:pointer;">
+                &larr; Önceki
+            </a>
+            <a href="" style="cursor:pointer;">
+                Sonraki &rarr;
+            </a>
+        </div>
+        <div>
+            <p>&copy; 2026 Data's Book</p>
+        </div>
+
+        <div style="position: absolute; right: 20px; bottom: 20px;">
+            <a href="./1 Cpp İçindekiler.html" style="text-decoration: none;">
+                İçindekiler
+            </a>
+        </div>
+    </footer>
+</body>
+</html>
+
+<!-- Muhammet Enes nam-ı diğer Data Delete tarafından sevgi ile yapıldı <3 -->

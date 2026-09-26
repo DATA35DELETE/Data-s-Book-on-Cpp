@@ -84,7 +84,7 @@ MainWindow::MainWindow(QWidget *parent)
         // Aynı şekilde tableView içinde yaptık. Fakat hangi akla hizmet bilinmez Model'lere "column" yani sütün eklemek için QList ile QStandardItem nesnesi eklenir
 
         tableModel->appendRow(new QStandardItem("row"));
-        QList<QStandardItem*> *item = new QList<QStandardItem*>();
+        QList&lt;QStandardItem*> *item = new QList&lt;QStandardItem*>();
         item->append(new QStandardItem("column"));
         tableModel->appendColumn(*item);
     });
@@ -139,7 +139,7 @@ MainWindow::~MainWindow()
             <a href="./34 Qt Stil ve Tema.html" style="margin-right: 20px; cursor:pointer;">
                 &larr; Önceki
             </a>
-            <a href="" style="cursor:pointer;">
+            <a href="./36 Qt QPainter ve Grafikler.html" style="cursor:pointer;">
                 Sonraki &rarr;
             </a>
         </div>

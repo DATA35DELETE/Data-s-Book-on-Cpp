@@ -596,7 +596,6 @@
 - **QColor**: Tanım. RGB. HSV. Alpha. Örnek.
 - **QPixmap ve QImage**: Tanım. Farkları. Kullanım Senaryoları. Örnek.
 - **QIcon**: Tanım. Kullanım. Örnek.
-- **Animasyon**: `QPropertyAnimation`. `QAnimationGroup`. Örnek.
 
 ---
 
