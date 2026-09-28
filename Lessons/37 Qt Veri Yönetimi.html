@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data's Book on Cpp</title>
+
+    <link rel="icon" type="image/x-icon" href="../Sources/favicon.png">
+
+    <script src="../Sources/JS/setBackgroundMedia.js"></script>
+
+    <link rel="stylesheet" href="../Sources/JS/hljs/vs2015.css">
+    <script src="../Sources/JS/hljs/highlight.min.js"></script>
+    <script>
+        window.onload = function() {
+            hljs.highlightAll();
+        };
+    </script>
+
+    <link rel="stylesheet" href="../Sources/CSS/main.css">
+    
+    <meta name="description" content="C++ programlama diliyle ilgili tüm konuları kapsayan, başlangıç seviyesinden profesyonel seviyeye kadar, Qt6’dan Unreal Engine’e kadar uzanan kapsamlı bir dokümantasyon">
+    <meta name="keywords" content="C++, Cpp, Qt, Unreal Engine, Document, Doc, Education, Edu, Dev, Development">
+    <meta name="author" content="Data Delete - Muhammet Enes Karaboğa">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Data's Book on Cpp">
+    <meta name="twitter:description" content="C++ programlama diliyle ilgili tüm konuları kapsayan, başlangıç seviyesinden profesyonel seviyeye kadar, Qt6’dan Unreal Engine’e kadar uzanan kapsamlı bir dokümantasyon">
+    <meta name="twitter:image" content="../../Media/image/depressiveData.png">
+</head>
+<body>
+    <h1>Veri Yönetmimi</h1>
+
+    <div style="height: 100px;"></div>
+    
+    <div id="mainDiv">
+        <h2>QString</h2>
+        <pre id="preh2">QString, Standart C++'daki String'in Qt karşılığıdır. Ama dolu özellik ile gelir. Örnek olarak C ve C++ programlama dillerindeki UTF-8 sıkıntısı ve kolay dönüşümleri sayesinde oldukça kullanışlıdır.</pre>
+
+        <pre id="preh2">Bu sayfada veri yapılarını işliceğimiz için proje adı "veriYonetimi", tür olarak ise "Konsol" projesi açalım. Konsol bölümü için Non-Qt Project bölümünden "Plain C++ Application" seçeneğini seçelim. Ardından projemizi oluşturalım.</pre>
+
+        <pre id="codeh2">Başlamadan önce CMakeLists.txt dosyasına Qt'nin Core yani çekirdek paketinini kullanıcağımızı bildirmemiz gerekir;
+
+<code>cmake_minimum_required(VERSION 3.16)
+
+project(veriYonetimi LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+add_executable(veriYonetimi main.cpp)
+
+find_package(Qt6 REQUIRED COMPONENTS Core)
+target_link_libraries(veriYonetimi PRIVATE Qt6::Core)
+
+# Bildirdik
+
+include(GNUInstallDirs)
+install(TARGETS veriYonetimi
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)</code>
+
+Ardından kodları inceleyebiliriz;
+
+main.cpp
+<code class="language-cpp">#include &lt;QString> // QString Kütüphanemiz
+
+#include &lt;QDebug> // Qt'nin çıktı kütüphanesi
+
+int main()
+{
+    QString str1 = "Selam"; // Bu şekilde oluşturulur
+    qDebug() << "str1 = " << str1 ; // Bu şekilde yazılır
+
+    str1.append(" Herkese!"); // Sonuna String ifadesi konulması
+    qDebug() << "str1 = " << str1;
+
+    QString str2 = QString("%1, %3, %2 ve %4")        // Parametreli olarak tanımalamak istersek
+    .arg("Assembly", "C", "C++", "Rust");             //  Bu şekilde sırasıyla argümanları yazılır ve eklenir. Paramterdeki sıraları önemlidir
+    qDebug() << "str2 = " << str2;
+
+    str2.assign("Assembly"); // İçeriğini tamamiyle değiştirmek istersek
+    qDebug() << "str2 = " << str2;
+
+    QChar str2BirinciKarater = str2.at(1); // Aynı listeler gibi QString'lerinde elemanlarını alabiliriz. Döndürdüğü değer QChar'dır. Char türünün Qt versiyonudur
+    qDebug() << "str2[1] = " << str2BirinciKarater;
+
+    qDebug() << "str2'nin kapasitesi =" << str2.capacity(); // Kapasitesini verir
+
+    QString str3 = "Selam!lar";
+    str3.chop(3); // Sondan yazılan sayı kadar karakter siler
+    qDebug() << "str3 = " << str3;
+
+    QString str3KesilmisKismi = str3.chopped(1); // Kesimden sonraki kısmı QString olarak geri verir
+    qDebug() << "str3KesilmisKismi =" << str3KesilmisKismi;
+
+    str3.clear(); // İçeriği temizler
+
+    qDebug() << "str3 boş mu" << str3.isEmpty();
+
+    QString str4 = "Assembly ve C";
+    qDebug() << "\"Assembly ve C\" == str4 =" << str4.contains("Assembly ve C"); // Aynı diye mi kontrol eder
+
+    qDebug() << "str4 karakter sayısı" << str4.length(); // Karakter sayısını verir
+
+    str4.erase(str4.begin() + 8, str4.end()); // Belirli kısımları keser
+    // str4.begin() + 8; Başlangıç iteratöründen 8 eleman ileriden başla
+    // str4.end(); Sona kadar
+    qDebug() << "str4 =" << str4;
+
+    qDebug() << "str4'deki 'm'nin Index numarası" << str4.indexOf('m'); // Belirtilen karakterin Index numarasını verir
+
+    qDebug() << "str4'deki karakterlerin hepsi küçük mü" << str4.isLower(); // Karakterilerin hepsi küçük mü diye kontrol eder
+
+    QString str4Lower = str4.toLower(); // Tüm karakterleri küçük karakter yapar ve bir QString değeri döndürür
+
+    qDebug() << "str4Lower'deki karakterlerin hepsi küçük mü" << str4Lower.isLower();
+
+    QString str4Upper = str4.toUpper(); // Tüm karakterleri büyük yapar
+
+    qDebug() << "str4Upper'deki karakterlerin hepsi büyük mü" << str4Upper.isUpper(); // Karakterilerin hepsi büyük mü diye kontrol eder
+
+    QString str5;
+
+    qDebug() << "str5 Null mu" << str5.isNull();
+
+    qDebug() << "str5'in maksimum karakter sayısı" << str5.max_size(); // Maksimum karakter sayısını verir
+
+    str5.prepend("C++"); // Başına ifade ekler
+    qDebug() << "str5 =" << str5;
+
+    str5.remove("++"); // İfade çıkartır
+    qDebug() << "str5 =" << str5;
+
+    QString str6 = "QString";
+    str6.replace("QS", "std::s"); // İfadeki kısımları değiştirir
+    // "QS"; Orjinal değer
+    // "std::s"; Yerine yazılcak değer
+    qDebug() << "str6 =" << str6;
+
+    // QString.toX, istenilen türe dönüştürür
+    qDebug() << "QString(\"1234\").toInt() =" << QString("1234").toInt();
+
+    QString str7 = "\n\n\nSelam\n";
+    QString str7Arinmis = str7.trimmed(); // Baştaki ve sondaki "\n" karakterlerinden arındırır
+    qDebug() << str7Arinmis;
+
+    std::wstring stdWStr1 = L"Türkiye"; // std::wstring, std::string'ın karakter ailesinin genişletilmiş versiyonudur. Genelde İngilizce dışı karakter için kullanılır
+
+    // QString::fromX(ifade), X türünden QString'e 'ifade'yi uygun şekilde geçirir
+    qDebug() << QString::fromStdWString(stdWStr1);
+
+    qDebug() << "QString::number(1234) =" << QString::number(1234); // Sayıları QString'e çevirir
+
+    return 0;
+}
+</code>
+
+Çıktı;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/37 Qt Veri Yönetimi.html/1.png" alt="37.1" width="100%">
+        </div>
+
+        <h2>Kaynakça</h2>
+        <ul>
+            <li><a href="https://doc.qt.io/qt-6/qstring.html">https://doc.qt.io/qt-6/qstring.html</a></li>
+        </ul>
+    </div>
+
+    <div style="height: 100px;"></div>
+
+    <footer style="position: fixed; left: 0; bottom: 0; width: 100%; background: transparent; text-align: center; padding: 10px 0; z-index: 100;">
+        <div>
+            <a href="./36 Qt QPainter ve Grafikler.html" style="margin-right: 20px; cursor:pointer;">
+                &larr; Önceki
+            </a>
+            <a href="" style="cursor:pointer;">
+                Sonraki &rarr;
+            </a>
+        </div>
+        <div>
+            <p>&copy; 2026 Data's Book</p>
+        </div>
+
+        <div style="position: absolute; right: 20px; bottom: 20px;">
+            <a href="./1 Cpp İçindekiler.html" style="text-decoration: none;">
+                İçindekiler
+            </a>
+        </div>
+    </footer>
+</body>
+</html>
+
+<!-- Muhammet Enes nam-ı diğer Data Delete tarafından sevgi ile yapıldı <3 -->

@@ -599,16 +599,6 @@
 
 ---
 
-### Qt : Qt Designer ve .ui Dosyaları
-- **Qt Designer Nedir?**: Tanım. Kullanım. Arayüz Tanıtımı.
-- **.ui Dosyası**: Tanım. XML Yapısı. Örnek.
-- **uic (UI Compiler)**: Tanım. `.ui` → `.h` Dönüşümü. Örnek.
-- **CMake ile .ui Entegrasyonu**: `qt_wrap_ui()`. Örnek.
-- **Designer'dan Kod Bağlama**: `setupUi()`. `ui->widgetAdi`. Örnek.
-- **Promote Widget**: Tanım. Özel Widget'ı Designer'a Tanıtma. Örnek.
-
----
-
 ### Qt : Veri Yönetimi
 - **QString**: Tanım. std::string ile Farkı. Örnek.
   > Metodları
@@ -623,7 +613,23 @@
   > Metodları
 - **QSettings**: Tanım. Uygulama Ayarlarını Saklama. Örnek.
   > Metodları
+* **XML Veri Yönetimi**
 
+  * **QXmlStreamReader**: Tanım. XML Okuma. Örnek.
+
+    > Metodları
+  * **QXmlStreamWriter**: Tanım. XML Yazma. Örnek.
+
+    > Metodları
+  * **QDomDocument**: Tanım. XML'i DOM ağacı olarak işleme. Örnek.
+
+    > Metodları
+  * **QDomElement**: Tanım. XML elementlerini temsil etme. Örnek.
+
+    > Metodları
+  * **QDomNode**: Tanım. XML düğümlerini temsil etme. Örnek.
+
+    > Metodları
 ---
 
 ### Qt : Dosya ve I/O İşlemleri
