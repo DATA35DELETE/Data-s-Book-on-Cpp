@@ -163,9 +163,239 @@ int main()
             <img src="../Bibliography/37 Qt Veri Yönetimi.html/1.png" alt="37.1" width="100%">
         </div>
 
+        <h2>QVariant</h2>
+        <pre id="preh2">QVariant, duruma bağlı olarak değişebilen bir sınıftır. STL konusundaki Variant'dan farklı olarak QVariant, önceden tanımlanmış değişken türlerinin aksine o an kendisine atanmış değişken türünün değerini taşır. Genel olarak verilerinin türleri değişiklik gösterdiğinde kullanılır.</pre>
+
+        <pre id="codeh2"><code class="language-cpp">#include &lt;QVariant> // QVariant Kütüphanemiz
+
+#include &lt;QDebug>
+
+int main()
+{
+    QVariant cumhuriyetinIlani(1923); // QVariant sınıfından bir nesne tanımladık
+
+    // QVariant.toX(); ile içerisindeki X türündeki veriyi çekebiliriz
+
+    qDebug() << "Cumhuriyetin ilan edildiği yıl" << cumhuriyetinIlani.toInt();
+
+    cumhuriyetinIlani = QVariant("29 Ekim"); // Şimdi QString bir ifade tanımladık
+
+    qDebug() << "Cumhuriyetin ilan edildiği ay ve günü" << cumhuriyetinIlani.toString();
+    // cumhuriyetinIlani.toInt(); Başka bir tanımlama yapıldığında QVariant bir önceki değeri siler ve sıfır döndürür. Şuan bir QString değer olduğu için Int değeri 0'dır
+
+    return 0;
+}</code>
+
+Çıktı</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/37 Qt Veri Yönetimi.html/2.png" alt="37.2" width="100%">
+        </div>
+
+        <h2>QHash ve QMap</h2>
+        <pre id="preh2">QHash ve QMap, STL'deki Map'ten pek fazla farkları yoktur.</pre>
+
+        <pre id="codeh2"><code class="language-cpp">#include &lt;QMap> // QMap Kütüphanemiz
+#include &lt;QHash> // QHash Kütüphanemiz
+
+#include &lt;QDebug>
+
+int main()
+{
+    QMap&lt;QString, int> ornekQMap;
+    ornekQMap.insert("key1", 1002);
+    ornekQMap.insert("key2", 9981);
+
+    qDebug() << "key1 =" << ornekQMap["key1"];
+
+    QHash&lt;QString, int> ornekHash;
+    ornekHash.insert("key1", 1002);
+    ornekHash.insert("key2", 9981);
+
+    qDebug() << "key1 =" << ornekHash["key1"];
+
+    return 0;
+}
+</code>
+
+Çıktısı</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/37 Qt Veri Yönetimi.html/3.png" alt="37.3" width="100%">
+        </div>
+
+        <h2>QSet</h2>
+        <pre id="preh2">QSet, QHash gibi eklenen değerden birden fazla varsa bir tane alır. QSet ise bu durumun tek türlü versiyonudur.</pre>
+
+        <pre id="codeh2"><code class="language-cpp">#include &lt;QSet> // QSet Kütüphanemiz
+
+#include &lt;QDebug>
+
+int main()
+{
+    QSet&lt;int> sayilar;
+
+    sayilar.insert(1);
+    sayilar.insert(1);
+    sayilar.insert(2);
+    sayilar.insert(3);
+    sayilar.insert(4);
+    sayilar.insert(4);
+
+    for (auto i : sayilar) {
+        qDebug() << i;
+    }
+
+    return 0;
+}</code>
+
+Çıktı</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/37 Qt Veri Yönetimi.html/4.png" alt="37.4" width="100%">
+        </div>
+
+        <h2>QByteArray</h2>
+        <pre id="preh2">QByteArray, aynı bir liste gibi değer tutar. Farklı olarak ise elemanları Binary türündendir. Yani içerisinde ham veri tutulabilir.</pre>
+
+        <pre id="codeh2"><code class="language-cpp">#include &lt;QByteArray> // QByteArray Kütüphanemiz
+
+#include &lt;QDebug>
+
+int main()
+{
+    QByteArray selamYazisininHamVerisi; // Nesnemiz
+
+    selamYazisininHamVerisi.append(0x53); // S
+    selamYazisininHamVerisi.append(0x65); // e
+    selamYazisininHamVerisi.append(0x6C); // l
+    selamYazisininHamVerisi.append(0x61); // a
+    selamYazisininHamVerisi.append(0x6D); // m
+
+    qDebug() << selamYazisininHamVerisi.toStdString();
+
+    return 0;
+}</code>
+
+Çıktısı</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/37 Qt Veri Yönetimi.html/5.png" alt="37.5" width="100%">
+        </div>
+
+        <h2>Qt ile Json Verileri</h2>
+        <pre id="preh2">Qt'de Json verileri ile işlem yaparken herhangi bir kütüphane kullanılmaz. Genel mantık ise QJsonObject ile Key-Value ve QJsonDocument ile ham Json verisine dönüştürme sağlanır.</pre>
+
+        <pre id="codeh2"><code class="language-cpp">#include <QJsonDocument> // Json Kütüphaneleri
+#include <QJsonObject>
+#include <QJsonArray>
+
+#include <QFile>
+
+#include <QDebug>
+
+int main()
+{
+    QJsonDocument jsonYazmaBelgesi; // Tüm Json verileri bunun içerisinde bulunur
+
+    QJsonObject dataDeleteBilgiler; // Bir Json objesi
+    dataDeleteBilgiler.insert("İsmi", "Data");
+    dataDeleteBilgiler.insert("Soyismi", "Delete");
+    dataDeleteBilgiler.insert("Yaş", 16); // Key-Value formatı ile veri yazılır
+    dataDeleteBilgiler.insert("Konum", "Türkiye/İzmir");
+
+    QJsonObject dataDeleteBeceriler;
+    dataDeleteBeceriler.insert("Ders", "Matematik");
+    dataDeleteBeceriler.insert("Meslek", "Bilgisayar Mühendisliği");
+
+    dataDeleteBilgiler.insert("Beceriler", dataDeleteBeceriler); // Bu şekilde ise alt objeler oluşturabiliriz
+
+    jsonYazmaBelgesi.setObject(dataDeleteBilgiler); // Kullanacağı objeyi yazıyoruz
+
+    QFile dataDeleteBilgileriDosyaYazma("data.json");
+    if(dataDeleteBilgileriDosyaYazma.open(QFile::OpenModeFlag::WriteOnly))
+    {
+        dataDeleteBilgileriDosyaYazma.write(jsonYazmaBelgesi.toJson());
+        // Böylelikle Json verisini bir dosyaya kayıt etmiş olduk
+    }
+    dataDeleteBilgileriDosyaYazma.close();
+
+/*
+data.json
+{
+    "Beceriler": {
+        "Ders": "Matematik",
+        "Meslek": "Bilgisayar Mühendisliği"
+    },
+    "Konum": "Türkiye/İzmir",
+    "Soyismi": "Delete",
+    "Yaş": 16,
+    "İsmi": "Data"
+}
+*/
+
+    // Yazdık şimdi okuyalım
+
+    QByteArray jsonHamVeri;
+
+    QFile dataDeleteBilgileriDosyaOkuma("data.json");
+    if(dataDeleteBilgileriDosyaOkuma.open(QFile::OpenModeFlag::ReadOnly))
+    {
+        jsonHamVeri = dataDeleteBilgileriDosyaOkuma.readAll();
+    }
+    dataDeleteBilgileriDosyaOkuma.close();
+
+    QJsonDocument jsonOkumaBelgesi = QJsonDocument::fromJson(jsonHamVeri); // Bu şekilde de veri okunur
+
+    qDebug() << "Data'nın yaşı kaçtır:" << jsonOkumaBelgesi.object()["Yaş"].toDouble(); // Bı şekilde de içerisindeki veri alınır
+    // ["Yas"]; Key değeri
+    // .toDouble(); Dönüştürüleceği tür
+
+    return 0;
+}</code>
+
+Çıktısı;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/37 Qt Veri Yönetimi.html/6.png" alt="37.6" width="100%">
+        </div>
+
+        <h2>QSettings</h2>
+        <pre id="preh2">QSettings, Qt'nin bizlere sunduğu yerel bir ayar tutma ve saklama kütüphanesidir. Ayrıca istenildiği takdirde ".ini" formatında da kayıt edilebilir.</pre>
+
+        <pre id="codeh2"><code class="language-cpp">#include &lt;QSettings> // Json Kütüphaneleri
+
+#include &lt;QDebug>
+
+int main()
+{
+    QSettings ayarlar("ayalar.ini", QSettings::Format::IniFormat); // Bu şekilde nesne oluşturulur
+
+    ayarlar.setValue("user/arkaplanRenk", "mavi"); // Bu şekilde ayar tanımlanır
+    ayarlar.setValue("root/arkaplanRenk", "siyah");
+
+/*
+ayarlar.ini
+[user]
+arkaplanRenk=mavi
+
+[root]
+arkaplanRenk=siyah
+*/
+
+    return 0;
+}</code></pre>
+
         <h2>Kaynakça</h2>
         <ul>
             <li><a href="https://doc.qt.io/qt-6/qstring.html">https://doc.qt.io/qt-6/qstring.html</a></li>
+            <li><a href="https://doc.qt.io/qt-6/qmap.html">https://doc.qt.io/qt-6/qmap.html</a></li>
+            <li><a href="https://doc.qt.io/qt-6/qvariant.html">https://doc.qt.io/qt-6/qvariant.html</a></li>
+            <li><a href="https://doc.qt.io/qt-6/qhash.html">https://doc.qt.io/qt-6/qhash.html</a></li>
+            <li><a href="https://doc.qt.io/qt-6/qbytearray.html">https://doc.qt.io/qt-6/qbytearray.html</a></li>
+            <li><a href="https://stackoverflow.com/questions/15893040/how-to-create-read-write-json-files-in-qt5">https://stackoverflow.com/questions/15893040/how-to-create-read-write-json-files-in-qt5</a></li>
+            <li><a href="https://doc.qt.io/qt-6/qjsondocument.html">https://doc.qt.io/qt-6/qjsondocument.html</a></li>
+            <li><a href="https://doc.qt.io/qt-6/qjsonobject.html">https://doc.qt.io/qt-6/qjsonobject.html</a></li>
         </ul>
     </div>
 

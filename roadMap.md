@@ -613,23 +613,7 @@
   > Metodları
 - **QSettings**: Tanım. Uygulama Ayarlarını Saklama. Örnek.
   > Metodları
-* **XML Veri Yönetimi**
-
-  * **QXmlStreamReader**: Tanım. XML Okuma. Örnek.
-
-    > Metodları
-  * **QXmlStreamWriter**: Tanım. XML Yazma. Örnek.
-
-    > Metodları
-  * **QDomDocument**: Tanım. XML'i DOM ağacı olarak işleme. Örnek.
-
-    > Metodları
-  * **QDomElement**: Tanım. XML elementlerini temsil etme. Örnek.
-
-    > Metodları
-  * **QDomNode**: Tanım. XML düğümlerini temsil etme. Örnek.
-
-    > Metodları
+  
 ---
 
 ### Qt : Dosya ve I/O İşlemleri
