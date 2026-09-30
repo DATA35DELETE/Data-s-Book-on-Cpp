@@ -34,7 +34,288 @@
     <div style="height: 100px;"></div>
     
     <div id="mainDiv">
+        <h2>QFile</h2>
+        <pre id="preh2">QFile, Qt'deki dosya işlemlerinin yapıldığı ana sınıftır. Klasik C++ programlama dilinden farklı olarak hem okuma hemde yazma modları için QFile kullanılır. Nesne tanımlanırken açma modu tanımlanmaz. Daha sonraları ".open" fonksiyonu ile tanımlanır.</pre>
 
+        <pre id="preh2">Başlamadan önce "dosyaIslemleri" adlı bir proje oluşturalım. Daha sonra
+
+CMakeLists.txt
+
+<code>cmake_minimum_required(VERSION 3.16)
+
+project(dosyaIslemleri LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+add_executable(dosyaIslemleri main.cpp)
+
+find_package(Qt6 REQUIRED COMPONENTS Core)
+target_link_libraries(dosyaIslemleri PRIVATE Qt6::Core)
+
+include(GNUInstallDirs)
+install(TARGETS dosyaIslemleri
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)</code></pre>
+
+        <pre id="codeh2">Şimdi özelliklerini inceleyelim;
+
+<code class="language-cpp">#include &lt;QFile> // QFile kütüphanesi
+
+#include &lt;QDebug>
+
+using namespace std;
+
+int main()
+{
+    QFile dosya1("dosya1.txt"); // Dosya nesnemizi oluşturduk
+
+    qDebug() << "dosya1 bir mevcut mu?" << dosya1.exists(); // Dosyanın var olup olmadığını kontrol eder
+
+    dosya1.open(QFile::OpenModeFlag::WriteOnly); // Dosyayı istediğimiz modda açıyoruz
+    // QFile::OpenModeFlag::WriteOnly; Sadece yazma modu
+    // QFile::OpenModeFlag::Append; Ekleme modu
+    // QFile::OpenModeFlag::ReadOnly; Sadece okuma modu
+    // QFile::OpenModeFlag::ReadWrite; Hem okuma hemde yazma modu
+    // QFile::OpenModeFlag::WriteOnly | QFile::OpenModeFlag::Append; Örnek olarak da hem okuma hemde ekleme modu konulabilir
+
+    qDebug() << "dosya1'in modu" << dosya1.openMode(); // Açma modlarını döndürür
+
+    dosya1.setFileName("dosya.txt"); // Dosya ismini düzenler
+
+    qDebug() << "Dosyanın adı" << dosya1.fileName(); // Dosya ismini değer olarak döndürür
+
+    dosya1.setPermissions(QFile::Permission::WriteGroup); // Dosya izinlerini düzenler
+
+    qDebug() << "dosya1'in izinleri" << dosya1.permissions(); // Dosyanın sahip olduğu izinleri verir
+
+    qDebug() << "dosya1'in boyutu" << dosya1.size(); // Dosyanın boyutunu verir
+
+    dosya1.close(); // Dosyadan çıktık
+
+    return 0;
+}
+</code>
+
+Çıktısı</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/38 Qt Dosya İşlemleri.html/1.png" alt="38.1" width="100%">
+        </div>
+
+        <h3>Diğer Dosya İşlemleri</h3>
+        <pre id="codeh3">Diğer işlemler için genelde "QFile::X" şeklinde kullanılır. Biz QFile kullanarak bir dosyayı yeniden adlandırabilir, silebilir, çöp kutusuna taşıyabilir ve kopyalabiliriz.
+
+<code class="language-cpp">#include &lt;QFile>
+
+#include &lt;QDebug>
+
+using namespace std;
+
+int main()
+{
+    QFile::rename("eskiDosya", "yeniDosya"); // Dosyayı yeniden adlandırma
+
+    QFile::moveToTrash("dosya1"); // Dosyayı çöp kutusna taşır
+
+    QFile::remove("dosya2"); // Dosyayı direkt siler
+
+    QFile::copy("orjinalDosya", "kopyaDosya"); // Dosyayı kopyalar
+
+    return 0;
+}
+</code>
+        </pre>
+
+        <h2>QTextStream</h2>
+        <pre id="preh2">QTextStream, QFile'in dosya içeriğini yazma ve okumamızı sağlayan sınıftır. Klasik C++ programlama dilinde bu işlemler tek bir sınıftan yürüsede Qt'de bu şekil birden fazla sınıfın işbirliği gerekebilir.</pre>
+
+        <pre id="codeh2">Hadi inceleyelim
+
+<code class="language-cpp">#include &lt;QFile>
+#include &lt;QTextStream> // QTextStream kütüphanesi
+
+#include &lt;QDebug>
+
+using namespace std;
+
+int main()
+{
+    // Yazma
+
+    QFile dosyaYazma("dosya.txt"); // Dosya nesnesini oluşturduk
+
+    if(dosyaYazma.open(QFile::OpenModeFlag::WriteOnly)) // Dosyamızı yazma modunda açtık. Bu şekilde If'li bir yapı ile daha güvenli hale getirdik işlemlerimizi. Çünkü bazenleri dosya açılmaya bilir ve bizim işlemlerimiz dosya açılmadığı için hata verebilir
+    {
+        QTextStream dosyaYazmaAkisi(&dosyaYazma); // QTextStream'imi yani yazı akışı nesnemizi bizim dosya nesnemizin üzerine oluşturduk
+
+        dosyaYazmaAkisi << "Selamlar Qt" << Qt::endl << "Kodlayanlar!"; // Bu şekilde yazıyı akışa yazarız. Daha sonra .close komutu geldiğinde, akışdaki tüm veriler dosyaya yazılmış olur
+    }
+    else
+    {
+        qDebug() << "Dosya açılamadı";
+    }
+
+    dosyaYazma.close();
+
+    // Okuma
+
+    QFile dosyaOkuma("dosya.txt");
+    QString veri; // Kayıt edilcek veri
+
+    if(dosyaOkuma.open(QFile::OpenModeFlag::ReadOnly))
+    {
+        QTextStream dosyaOkumaAkisi(&dosyaOkuma);
+
+        veri = dosyaOkumaAkisi.readAll(); // Tüm veriyi okur ve QString olarak döndürür
+
+        /* Satır satır okumak için
+
+        QString dosyaOkumaAkisiAraBellek; // Her satır için okuma değişkeni
+        while(!dosyaOkumaAkisi.atEnd()) // Sonda değil ise
+        {
+            dosyaOkumaAkisiAraBellek = dosyaOkumaAkisi.readLine(); // Bir satırı oku
+        }
+
+        */
+    }
+    else
+    {
+        qDebug() << "Dosya açılamadı";
+    }
+
+    dosyaOkuma.close();
+
+    qDebug() << "dosya.txt içeriği;" << Qt::endl << veri;
+
+    return 0;
+}
+</code>
+
+Çıktı</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/38 Qt Dosya İşlemleri.html/2.png" alt="38.2" width="100%">
+            <img src="../Bibliography/38 Qt Dosya İşlemleri.html/3.png" alt="38.3" width="100%">
+        </div>
+
+        <h2>QDataStream</h2>
+        <pre id="preh2">QDataStream, QTextStream'in ham veri halidir.</pre>
+
+        <pre id="codeh2"><code class="language-cpp">#include &lt;QFile>
+#include &lt;QDataStream> // QDataStream kütüphanesi
+
+#include &lt;QDebug>
+
+using namespace std;
+
+int main()
+{
+    // Yazma
+
+    QFile dosyaYazma("dosya.txt");
+
+    if(dosyaYazma.open(QFile::OpenModeFlag::WriteOnly))
+    {
+        QDataStream dosyaYazmaAkisi(&dosyaYazma);
+
+        dosyaYazmaAkisi << "Selamlar Qt" << "\n" << "Kodlayanlar!";
+    }
+    else
+    {
+        qDebug() << "Dosya açılamadı";
+    }
+
+    dosyaYazma.close();
+
+    // Okuma
+
+    QFile dosyaOkuma("dosya.txt");
+    QByteArray veri(100,0); // Kayıt edilcek veri
+
+    if(dosyaOkuma.open(QFile::OpenModeFlag::ReadOnly))
+    {
+        QDataStream dosyaOkumaAkisi(&dosyaOkuma);
+
+        dosyaOkumaAkisi.readRawData(veri.data(), 100); // Ham veri olduğundan bu şekilde okunur
+        // veri.data(; Kayıt edilcek olan verinin adresi
+        // dosyaOkuma.size(); Verinin boyutu
+    }
+    else
+    {
+        qDebug() << "Dosya açılamadı";
+    }
+
+    dosyaOkuma.close();
+
+    qDebug() << "dosya.txt içeriği;" << Qt::endl << veri.toStdString();
+
+    return 0;
+}
+</code>
+
+Çıktı ise</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/38 Qt Dosya İşlemleri.html/4.png" alt="38.4" width="100%">
+        </div>
+
+        <h2>QDir</h2>
+        <pre id="preh2">Klasör işlemleri bu sınıf üzerinden yapılır.</pre>
+
+        <pre id="preh2"><code class="language-cpp">#include &lt;QDir> // QDir kütüphanesi
+
+#include &lt;QDebug>
+
+using namespace std;
+
+int main()
+{
+    QDir klasor1("klasor1"); // Nesnemizi oluşturduk
+    klasor1.cd("klasor1/altKlasor1"); // Klasör yolunu değiştirir
+
+    klasor1.cdUp(); // Bir üst klasöre gider
+
+    qDebug() << "klasor1'deki dosya ve klasör sayısı" << klasor1.count();
+
+    qDebug() << "klasor1'in ismi" << klasor1.dirName();
+
+    qDebug() << "klasor1 mevcut mu?" << klasor1.exists();
+
+    klasor1.setFilter(QDir::Filter::Files); // Filtre ayarlar
+    // QDir::Filter::Files; Sadece dosyaları say
+    // QDir::Filter::Dirs; Sadece klasörleri say
+    // QDir::Filter::Drives; Sadece sürücü dosyalarını say
+    // QDir::Filter::Executable; Sadece çalıştırılabilir dosyaları say
+
+    klasor1.setSorting(QDir::SortFlag::Time); // Sıralama ekler
+    // QDir::SortFlag::Time; Zamanlarına göre sıralar
+    // QDir::SortFlag::Type; Türlerine göre sıralar
+    // QDir::SortFlag::Name; İsme göre sıralar
+
+    for (auto i : klasor1.entryList()) {
+        // İşlemler
+    }
+
+    return 0;
+}
+</code>
+
+Çıktısı ise</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/38 Qt Dosya İşlemleri.html/5.png" alt="38.5" width="100%">
+        </div>
+
+        <h2></h2>
+
+        <h2>Kaynakça</h2>
+        <ul>
+            <li><a href="https://doc.qt.io/qt-6/qfile.html">https://doc.qt.io/qt-6/qfile.html</a></li>
+            <li><a href="https://stackoverflow.com/questions/5444959/read-a-text-file-line-by-line-in-qt">https://stackoverflow.com/questions/5444959/read-a-text-file-line-by-line-in-qt</a></li>
+            <li><a href="https://doc.qt.io/qt-6/qdir.html">https://doc.qt.io/qt-6/qdir.html</a></li>
+        </ul>
     </div>
 
     <div style="height: 100px;"></div>
