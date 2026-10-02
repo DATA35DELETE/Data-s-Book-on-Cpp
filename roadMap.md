@@ -627,7 +627,6 @@
   > Metodları
 - **QFileInfo**: Tanım. Dosya Bilgisi. Örnek.
   > Metodları
-- **QFileSystemWatcher**: Tanım. Dosya Değişikliği İzleme. Örnek.
 - **Kaynak Sistemi (Qt Resource System)**: `qrc` Dosyası. `:/` Prefix. CMake Entegrasyonu. Örnek.
 
 ---

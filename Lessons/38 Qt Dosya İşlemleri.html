@@ -308,13 +308,88 @@ int main()
             <img src="../Bibliography/38 Qt Dosya İşlemleri.html/5.png" alt="38.5" width="100%">
         </div>
 
-        <h2></h2>
+        <h3>QDir'in Diğer Fonksiyonları</h3>
+        <pre id="codeh3"><code class="language-cpp">#include &lt;QDir>
+
+#include &lt;QDebug>
+
+using namespace std;
+
+int main()
+{
+    QDir().mkdir("klasor1"); // Klasör oluşturduk. Haklı akla hizmet bilinmez fakat bu şekilde bir yapı kullanılır
+
+    QDir().rmdir("klasor1"); // Klasörü sildik
+
+    QDir::setCurrent("klasor1"); // Çalışma dizinini ayarlar
+
+    return 0;
+}</code></pre>
+
+        <h2>QFileInfo</h2>
+        <pre id="preh2">QFileInfo Qt'deki, bir dosyanın her türlü bilgisine erişebilmemizi sağlayan bir sınıftır. Yapıcı olarak bilgilerini istediğimiz dosyanın yolunu gireriz ve istediğimiz bilgiyi fonksiyonlar yardımıyla elde ederiz.</pre>
+
+        <pre id="codeh2">Hadi mevcut dizini QDir'deki entryList fonksiyonu teker teker dosyaları çekelim ve bilgilerini çıktı olarak yazdıralım;
+
+<code class="language-cpp">#include <QFileInfo> // Kütüphanemiz
+#include <QDir>
+
+#include <QDebug>
+
+using namespace std;
+
+int main()
+{
+    QDir dizin("."); // Mevcut dizinin nesnesini oluşturduk
+
+    dizin.setSorting(QDir::SortFlag::Type); // Dosyaların türlerine göre sıralasın
+
+    for (QString i : dizin.entryList()) // Sırayla dosyaların dizinlerini çekiyoruz
+    {
+        QFileInfo ii(i); // Nesnemiz
+
+        qDebug() << i << ";" << Qt::endl
+                 << "   Dosyanın Boyutu:" << ii.size() << Qt::endl // Dosyanın boyutunu alma
+                 << "   Dosya mı:" << ii.isFile() << Qt::endl // Dosya mı
+                 << "   Klasör mü:" << ii.isDir() << Qt::endl // Klasör mü
+                 << "   Yazılma Damgası:" << ii.fileTime(QFile::FileBirthTime).toMSecsSinceEpoch() << Qt::endl // Yazılma zaman damgası
+                 << "   Yazılma Tarihi:" << ii.fileTime(QFile::FileBirthTime).toString() << Qt::endl; // Yazılma tarihi
+
+    }
+
+    return 0;
+}</code>
+
+Çıktı</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/38 Qt Dosya İşlemleri.html/6.png" alt="38.6" width="100%">
+            <img src="../Bibliography/38 Qt Dosya İşlemleri.html/7.png" alt="38.7" width="100%">
+            <img src="../Bibliography/38 Qt Dosya İşlemleri.html/8.png" alt="38.8" width="100%">
+            <img src="../Bibliography/38 Qt Dosya İşlemleri.html/9.png" alt="38.9" width="100%">
+        </div>
+
+        <h2>Qt Kaynak Sistemi</h2>
+        <pre id="preh2">Qt kaynak sistemi yada Qt Resource System, Qt'nin kendisine özel bir kaynak yönetim sistemidir. Mantığı ise kayıt edilen dosyaların veya klasörlerin Qt kaynak sistemine derlenip uygulamanın içerisine gömülmesidir. Direkt olarak uygulama kendi içerisinde bu dosyaya erişerek her yerde çalışabilmesini sağlar. Böylelikle bağımsızlık oluşur. Qt kaynak sistemini anlatmadan önce bir Form uygulaması açalım ve içerisine Qt kaynak yönetiminin nasıl oluşturulduğu ve QLabel üzerinden de bir fotoğraf eklemeyi göstericeğim</pre>
+
+        <pre id="codeh2">Eğer Qt kaynak sisteminin dosyasında(qrc) bulunan bir dosyaya erişmek istersek
+
+<code>:/dizini/dosya.uzanti</code>
+
+şeklinde erişilir.</pre>
+
+        <pre id="preh2">Ki ben daha önceden proje klasörünün içerisine bir "assets" klasörü ve o "assets" klasörünün içerisine bir fotoğraf koydum. Siz dilediğiniz dosyayı koyabilirsiniz.</pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/38 Qt Dosya İşlemleri.html/10.mp4" alt="38.10" width="100%"></video>
+        </div>
 
         <h2>Kaynakça</h2>
         <ul>
             <li><a href="https://doc.qt.io/qt-6/qfile.html">https://doc.qt.io/qt-6/qfile.html</a></li>
             <li><a href="https://stackoverflow.com/questions/5444959/read-a-text-file-line-by-line-in-qt">https://stackoverflow.com/questions/5444959/read-a-text-file-line-by-line-in-qt</a></li>
             <li><a href="https://doc.qt.io/qt-6/qdir.html">https://doc.qt.io/qt-6/qdir.html</a></li>
+            <li><a href="https://doc.qt.io/qt-6/qfileinfo.html">https://doc.qt.io/qt-6/qfileinfo.html</a></li>
         </ul>
     </div>
 
