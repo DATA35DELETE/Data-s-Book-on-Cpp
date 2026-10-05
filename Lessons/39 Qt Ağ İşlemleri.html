@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data's Book on Cpp</title>
+
+    <link rel="icon" type="image/x-icon" href="../Sources/favicon.png">
+
+    <script src="../Sources/JS/setBackgroundMedia.js"></script>
+
+    <link rel="stylesheet" href="../Sources/JS/hljs/vs2015.css">
+    <script src="../Sources/JS/hljs/highlight.min.js"></script>
+    <script>
+        window.onload = function() {
+            hljs.highlightAll();
+        };
+    </script>
+
+    <link rel="stylesheet" href="../Sources/CSS/main.css">
+    
+    <meta name="description" content="C++ programlama diliyle ilgili tüm konuları kapsayan, başlangıç seviyesinden profesyonel seviyeye kadar, Qt6’dan Unreal Engine’e kadar uzanan kapsamlı bir dokümantasyon">
+    <meta name="keywords" content="C++, Cpp, Qt, Unreal Engine, Document, Doc, Education, Edu, Dev, Development">
+    <meta name="author" content="Data Delete - Muhammet Enes Karaboğa">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Data's Book on Cpp">
+    <meta name="twitter:description" content="C++ programlama diliyle ilgili tüm konuları kapsayan, başlangıç seviyesinden profesyonel seviyeye kadar, Qt6’dan Unreal Engine’e kadar uzanan kapsamlı bir dokümantasyon">
+    <meta name="twitter:image" content="../../Media/image/depressiveData.png">
+</head>
+<body>
+    <h1>Ağ İşlemleri</h1>
+
+    <div style="height: 100px;"></div>
+    
+    <div id="mainDiv">
+        <h2>Ağ Modülü</h2>
+        <pre id="preh2">Qt'de çoğu ek paket modüller halindedir. Modül ise birden fazla kütüphaneyi barındıran paket gibidir. Qt'de bu durum genellikle kullanılıcak olan bir özelliğin modülünü "CMakeLists.txt" dosyasına katarak eklenir.</pre>
+
+        <pre id="preh2">İlk olarak "agIslemleri" adında bir form projesi açalım. Ardından projenin CMake dosyasına şu ifadeleri ekliyelim;
+
+<code>cmake_minimum_required(VERSION 3.16)
+
+project(agIslemleri VERSION 0.1 LANGUAGES CXX)
+
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
+
+find_package(Qt6 REQUIRED COMPONENTS Network) # Network modülünü bulduk
+
+set(PROJECT_SOURCES
+        main.cpp
+        mainwindow.cpp
+        mainwindow.h
+        mainwindow.ui
+)
+
+if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
+    qt_add_executable(agIslemleri
+        MANUAL_FINALIZATION
+        ${PROJECT_SOURCES}
+    )
+# Define target properties for Android with Qt 6 as:
+#    set_property(TARGET agIslemleri APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
+#                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
+# For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
+else()
+    if(ANDROID)
+        add_library(agIslemleri SHARED
+            ${PROJECT_SOURCES}
+        )
+# Define properties for Android with Qt 5 after find_package() calls as:
+#    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
+    else()
+        add_executable(agIslemleri
+            ${PROJECT_SOURCES}
+        )
+    endif()
+endif()
+
+target_link_libraries(agIslemleri PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(agIslemleri PRIVATE Qt6::Network) # Network modülünü ekledik
+
+# Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
+# If you are developing for iOS or macOS you should consider setting an
+# explicit, fixed bundle identifier manually though.
+if(${QT_VERSION} VERSION_LESS 6.1.0)
+  set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.agIslemleri)
+endif()
+set_target_properties(agIslemleri PROPERTIES
+    ${BUNDLE_ID_OPTION}
+    MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
+    MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
+    MACOSX_BUNDLE TRUE
+    WIN32_EXECUTABLE TRUE
+)
+
+include(GNUInstallDirs)
+install(TARGETS agIslemleri
+    BUNDLE DESTINATION .
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
+
+if(QT_VERSION_MAJOR EQUAL 6)
+    qt_finalize_executable(agIslemleri)
+endif()
+</code>
+        
+Artık ağ modülünü kullanabiliriz.</pre>
+
+        <h2>QNetworkAccessManager</h2>
+        <pre id="preh2">QNetworkAccessManager, Qt ekosistemindeki internetten veri çekmemizi sağlayan bir sınıftır. Böylelikle dış kaynaklardan bilgisayarımıza bilgiler indirebilir hale geliriz.</pre>
+
+        <pre id="preh2">Örnek amaçlı bir proje yapalım. Projemiz bu sayfadan bir önceki sayfanın kaynağını internetten indiren ve bir QTextEdit'e kayıt edip görüntüleyen bir sistem yapalım.</pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/39 Qt Ağ İşlemleri.html/1.mp4" alt="39.1" width="100%"></video>
+        </div>
+
+        <pre id="codeh3">Tamamdır. Şimdi kodları yazabiliriz;
+
+mainwindow.h
+
+<code class="language-cpp">#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include &lt;QMainWindow>
+#include &lt;QNetworkAccessManager>
+#include &lt;QNetworkReply>
+#include &lt;QFile>
+#include &lt;QDataStream>
+#include &lt;QTextStream>
+#include &lt;QMessageBox>
+// Kullanıcağımız kütüphaneler
+
+QT_BEGIN_NAMESPACE
+namespace Ui {
+class MainWindow;
+}
+QT_END_NAMESPACE
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
+
+public slots:
+    void sayfayiCek(); // İnternetten sayfayı çekme
+    void sayfayiGoruntule(); // Sayfayı QTextEdit'e görüntüleme
+
+private:
+    Ui::MainWindow *ui;
+};
+#endif // MAINWINDOW_H
+</code>
+
+mainwindow.cpp
+
+<code class="language-cpp">#include "mainwindow.h"
+#include "./ui_mainwindow.h"
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+    QFile::remove("indirilen.html"); // İlk açılışta "indirilen.html" adında dosyayı siler
+
+    connect(ui->pushButton, &QPushButton::clicked, this, &MainWindow::sayfayiCek);
+    connect(ui->pushButton_2, &QPushButton::clicked, this, &MainWindow::sayfayiGoruntule);
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+QNetworkAccessManager *mngr; // İnternet olaylarının çoğunda bu yönetici yani QNetworkAccessManager sınıfı yer alır. Her işlemde "new" komutu ile yeniden oluşturulduğu için global bir işaretçi olarak tanımlanmıştır
+
+void MainWindow::sayfayiCek() // Sayfayı çekiyoruz
+{
+    mngr = new QNetworkAccessManager; // Sınıfımızı oluşturduk
+    connect(mngr, &QNetworkAccessManager::finished, this, // QNetworkAccessManager'de bir işlem başarılı bir şekilde gerçekleştiyse "finished" sinyali verilir
+    [](QNetworkReply* donusDegeri) // "finished" sinyali bize QNetworkReply adında bir sınıf ile geri döner. Bu sınıf bizim işlemimizin değerini yani internetden ne çekti isek onun verisini bize QByteArray olarak verir
+    {
+        QFile ciktiDosyasi("indirilen.html"); // Verisini çektiğimiz sayfanın kaynağını bu sayfaya yazıyoruz
+
+        if(ciktiDosyasi.open(QFile::OpenModeFlag::WriteOnly)) // Dosyamızı açtık
+        {
+            QDataStream akis(&ciktiDosyasi); // Akışımızı oluşturduk
+
+            akis << donusDegeri->readAll(); // Değerin tamamını akışa yazdırdık
+        }
+
+        ciktiDosyasi.close(); // Dosyamızdan çıktık
+
+        QMessageBox msg(
+            QMessageBox::Icon::Information,
+            "Başarılı!",
+            "Başarılı bir şekilde sayfa indirildi."
+        );
+
+        msg.exec();
+
+        // Bilgi mesajı
+    });
+
+    mngr->get(QNetworkRequest(QUrl("https://data35delete.github.io/Data-s-Book-on-Cpp/Lessons/38%20Qt%20Dosya%20İşlemleri.html")));
+    // Bu şekilde ile de Get isteğimizi gönderdik
+}
+
+void MainWindow::sayfayiGoruntule() // Sayfayı görüntüliyoruz
+{
+    QFile indirilenDosya("indirilen.html"); // Dosya nesnemiz
+
+    if(indirilenDosya.exists()) // Dosya indirilmiş ise
+    {
+        QString indirilenDosyaVerisi;
+
+        if(indirilenDosya.open(QFile::OpenModeFlag::ReadOnly))
+        {
+            QTextStream akis(&indirilenDosya);
+
+            indirilenDosyaVerisi = akis.readAll();
+
+        }
+
+        ui->textEdit->setHtml(indirilenDosyaVerisi);
+    }
+    else
+    {
+        QMessageBox msg(
+            QMessageBox::Icon::Critical,
+            "HATA!",
+            "İndirilen dosya bulunamadı!"
+        );
+
+        msg.exec();
+
+        // Bilgi mesajı
+    }
+}</code>
+
+Uygulama;</pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/39 Qt Ağ İşlemleri.html/2.mp4" alt="39.2" width="100%"></video>
+        </div>
+
+        <h3>Post</h3>
+        <pre id="preh2">Post, Get işlemi gibi dış kaynaklardan veri alıp-verişi sağlar. Farkları ise Get bunu açık yaparken Post ise bunu gizli yapar. Get ile büyük dosyalar gönderilemez çünkü karakter sınırı varken Post'da böyle bir durum söz konusu değildir.</pre>
+
+        <pre id="preh2">Şimdi projemizi temizliyelim ve httpbin.org sitesini kullanarak bir Post işlemi gerçekleştirelim. Yine aynı şekilde "İsteği gönderme" ve "Görüntüle" butonları ile işlemlerimizi gerçekleştirelim.</pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/39 Qt Ağ İşlemleri.html/3.mp4" alt="39.3" width="100%"></video>
+        </div>
+
+        <pre id="codeh2">mainwindow.h
+
+<code class="language-cpp">#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include &lt;QMainWindow>
+#include &lt;QNetworkAccessManager>
+#include &lt;QNetworkReply>
+#include &lt;QUrlQuery>
+#include &lt;QFile>
+#include &lt;QMessageBox>
+// Kullanıcağımız kütüphaneler
+
+QT_BEGIN_NAMESPACE
+namespace Ui {
+class MainWindow;
+}
+QT_END_NAMESPACE
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
+
+public slots:
+    void postIstegiAt(); // Post isteğini atma
+    void goruntule(); // Post isteğini görüntüleme
+
+private:
+    Ui::MainWindow *ui;
+};
+#endif // MAINWINDOW_H
+</code>
+
+mainwindow.cpp
+
+<code class="language-cpp">#include "mainwindow.h"
+#include "./ui_mainwindow.h"
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+    QFile::remove("gelenVeri.json");
+
+    connect(ui->pushButton_2, &QPushButton::clicked, this, &MainWindow::postIstegiAt);
+    connect(ui->pushButton, &QPushButton::clicked, this, &MainWindow::goruntule);
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+QNetworkAccessManager *mngr;
+
+void MainWindow::postIstegiAt()
+{
+    mngr = new QNetworkAccessManager;
+    connect(mngr, &QNetworkAccessManager::finished, this,
+    [](QNetworkReply *donusDegeri)
+    {
+        QFile gelenVeriDosya("gelenVeri.json");
+
+        if(gelenVeriDosya.open(QFile::OpenModeFlag::WriteOnly))
+        {
+            QTextStream akis(&gelenVeriDosya);
+
+            akis << donusDegeri->readAll();
+        }
+        gelenVeriDosya.close();
+
+        QMessageBox msg(
+            QMessageBox::Icon::Information,
+            "Başarılı!",
+            "Başarılı bir şekilde iste gönderildi ve veri alındı."
+            );
+
+        msg.exec();
+    });
+
+    QUrlQuery postIstekleri; // Post isteğindeki verileri ayarlıyoruz
+    postIstekleri.addQueryItem("degisken1", "deger1");
+    // "degisken1"; Değişkenin ismi
+    // "deger1"; Değişkenin değeri
+    postIstekleri.addQueryItem("degisken2", "deger2");
+    postIstekleri.addQueryItem("degisken3", "deger3");
+
+    QNetworkRequest postIstegi(QUrl("https://httpbin.org/post")); // QNetworkRequest ile Post isteklerini uyguladık
+    // QUrl("https://httpbin.org/post"); Kullanılıcak olan servis
+    postIstegi.setHeader(QNetworkRequest::KnownHeaders::ContentTypeHeader, "application/json"); // İstersek Header verisi yani ön bilgileri bu şekilde girebiliriz
+    // QNetworkRequest::KnownHeaders::ContentTypeHeader; Ayarlanıcak olan ayar
+    // "application/json"; Değeri
+
+    // QNetworkRequest::KnownHeaders::ContentTypeHeader, bilgilerin hangi formatta gönderilceğini belirtir
+
+    mngr->post(postIstegi, postIstekleri.toString(QUrl::FullyEncoded).toUtf8()); // Post isteğini gönderdik
+}
+
+void MainWindow::goruntule()
+{
+    QFile gelenVeri("gelenVeri.json");
+
+    if(gelenVeri.exists())
+    {
+        QString gelenBilgiVerisi;
+
+        if(gelenVeri.open(QFile::OpenModeFlag::ReadOnly))
+        {
+            QTextStream akis(&gelenVeri);
+
+            gelenBilgiVerisi = akis.readAll();
+
+        }
+
+        ui->textEdit->setText(gelenBilgiVerisi);
+    }
+    else
+    {
+        QMessageBox msg(
+            QMessageBox::Icon::Critical,
+            "HATA!",
+            "İndirilen istek bulunamadı!"
+            );
+
+        msg.exec();
+    }
+}</code>
+
+Uygulaması ise;</pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/39 Qt Ağ İşlemleri.html/4.mp4" alt="39.3" width="100%"></video>
+        </div>
+
+        <h2>Kaynakça</h2>
+        <ul>
+            <li><a href="https://doc.qt.io/qt-6/qtnetwork-index.html">https://doc.qt.io/qt-6/qtnetwork-index.html</a></li>
+            <li><a href="https://mbilgil0.medium.com/get-vs-post-deb3000ff4d7">https://mbilgil0.medium.com/get-vs-post-deb3000ff4d7</a></li>
+            <li><a href="https://data35delete.github.io/Data-s-Book-on-C/Lessons/22%20C%20HTTP%20İstekleri%20Yönetimi.html">https://data35delete.github.io/Data-s-Book-on-C/Lessons/22%20C%20HTTP%20İstekleri%20Yönetimi.html</a></li>
+            <li><a href="https://stackoverflow.com/questions/2599423/how-can-i-post-data-to-a-url-using-qnetworkaccessmanager">https://stackoverflow.com/questions/2599423/how-can-i-post-data-to-a-url-using-qnetworkaccessmanager</a></li>
+        </ul>
+    </div>
+
+    <div style="height: 100px;"></div>
+
+    <footer style="position: fixed; left: 0; bottom: 0; width: 100%; background: transparent; text-align: center; padding: 10px 0; z-index: 100;">
+        <div>
+            <a href="./38 Qt Dosya İşlemleri.html" style="margin-right: 20px; cursor:pointer;">
+                &larr; Önceki
+            </a>
+            <a href="" style="cursor:pointer;">
+                Sonraki &rarr;
+            </a>
+        </div>
+        <div>
+            <p>&copy; 2026 Data's Book</p>
+        </div>
+
+        <div style="position: absolute; right: 20px; bottom: 20px;">
+            <a href="./1 Cpp İçindekiler.html" style="text-decoration: none;">
+                İçindekiler
+            </a>
+        </div>
+    </footer>
+</body>
+</html>
+
+<!-- Muhammet Enes nam-ı diğer Data Delete tarafından sevgi ile yapıldı <3 -->
