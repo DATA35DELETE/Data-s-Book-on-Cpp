@@ -636,8 +636,6 @@
 - **QNetworkAccessManager**: Tanım. HTTP İstekleri. Örnek.
 - **GET İsteği**: `get()`. `QNetworkReply`. Örnek.
 - **POST İsteği**: `post()`. Örnek.
-- **QNetworkRequest**: Tanım. Header Yönetimi. Örnek.
-- **QNetworkReply**: Tanım. `finished` sinyali. Hata Yönetimi. Örnek.
 - **SSL/HTTPS**: Tanım. `QSslConfiguration`. Örnek.
 - **QTcpServer ve QTcpSocket**: Tanım. TCP Sunucu/İstemci. Örnek.
 - **QUdpSocket**: Tanım. UDP İletişim. Örnek.

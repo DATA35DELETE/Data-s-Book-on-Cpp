@@ -408,12 +408,153 @@ Uygulaması ise;</pre>
             <video controls src="../Bibliography/39 Qt Ağ İşlemleri.html/4.mp4" alt="39.3" width="100%"></video>
         </div>
 
+        <h2>QSslconfiguration</h2>
+        <pre id="preh2">Bu sınıf bizlere QNetworkRequest sınıfının işleminde hangi güvenlik protokolünü kullanıcağını ayarlayan bir sınıftır. İstersek TlsV1_2 yada TlsV1_3 gibi protokolleri zorlayabilir ve "Bu güvenlik sistemini kullan" diyerek özelleştirebiliriz.</pre>
+
+        <pre>mainwindow.h
+            
+<code class="language-cpp">#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include &lt;QMainWindow>
+#include &lt;QNetworkAccessManager>
+#include &lt;QNetworkReply>
+#include &lt;QUrlQuery>
+#include &lt;QFile>
+#include &lt;QMessageBox>
+#include &lt;QSslConfiguration> // Kütüphane
+// Kullanıcağımız kütüphaneler
+
+QT_BEGIN_NAMESPACE
+namespace Ui {
+class MainWindow;
+}
+QT_END_NAMESPACE
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
+
+public slots:
+    void postIstegiAt(); // Post isteğini atma
+    void goruntule(); // Post isteğini görüntüleme
+
+private:
+    Ui::MainWindow *ui;
+};
+#endif // MAINWINDOW_H
+</code>
+
+mainwindow.cpp
+
+<code class="language-cpp">#include "mainwindow.h"
+#include "./ui_mainwindow.h"
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+    QFile::remove("gelenVeri.json");
+
+    connect(ui->pushButton_2, &QPushButton::clicked, this, &MainWindow::postIstegiAt);
+    connect(ui->pushButton, &QPushButton::clicked, this, &MainWindow::goruntule);
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+QNetworkAccessManager *mngr;
+
+void MainWindow::postIstegiAt()
+{
+    mngr = new QNetworkAccessManager;
+
+    connect(mngr, &QNetworkAccessManager::finished, this,
+    [](QNetworkReply *donusDegeri)
+    {
+        QFile gelenVeriDosya("gelenVeri.json");
+
+        if(gelenVeriDosya.open(QFile::OpenModeFlag::WriteOnly))
+        {
+            QTextStream akis(&gelenVeriDosya);
+
+            akis << donusDegeri->readAll();
+        }
+        gelenVeriDosya.close();
+
+        QMessageBox msg(
+            QMessageBox::Icon::Information,
+            "Başarılı!",
+            "Başarılı bir şekilde iste gönderildi ve veri alındı."
+            );
+
+        msg.exec();
+    });
+
+    QUrlQuery postIstekleri;
+    postIstekleri.addQueryItem("degisken1", "deger1");
+    postIstekleri.addQueryItem("degisken2", "deger2");
+    postIstekleri.addQueryItem("degisken3", "deger3");
+
+    QNetworkRequest postIstegi(QUrl("https://httpbin.org/post"));
+    postIstegi.setHeader(QNetworkRequest::KnownHeaders::ContentTypeHeader, "application/json");
+
+    QSslConfiguration ssl = QSslConfiguration::defaultConfiguration(); // QSslConfiguration sınıfını oluşturduk
+    ssl.setProtocol(QSsl::TlsV1_2); // Protokulu belirledik
+    // TslV1_3 için QSsl::Tlsv1_3
+
+    postIstegi.setSslConfiguration(ssl); // İsteğimizin güvenlik ayarını yaptık
+
+    mngr->post(postIstegi, postIstekleri.toString(QUrl::FullyEncoded).toUtf8());
+}
+
+void MainWindow::goruntule()
+{
+    QFile gelenVeri("gelenVeri.json");
+
+    if(gelenVeri.exists())
+    {
+        QString gelenBilgiVerisi;
+
+        if(gelenVeri.open(QFile::OpenModeFlag::ReadOnly))
+        {
+            QTextStream akis(&gelenVeri);
+
+            gelenBilgiVerisi = akis.readAll();
+
+        }
+
+        ui->textEdit->setText(gelenBilgiVerisi);
+    }
+    else
+    {
+        QMessageBox msg(
+            QMessageBox::Icon::Critical,
+            "HATA!",
+            "İndirilen istek bulunamadı!"
+            );
+
+        msg.exec();
+    }
+}</code>
+
+sonucumuz aynıdır.</pre>
+
         <h2>Kaynakça</h2>
         <ul>
             <li><a href="https://doc.qt.io/qt-6/qtnetwork-index.html">https://doc.qt.io/qt-6/qtnetwork-index.html</a></li>
             <li><a href="https://mbilgil0.medium.com/get-vs-post-deb3000ff4d7">https://mbilgil0.medium.com/get-vs-post-deb3000ff4d7</a></li>
             <li><a href="https://data35delete.github.io/Data-s-Book-on-C/Lessons/22%20C%20HTTP%20İstekleri%20Yönetimi.html">https://data35delete.github.io/Data-s-Book-on-C/Lessons/22%20C%20HTTP%20İstekleri%20Yönetimi.html</a></li>
             <li><a href="https://stackoverflow.com/questions/2599423/how-can-i-post-data-to-a-url-using-qnetworkaccessmanager">https://stackoverflow.com/questions/2599423/how-can-i-post-data-to-a-url-using-qnetworkaccessmanager</a></li>
+            <li><a href="https://doc.qt.io/qt-6.12/qsslconfiguration.html">https://doc.qt.io/qt-6.12/qsslconfiguration.html</a></li>
         </ul>
     </div>
 
