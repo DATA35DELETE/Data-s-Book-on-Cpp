@@ -548,103 +548,6 @@ void MainWindow::goruntule()
 
 sonucumuz aynıdır.</pre>
 
-        <h2>TCP İletişimi</h2>
-        <pre id="preh2">Geldik soket iletişimlerinden TCP soketine... Bu kısımda soket nedir veya TCP nedir gibi konulara değinmicem. Zaten "<a href="https://data35delete.github.io/Data-s-Book-on-Cpp/Lessons/26%20Cpp%20Soket%20%C4%B0%C5%9Flemleri.html">Soket</a>"" konumuzda ele almıştık.</pre>
-
-        <pre id="preh2">Şimdi ise proje olarak ele alalım. Proje olarakda iki soket arasında iletişimi sağlayan bir sistem tasarlayalım. Bir taraf sunucu diğer taraf ise istemci olsun. Birbirlerini IP ve Port numaralarından takip edebilsinler. Hadi kodlıyalım. Tabi ilk önce Qt Creator'dan "agIletisimi" adlı bir form projesi açalım.</pre>
-
-        <div id="divh2Vid">
-            <video controls src="../Bibliography/39 Qt Ağ İşlemleri.html/5.mp4" alt="39.5" width="100%"></video>
-        </div>
-
-        <div id="divh2Vid">
-            <video controls src="../Bibliography/39 Qt Ağ İşlemleri.html/6.mp4" alt="39.6" width="100%"></video>
-        </div>
-
-        <pre id="codeh2">CMakeLists.txt
-
-<code class="language-cpp">cmake_minimum_required(VERSION 3.16)
-
-project(agIletisimi VERSION 0.1 LANGUAGES CXX)
-
-set(CMAKE_AUTOUIC ON)
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
-
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
-find_package(Qt6 REQUIRED COMPONENTS Network)
-
-set(PROJECT_SOURCES
-        main.cpp
-        mainwindow.cpp
-        mainwindow.h
-        mainwindow.ui
-)
-
-if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(agIletisimi
-        MANUAL_FINALIZATION
-        ${PROJECT_SOURCES}
-    )
-# Define target properties for Android with Qt 6 as:
-#    set_property(TARGET agIletisimi APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
-#                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
-# For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
-else()
-    if(ANDROID)
-        add_library(agIletisimi SHARED
-            ${PROJECT_SOURCES}
-        )
-# Define properties for Android with Qt 5 after find_package() calls as:
-#    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
-    else()
-        add_executable(agIletisimi
-            ${PROJECT_SOURCES}
-        )
-    endif()
-endif()
-
-target_link_libraries(agIletisimi PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
-target_link_libraries(agIletisimi PRIVATE Qt6::Network)
-
-# Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
-# If you are developing for iOS or macOS you should consider setting an
-# explicit, fixed bundle identifier manually though.
-if(${QT_VERSION} VERSION_LESS 6.1.0)
-  set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.agIletisimi)
-endif()
-set_target_properties(agIletisimi PROPERTIES
-    ${BUNDLE_ID_OPTION}
-    MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
-    MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
-    MACOSX_BUNDLE TRUE
-    WIN32_EXECUTABLE TRUE
-)
-
-include(GNUInstallDirs)
-install(TARGETS agIletisimi
-    BUNDLE DESTINATION .
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
-
-if(QT_VERSION_MAJOR EQUAL 6)
-    qt_finalize_executable(agIletisimi)
-endif()</code>
-            
-mainwindow.h
-
-<code class="language-cpp"></code>
-
-mainwindow.cpp
-
-<code class="language-cpp"></code>
-        </pre>
-
         <h2>Kaynakça</h2>
         <ul>
             <li><a href="https://doc.qt.io/qt-6/qtnetwork-index.html">https://doc.qt.io/qt-6/qtnetwork-index.html</a></li>
@@ -652,10 +555,6 @@ mainwindow.cpp
             <li><a href="https://data35delete.github.io/Data-s-Book-on-C/Lessons/22%20C%20HTTP%20İstekleri%20Yönetimi.html">https://data35delete.github.io/Data-s-Book-on-C/Lessons/22%20C%20HTTP%20İstekleri%20Yönetimi.html</a></li>
             <li><a href="https://stackoverflow.com/questions/2599423/how-can-i-post-data-to-a-url-using-qnetworkaccessmanager">https://stackoverflow.com/questions/2599423/how-can-i-post-data-to-a-url-using-qnetworkaccessmanager</a></li>
             <li><a href="https://doc.qt.io/qt-6.12/qsslconfiguration.html">https://doc.qt.io/qt-6.12/qsslconfiguration.html</a></li>
-            <li><a href="https://data35delete.github.io/Data-s-Book-on-Cpp/Lessons/26%20Cpp%20Soket%20%C4%B0%C5%9Flemleri.html">https://data35delete.github.io/Data-s-Book-on-Cpp/Lessons/26%20Cpp%20Soket%20%C4%B0%C5%9Flemleri.html</a></li>
-            <li><a href="https://doc.qt.io/qt-6/qtcpserver.html">https://doc.qt.io/qt-6/qtcpserver.html</a></li>
-            <li><a href="https://stackoverflow.com/questions/12927273/how-to-get-local-ip-address-of-a-computer-using-qt">https://stackoverflow.com/questions/12927273/how-to-get-local-ip-address-of-a-computer-using-qt</a></li>
-            <li><a href="https://riptutorial.com/qt/example/29874/tcp-server">https://riptutorial.com/qt/example/29874/tcp-server</a></li>
         </ul>
     </div>
 
