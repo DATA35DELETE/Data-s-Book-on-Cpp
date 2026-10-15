@@ -649,12 +649,7 @@
   - **Worker-Thread Paterni**: Tanım. Sinyal-Slot ile İletişim. Örnek.
   - **moveToThread()**: Tanım. Kullanım. Örnek.
 - **QMutex**: Tanım. `lock()`. `unlock()`. Örnek.
-- **QMutexLocker**: Tanım. RAII. Örnek.
-- **QReadWriteLock**: Tanım. Okuma/Yazma Kilidi. Örnek.
-- **QSemaphore**: Tanım. Örnek.
-- **QWaitCondition**: Tanım. Örnek.
 - **QtConcurrent**: Tanım. `run()`. `map()`. `filter()`. Örnek.
-- **QFuture ve QFutureWatcher**: Tanım. Asenkron Sonuç Takibi. Örnek.
 
 ---
 

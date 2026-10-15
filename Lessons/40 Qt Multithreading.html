@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data's Book on Cpp</title>
+
+    <link rel="icon" type="image/x-icon" href="../Sources/favicon.png">
+
+    <script src="../Sources/JS/setBackgroundMedia.js"></script>
+
+    <link rel="stylesheet" href="../Sources/JS/hljs/vs2015.css">
+    <script src="../Sources/JS/hljs/highlight.min.js"></script>
+    <script>
+        window.onload = function() {
+            hljs.highlightAll();
+        };
+    </script>
+
+    <link rel="stylesheet" href="../Sources/CSS/main.css">
+    
+    <meta name="description" content="C++ programlama diliyle ilgili tüm konuları kapsayan, başlangıç seviyesinden profesyonel seviyeye kadar, Qt6’dan Unreal Engine’e kadar uzanan kapsamlı bir dokümantasyon">
+    <meta name="keywords" content="C++, Cpp, Qt, Unreal Engine, Document, Doc, Education, Edu, Dev, Development">
+    <meta name="author" content="Data Delete - Muhammet Enes Karaboğa">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Data's Book on Cpp">
+    <meta name="twitter:description" content="C++ programlama diliyle ilgili tüm konuları kapsayan, başlangıç seviyesinden profesyonel seviyeye kadar, Qt6’dan Unreal Engine’e kadar uzanan kapsamlı bir dokümantasyon">
+    <meta name="twitter:image" content="../../Media/image/depressiveData.png">
+</head>
+<body>
+    <h1>Multithreading (Çoklu Görev)</h1>
+
+    <div style="height: 100px;"></div>
+    
+    <div id="mainDiv">
+        <h2>Qt'de Multithreading</h2>
+        <pre id="preh2">Qt'de Multithreading veya asenkron işlemleri, QThread sınıfından sağlanır. Tıpkı standart C++ programlama dilinde std::thread sınıfıyla yapıldığı gibi... Aynı zamanda Core yani çekirdek paketinde bulunur.</pre>
+
+        <pre id="preh2">Uygulamak için "Multithreading" adlı bir form uygulaması açalım.</pre>
+
+        <h2>QThread</h2>
+        <pre id="preh2">İlk olarak QThread'in temel kullanımından bahsedelim.</pre>
+
+        <pre id="preh2">Şimdi projeyi geliştirmeden önce şu makeniği konuşalım. While döngüsü yapısı geriği kendi içerisinde bulunduğu iş parçacığını meşgul eder. While döngüsü dönmeye başladığı anda bulunduğu iş parçacığını kitler. Bu durum normal konsol uygulamalarında sorun olmazken, Qt gibi pencereli sistemlerde sorunlara yol açar. Çünkü aynı iş parçacağında hem kodun kendisi hem pencerenin sistemleri hemde genel kontrol sistemleri olduğundan, While döngüsü bu sistemleri kitler. Genelde kullanıcılarda bu durumu pencerenin "Program yanıt veremiyor" durumu oluşur ve pencere donar.</pre>
+
+        <pre id="preh2">İşte bu durumu engellemek için Qt'den QThread kullanılır. Şimdi sizlere beraber ekrandaki QProgressBar buçuk saniye aralıklarla, artış animasyonunu QThread ile yapalım.</pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/40 Qt Multithreading.html/1.mp4" alt="40.1" width="100%"></video>
+        </div>
+
+        <pre id="codeh2">mainwindow.h
+
+<code class="language-cpp">#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include &lt;QMainWindow>
+#include &lt;QThread> // Kütüphanemiz
+
+QT_BEGIN_NAMESPACE
+namespace Ui {
+class MainWindow;
+}
+QT_END_NAMESPACE
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
+
+private:
+    Ui::MainWindow *ui;
+};
+#endif // MAINWINDOW_H
+</code>
+
+mainwindow.cpp
+
+<code class="language-cpp">#include "mainwindow.h"
+#include "./ui_mainwindow.h"
+
+Ui::MainWindow* publicUi; // Ui bileşenimizi herkese açık yaptık. ÖNERİLMEZ! SADECE GÖSTERMEK AMAÇLI YAPMIŞ BULUNUYORUM
+
+class parcacikdekiBolum : public QObject{ // Sınıfımız
+
+// Hangi akla hizmet bilinmez fakat QThread'de bir işlemi asenkron olarak işletmek için ayrı bir sınıfın oluşturulması ve kullanılması gerekir
+
+    public slots:
+        void animasyonParcacigi_started() // Bağlanancak fonksiyon
+        {
+            for (int i = 0; i < 4; ++i) {
+                publicUi->progressBar->setValue(publicUi->progressBar->value() + 20);
+
+                QThread::msleep(500);
+            }
+        }
+};
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+    publicUi = ui; // Ui bileşenimizi herkese açık yaptık
+
+    QThread *animasyonParcacigi = new QThread(this); // QThread nesnemiz
+    parcacikdekiBolum *animasyonBolumu = new parcacikdekiBolum(); // Kendi tanımladığımız sınıf
+
+    animasyonBolumu->moveToThread(animasyonParcacigi); // Bu kısımda QThread nesmemizi "animasyonBolumu" adlı sınıfımızın ayrı iş parçacağı haline geitrdik ki asenkron bir şekilde işlemlerimiz gerçekleşsin
+
+    connect(animasyonParcacigi, &QThread::started, animasyonBolumu, &parcacikdekiBolum::animasyonParcacigi_started); // Başlangıç durumuna fonksiyonumuzu bağladık
+    connect(animasyonParcacigi, &QThread::finished, &QThread::deleteLater); // Bellek yönetimi için gereklidir. QThread'deki işlemler sona erer ermez bellekten kendisini boşaltır
+
+    animasyonParcacigi->start(); // Başlat
+
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}</code>
+
+Çıktısı ise;</pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/40 Qt Multithreading.html/2.mp4" width="100%"></video>
+        </div>
+
+        <h2>QMutex</h2>
+        <pre id="preh2">Standart Mutex yapısının Qt versiyonudur. Amacı aynı olarak veir yarışlarını önlemektir. Gelin uygulayalım.</pre>
+
+        <pre id="codeh2">mainwindow.h
+
+<code class="language-cpp">#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include &lt;QMainWindow>
+#include &lt;QThread>
+#include &lt;QMutex> // Kütüphanemiz
+
+QT_BEGIN_NAMESPACE
+namespace Ui {
+class MainWindow;
+}
+QT_END_NAMESPACE
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
+
+private:
+    Ui::MainWindow *ui;
+};
+#endif // MAINWINDOW_H
+</code>
+
+mainwindow.cpp
+
+<code class="language-cpp">#include "mainwindow.h"
+#include "./ui_mainwindow.h"
+
+QMutex genelMutexYapisi; // Genel QMutex yapısını tanımladık
+Ui::MainWindow* publicUi;
+
+class parcacikdekiBolum : public QObject{
+    public slots:
+        void animasyonParcacigi_started()
+        {
+            genelMutexYapisi.lock(); // Kitle
+
+            for (int i = 0; i < 4; ++i) {
+                publicUi->progressBar->setValue(publicUi->progressBar->value() + 20);
+
+                QThread::msleep(500);
+            }
+
+            genelMutexYapisi.unlock(); // Çöz
+
+            // Kitle-Çöz yapısını aynı ve farklı iş parçacıklarında çalışan fonksiyon yapılarında kullanılmalıdır
+        }
+};
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+    publicUi = ui;
+
+    QThread *animasyonParcacigi = new QThread(this);
+    parcacikdekiBolum *animasyonBolumu = new parcacikdekiBolum();
+
+    animasyonBolumu->moveToThread(animasyonParcacigi);
+
+    connect(animasyonParcacigi, &QThread::started, animasyonBolumu, &parcacikdekiBolum::animasyonParcacigi_started); // Başlangıç durumuna fonksiyonumuzu bağladık
+    connect(animasyonParcacigi, &QThread::finished, &QThread::deleteLater);
+
+    animasyonParcacigi->start();
+
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}</code>
+
+Sonuç ve çıktı değişmicektir.</pre>
+
+        <h2>QtConcurrent</h2>
+        <pre id="preh2">QtConcurrent, QThread'in geliştirilmiş ve düşük seviyeli halinden yüksek seviyeli haline getirilen bir paket ve sınıf bütünür. Amaç şudur; "QThread'a veri yarışları gibi durumları önlemek için kullanılan sınıfları kullanıcı yerine sınıf düzenlesin ve kullansın". Böylelikle QtConcurrent doğmuş oldu.</pre>
+
+        <pre id="preh2">QtConcurrent bir paket olduğu için CMakeLists.txt dosyasını düzenliyelim;
+
+<code>cmake_minimum_required(VERSION 3.16)
+
+project(multithreading VERSION 0.1 LANGUAGES CXX)
+
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
+find_package(Qt6 REQUIRED COMPONENTS Concurrent) # <-
+
+set(PROJECT_SOURCES
+        main.cpp
+        mainwindow.cpp
+        mainwindow.h
+        mainwindow.ui
+)
+
+if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
+    qt_add_executable(multithreading
+        MANUAL_FINALIZATION
+        ${PROJECT_SOURCES}
+    )
+# Define target properties for Android with Qt 6 as:
+#    set_property(TARGET multithreading APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
+#                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
+# For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
+else()
+    if(ANDROID)
+        add_library(multithreading SHARED
+            ${PROJECT_SOURCES}
+        )
+# Define properties for Android with Qt 5 after find_package() calls as:
+#    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
+    else()
+        add_executable(multithreading
+            ${PROJECT_SOURCES}
+        )
+    endif()
+endif()
+
+target_link_libraries(multithreading PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(multithreading PRIVATE Qt6::Concurrent) # <-
+
+# Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
+# If you are developing for iOS or macOS you should consider setting an
+# explicit, fixed bundle identifier manually though.
+if(${QT_VERSION} VERSION_LESS 6.1.0)
+  set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.multithreading)
+endif()
+set_target_properties(multithreading PROPERTIES
+    ${BUNDLE_ID_OPTION}
+    MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
+    MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
+    MACOSX_BUNDLE TRUE
+    WIN32_EXECUTABLE TRUE
+)
+
+include(GNUInstallDirs)
+install(TARGETS multithreading
+    BUNDLE DESTINATION .
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
+
+if(QT_VERSION_MAJOR EQUAL 6)
+    qt_finalize_executable(multithreading)
+endif()</code></pre>
+
+        <pre id="codeh2">Ardından projemizi temizliyelim ve aynı işleve sahip programızın QtConcurrent versiyonunu yazalım.
+
+mainwindow.h
+
+<code class="language-cpp">#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include &lt;QMainWindow>
+#include &lt;QtConcurrent> // Paketimizi ekledik
+
+QT_BEGIN_NAMESPACE
+namespace Ui {
+class MainWindow;
+}
+QT_END_NAMESPACE
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
+
+private:
+    Ui::MainWindow *ui;
+};
+#endif // MAINWINDOW_H
+</code>
+
+mainwindow.cpp
+
+<code class="language-cpp">#include "mainwindow.h"
+#include "./ui_mainwindow.h"
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+    auto donus = QtConcurrent::run([this]() // Tek komutla ve ister lamb ister normal fonkisyonlarla bu kadar kolay bir şekilde asenkron programlama yapılabilir
+    {
+        for (int var = 0; var < 4; ++var) {
+            ui->progressBar->setValue(ui->progressBar->value() + 20);
+
+            QThread::msleep(500);
+        }
+    });
+
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}</code>
+
+Çıktı ve sonuç aynı olucaktır.</pre>
+
+        <h2>Kaynakça</h2>
+        <ul>
+            <li><a href="https://doc.qt.io/qt-6/qthread.html">https://doc.qt.io/qt-6/qthread.html</a></li>
+            <li><a href="https://somcosoftware.com/en/blog/mastering-qt-multithreading-without-losing-your-mind">https://somcosoftware.com/en/blog/mastering-qt-multithreading-without-losing-your-mind</a></li>
+            <li><a href="https://doc.qt.io/qt-6/qtconcurrent-index.html">https://doc.qt.io/qt-6/qtconcurrent-index.html</a></li>
+        </ul>
+    </div>
+
+    <div style="height: 100px;"></div>
+
+    <footer style="position: fixed; left: 0; bottom: 0; width: 100%; background: transparent; text-align: center; padding: 10px 0; z-index: 100;">
+        <div>
+            <a href="./39 Qt Ağ İşlemleri.html" style="margin-right: 20px; cursor:pointer;">
+                &larr; Önceki
+            </a>
+            <a href="" style="cursor:pointer;">
+                Sonraki &rarr;
+            </a>
+        </div>
+        <div>
+            <p>&copy; 2026 Data's Book</p>
+        </div>
+
+        <div style="position: absolute; right: 20px; bottom: 20px;">
+            <a href="./1 Cpp İçindekiler.html" style="text-decoration: none;">
+                İçindekiler
+            </a>
+        </div>
+    </footer>
+</body>
+</html>
+
+<!-- Muhammet Enes nam-ı diğer Data Delete tarafından sevgi ile yapıldı <3 -->
