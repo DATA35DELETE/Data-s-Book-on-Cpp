@@ -665,8 +665,6 @@
 - **Veri Silme (DELETE)**: Tanım. Örnek.
 - **Prepared Statements**: Tanım. SQL Injection Koruması. `bindValue()`. Örnek.
 - **QSqlTableModel**: Tanım. View ile Entegrasyon. Örnek.
-- **QSqlRelationalTableModel**: Tanım. İlişkisel Tablo. Örnek.
-- **Transaction Yönetimi**: `transaction()`. `commit()`. `rollback()`. Örnek.
 
 ---
 

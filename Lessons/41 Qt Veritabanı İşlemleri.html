@@ -388,7 +388,7 @@ public slots:
     void pushButton5_clicked(); // Veriyi sil
     void pushButton6_clicked(); // Girilen Id'nin verilerini göster
     void pushButton7_clicked(); // Veriyi güncelle
-    void pushButton8_clicked(); // Veriyi güncelle
+    void pushButton8_clicked(); // Veriyi listele
 
 private:
     Ui::MainWindow *ui;
@@ -586,12 +586,241 @@ void MainWindow::pushButton8_clicked()
             <video controls src="../Bibliography/41 Qt Veritabanı İşlemleri.html/8.mp4" alt="41.8" width="100%"></video>
         </div>
 
+        <h2>QSqlTableModel</h2>
+        <pre id="preh2">QSqlTableModel, Sql'den gelen verileri bir TableModel sınıfıymış gibi düzenleyen ve QTableView ile gerçek zamanlı görüntüleyebilceğimiz bir sınıftır.</pre>
+
+        <pre id="preh2">Örnek olması açısından uygulamamızın "Tablodaki Verileri Listele" kısmın QTableView ile değiştirelim ve sistemimizi QSqlTableModel'i entegre edelim.</pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/41 Qt Veritabanı İşlemleri.html/9.mp4" alt="41.9" width="100%"></video>
+        </div>
+
+        <pre id="codeh2">mainwindow.h
+
+<code class="language-cpp">#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include &lt;QMainWindow>
+#include &lt;QMessageBox>
+#include &lt;QSql>
+#include &lt;QSqlDatabase>
+#include &lt;QSqlError>
+#include &lt;QSqlQuery>
+#include &lt;QSqlTableModel> // Kütüphanemiz
+
+QT_BEGIN_NAMESPACE
+namespace Ui {
+class MainWindow;
+}
+QT_END_NAMESPACE
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
+
+public slots:
+    void pushButton_clicked(); // Veritabanı oluşturma
+    void pushButton2_clicked(); // Tablo oluşturma
+    void pushButton3_clicked(); // Tabloyu silme
+
+    void pushButton4_clicked(); // Veri ekle
+    void pushButton5_clicked(); // Veriyi sil
+    void pushButton6_clicked(); // Girilen Id'nin verilerini göster
+    void pushButton7_clicked(); // Veriyi güncelle
+    void pushButton8_clicked(); // Veriyi listele
+
+private:
+    Ui::MainWindow *ui;
+};
+#endif // MAINWINDOW_H
+</code>
+
+mainwindow.cpp
+
+<code class="language-cpp">#include "mainwindow.h"
+#include "./ui_mainwindow.h"
+
+QSqlDatabase sqliteVeritabani; // Global olarak tanımladık
+QSqlTableModel* qstm; // Global işaretçisini tanımladık
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+    qstm = new QSqlTableModel; // Nesnesini oluşturduk
+    ui->tableView->setModel(qstm); // Penceredeki QTableView'ın Model'i haline getirdik
+
+    connect(ui->pushButton, &QPushButton::clicked, this, &MainWindow::pushButton_clicked);
+    connect(ui->pushButton_2, &QPushButton::clicked, this, &MainWindow::pushButton2_clicked);
+    connect(ui->pushButton_3, &QPushButton::clicked, this, &MainWindow::pushButton3_clicked);
+
+    connect(ui->pushButton_4, &QPushButton::clicked, this, &MainWindow::pushButton4_clicked);
+    connect(ui->pushButton_5, &QPushButton::clicked, this, &MainWindow::pushButton5_clicked);
+    connect(ui->pushButton_6, &QPushButton::clicked, this, &MainWindow::pushButton6_clicked);
+    connect(ui->pushButton_7, &QPushButton::clicked, this, &MainWindow::pushButton7_clicked);
+    connect(ui->pushButton_8, &QPushButton::clicked, this, &MainWindow::pushButton8_clicked);
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::pushButton_clicked()
+{
+    sqliteVeritabani = QSqlDatabase::addDatabase("QSQLITE"); // Veritabanımızın ne tür olucağını belirledik
+    // "QSQLITE"; Bu ifade yerine yukarıda verdiğimiz veritabanlarını isimlerini Qt'deki karşılıklarına denk gelen ifadeyi yazınız. Ben Sqlite kullanıcağım için "QSQLITE" olarak yazdım
+    sqliteVeritabani.setDatabaseName("veritabani.db"); // Bu kısımda ise veritabanımızın ismini belirliyoruz. Aslında bu kısım SQL dilinde "create database veritabani" komutuna karşılık gelir
+
+    if(sqliteVeritabani.open()) // Eğer tabanı açılırsa
+    {
+        QMessageBox(QMessageBox::Icon::Information, "BAŞARILI", "Veritabanı başarılı bir şekilde açıldı!").exec();
+    }
+    else // açılamazsa
+    {
+        QMessageBox(QMessageBox::Icon::Critical, "BAŞARISIZ", QString("Sqlite veritabanı açılamadı: ").append(sqliteVeritabani.lastError().text())).exec();
+        // Eğer bir durumda hata alınır ise
+        //  sqliteVeritabani.lastError().text()
+        // komutu ile hatanın mesajı alınabilir
+    }
+}
+
+void MainWindow::pushButton2_clicked()
+{
+    QSqlQuery sorgu1(sqliteVeritabani); // Sql sorgu nesnemiz. Parantezlerine ise sorgudan etkilencek olan veritabanı nesnesini yazdık
+    sorgu1.prepare("create table kisiler(id int, ad text, soyad text)"); // Sorgumuzu doldurduk
+
+    if(sorgu1.exec()) // Sorgumuzu çalıştırdık
+    { // Başarılı ise
+        QMessageBox(QMessageBox::Icon::Information, "BAŞARILI", "Tablomuz başarılı bir şekilde oluşturuldu!").exec();
+    }
+    else // değil ise
+    {
+        QMessageBox(QMessageBox::Icon::Critical, "BAŞARISIZ", QString("Tablomuz oluşturulamadı: ").append(sorgu1.lastError().text())).exec();
+        // Sorguda bir hata oluşmuş ise
+        //  sorgu1.lastError().text()
+        // komutu ile alınır
+    }
+}
+
+void MainWindow::pushButton3_clicked()
+{
+    QSqlQuery sorgu1(sqliteVeritabani);
+    sorgu1.prepare("drop table kisiler");
+
+    if(sorgu1.exec())
+    {
+        QMessageBox(QMessageBox::Icon::Information, "BAŞARILI", "Tablomuz başarılı bir şekilde silindi!").exec();
+    }
+    else
+    {
+        QMessageBox(QMessageBox::Icon::Critical, "BAŞARISIZ", QString("Tablomuz silinemedi: ").append(sorgu1.lastError().text())).exec();
+    }
+}
+
+void MainWindow::pushButton4_clicked()
+{
+    QSqlQuery sorgu1(sqliteVeritabani);
+    sorgu1.prepare("insert into kisiler(id, ad, soyad) values((:id), (:ad), (:soyad))"); // Güvenli sorgu yazdık
+    sorgu1.bindValue(":id", ui->lineEdit->text().toInt()); // Güvenli sorgu argümanları doldurduk
+    // ":id"; Argüman ismi
+    // ui->lineEdit->text().toInt(); Argümana yazılcak olan değer
+    sorgu1.bindValue(":ad", ui->lineEdit_2->text());
+    sorgu1.bindValue(":soyad", ui->lineEdit_3->text());
+
+    if(sorgu1.exec())
+    {
+        QMessageBox(QMessageBox::Icon::Information, "BAŞARILI", "Veri başarlı bir şekilde eklendi!").exec();
+    }
+    else
+    {
+        QMessageBox(QMessageBox::Icon::Critical, "BAŞARISIZ", QString("Veri eklenemedi: ").append(sorgu1.lastError().text())).exec();
+    }
+}
+
+void MainWindow::pushButton5_clicked()
+{
+    QSqlQuery sorgu1(sqliteVeritabani);
+    sorgu1.prepare("delete from kisiler where id=(:id)");
+    sorgu1.bindValue(":id", ui->lineEdit_4->text().toInt());
+
+    if(sorgu1.exec())
+    {
+        QMessageBox(QMessageBox::Icon::Information, "BAŞARILI", "Veri başarlı bir şekilde silinidi!").exec();
+    }
+    else
+    {
+        QMessageBox(QMessageBox::Icon::Critical, "BAŞARISIZ", QString("Veri silinemedi: ").append(sorgu1.lastError().text())).exec();
+    }
+}
+
+void MainWindow::pushButton6_clicked()
+{
+    QSqlQuery sorgu1(sqliteVeritabani);
+    sorgu1.prepare("select * from kisiler where id=(:id)");
+    sorgu1.bindValue(":id", ui->lineEdit_5->text().toInt());
+
+    if(sorgu1.exec()) // Başarılı ise
+    {
+        while(sorgu1.next()) // Select komutu bizlere geri dönüşlü bir değer döndürdüğünden, while döngüsü ile verileri alırız
+        {
+            ui->lineEdit_7->setText(sorgu1.value(0).toString());
+            // Sorgudan bir çıktı geliyor ise
+            //  sorgu1.value(int index)
+            // komutu ile alınabilir
+            ui->lineEdit_6->setText(sorgu1.value(1).toString());
+            ui->lineEdit_8->setText(sorgu1.value(2).toString());
+        }
+    }
+    else
+    {
+        QMessageBox(QMessageBox::Icon::Critical, "BAŞARISIZ", QString("Kullanıcı bulunamadı: ").append(sorgu1.lastError().text())).exec();
+    }
+}
+
+void MainWindow::pushButton7_clicked()
+{
+    QSqlQuery sorgu1(sqliteVeritabani);
+    sorgu1.prepare("update kisiler set ad=(:ad), soyad=(:soyad) where id=(:id)");
+    sorgu1.bindValue(":id", ui->lineEdit_7->text().toInt());
+    sorgu1.bindValue(":ad", ui->lineEdit_6->text());
+    sorgu1.bindValue(":soyad", ui->lineEdit_8->text());
+
+    if(sorgu1.exec())
+    {
+        QMessageBox(QMessageBox::Icon::Information, "BAŞARILI", "Veri başarlı bir şekilde güncellendi!").exec();
+    }
+    else
+    {
+        QMessageBox(QMessageBox::Icon::Critical, "BAŞARISIZ", QString("Veri güncellenemedi: ").append(sorgu1.lastError().text())).exec();
+    }
+}
+
+void MainWindow::pushButton8_clicked()
+{
+    qstm->setQuery("select * from kisiler"); // Sorgusunu gönderdik
+}</code>
+        
+Çıktı ise;</pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/41 Qt Veritabanı İşlemleri.html/10.mp4" alt="41.10" width="100%"></video>
+        </div>
+
         <h2>Kaynakça</h2>
         <ul>
             <li><a href="https://doc.qt.io/qt-6/qtsql-index.html">https://doc.qt.io/qt-6/qtsql-index.html</a></li>
             <li><a href="https://doc.qt.io/qt-6/sql-driver.html#qsqlite-for-sqlite-version-3-and-above">https://doc.qt.io/qt-6/sql-driver.html#qsqlite-for-sqlite-version-3-and-above</a></li>
             <li><a href="https://katecpp.github.io/sqlite-with-qt/">https://katecpp.github.io/sqlite-with-qt/</a></li>
             <li><a href="https://data35delete.github.io/Data-s-Book-on-Cpp/Lessons/24%20Cpp%20Veritaban%C4%B1%20%C4%B0%C5%9Flemleri.html"> Data's Book on Cpp - Veritabanı İşlemleri</a></li>
+            <li><a href="https://doc.qt.io/qt-6/qsqltablemodel.html">https://doc.qt.io/qt-6/qsqltablemodel.html</a></li>
+            <li><a href="https://runebook.dev/en/docs/qt/qsqltablemodel/database">https://runebook.dev/en/docs/qt/qsqltablemodel/database</a></li>
         </ul>
     </div>
 
