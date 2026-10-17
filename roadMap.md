@@ -668,14 +668,14 @@
 
 ---
 
-### Qt : CMake ile Kapsamlı Qt Projesi
-- **Qt CMake Yapısı**: Tanım. `qt_add_executable`. Örnek.
-- **Modülleri Dahil Etme**: `find_package`. Modül Listesi. Örnek.
-- **Kaynak Dosyaları**: `qt_add_resources()`. Örnek.
-- **UI Dosyaları**: `qt_wrap_ui()`. Örnek.
-- **Çoklu Platform Desteği**: Windows. Linux. macOS. Örnek.
-- **Dağıtım (Deployment)**: `windeployqt`. `macdeployqt`. `linuxdeployqt`. Örnek.
-- **Statik Derleme**: Tanım. Kullanım Senaryoları. Örnek.
+### Qt : QMake ile Kapsamlı Qt Projesi
+* **QMake Proje Yapısı (`.pro`)**: Tanım. `TEMPLATE = app`. Örnek.
+* **Modülleri Dahil Etme**: `QT` değişkeni. Modül Listesi. Örnek.
+* **Kaynak Dosyaları**: `RESOURCES`. Örnek.
+* **UI Dosyaları**: `FORMS`. Örnek.
+* **Çoklu Platform Desteği**: `win32`. `linux`. `macx`. Örnek.
+* **Dağıtım (Deployment)**: `windeployqt`. `macdeployqt`. `linuxdeployqt`. Örnek.
+* **Statik Derleme**: Tanım. Kullanım Senaryoları. Örnek.
 
 ---
 
