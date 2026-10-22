@@ -669,13 +669,10 @@
 ---
 
 ### Qt : QMake ile Kapsamlı Qt Projesi
-* **QMake Proje Yapısı (`.pro`)**: Tanım. `TEMPLATE = app`. Örnek.
 * **Modülleri Dahil Etme**: `QT` değişkeni. Modül Listesi. Örnek.
 * **Kaynak Dosyaları**: `RESOURCES`. Örnek.
 * **UI Dosyaları**: `FORMS`. Örnek.
 * **Çoklu Platform Desteği**: `win32`. `linux`. `macx`. Örnek.
-* **Dağıtım (Deployment)**: `windeployqt`. `macdeployqt`. `linuxdeployqt`. Örnek.
-* **Statik Derleme**: Tanım. Kullanım Senaryoları. Örnek.
 
 ---
 

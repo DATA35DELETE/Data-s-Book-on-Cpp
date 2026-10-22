@@ -35,7 +35,7 @@
     
     <div id="mainDiv">
         <h2>QMake Nedir?</h2>
-        <pre id="preh2">QMake, Qt ekosisteminin CMake'i gibi çalışır. Aynı mantık ile Qt projelerini otomasyona bağlamak için kullanılır. Şimdi QMake'i inceleceğimiz için "qmake" adına bir proje açalım.</pre>
+        <pre id="preh2">QMake, Qt ekosisteminin CMake'i gibi çalışır. Aynı mantık ile Qt projelerini otomasyona bağlamak için kullanılır. Şimdi QMake'i inceleceğimiz için "qmake" adına bir proje açalım. Dosya uzantısı ise ".pro" uzantısıdır.</pre>
 
         <div id="divh2Img">
             <img src="../Bibliography/42 Qt QMake.html/1.png" alt="42.1">
@@ -44,6 +44,54 @@
         <pre id="preh2">Projemizi oluştururken bu seçeneği dikkat edelim.</pre>
 
         <h2>Modülleri Dahil Etme</h2>
+        <pre id="preh2">Eskiden Qt modüllerini dahil ederken CMake'de paket bulup, uygulamıza katıyorduk. Fakat QMake'de tek bir komut ile bu işlemi gerçekleştirebiliriz.</pre>
+
+        <pre><code>QT += modülünIsmi</code>
+        
+Örnek olarak; <code>QT += network</code>
+
+Olarak kullanılır.
+
+Eğer dış bir modül eklenicek ise <code>include(modulDosyasi.pro)</code> şeklinde eklenir.</pre>
+
+        <h2>Kaynak Dosyası Ekleme</h2>
+        <pre id="codeh2">Kaynak dosyası yani C++ veya C dosyalarını eklemek için
+            
+<code>SOURCE += dosya1.cpp dosya2.cpp ...</code>
+
+Şeklinde eklenir.</pre>
+
+        <h2>Form Dosyaları</h2>
+        <pre id="codeh2">Form dosyaları için;
+
+<code>FORM += dosya1.ui dosya2.ui ...</code>
+
+Şeklinde ayarlanır.</pre>
+
+        <h2>İşletim Sistemleri İçin Koşullar</h2>
+        <pre id="codeh2">Koşul koymak için
+
+<code>win32{
+    # Windows için kodlar
+}
+unix{
+    # Unix ve benzeri işletim sistemleri için kodlar
+}
+macx{
+    # MacOS işletim sistemi için kodlar
+}</code>
+
+Şeklinde kullanılır.</pre>
+
+        <h2>Başlık Dosyaları</h2>
+        <pre id="codeh2">Başlık dosyaları için
+
+<code>HEADERS += dosya1.h dosya2.hpp ...</code></pre>
+
+        <h2>Kaynakça</h2>
+        <ul>
+            <li><a href="https://doc.qt.io/qt-6/qmake-manual.html">https://doc.qt.io/qt-6/qmake-manual.html</a></li>
+        </ul>
     </div>
 
     <div style="height: 100px;"></div>
