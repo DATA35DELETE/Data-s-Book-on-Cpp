@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data's Book on Cpp</title>
+
+    <link rel="icon" type="image/x-icon" href="../Sources/favicon.png">
+
+    <script src="../Sources/JS/setBackgroundMedia.js"></script>
+
+    <link rel="stylesheet" href="../Sources/JS/hljs/vs2015.css">
+    <script src="../Sources/JS/hljs/highlight.min.js"></script>
+    <script>
+        window.onload = function() {
+            hljs.highlightAll();
+        };
+    </script>
+
+    <link rel="stylesheet" href="../Sources/CSS/main.css">
+    
+    <meta name="description" content="C++ programlama diliyle ilgili tüm konuları kapsayan, başlangıç seviyesinden profesyonel seviyeye kadar, Qt6’dan Unreal Engine’e kadar uzanan kapsamlı bir dokümantasyon">
+    <meta name="keywords" content="C++, Cpp, Qt, Unreal Engine, Document, Doc, Education, Edu, Dev, Development">
+    <meta name="author" content="Data Delete - Muhammet Enes Karaboğa">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Data's Book on Cpp">
+    <meta name="twitter:description" content="C++ programlama diliyle ilgili tüm konuları kapsayan, başlangıç seviyesinden profesyonel seviyeye kadar, Qt6’dan Unreal Engine’e kadar uzanan kapsamlı bir dokümantasyon">
+    <meta name="twitter:image" content="../../Media/image/depressiveData.png">
+</head>
+<body>
+    <h1>Test Sistemi</h1>
+
+    <div style="height: 100px;"></div>
+    
+    <div id="mainDiv">
+        <h2>Modül Dahil Etme</h2>
+        <pre id="preh2">Qt'nin Test modülünü inceleyelim. Bunun için "test" adında bir Widget projesi oluşturalım. Modülü dahil etmek için;</pre>
+
+        <pre id="codeh2">CMakeLists.txt
+
+<code>find_package(Qt6 REQUIRED COMPONENTS Test)
+target_link_libraries(test PRIVATE Qt::Test)</code>
+
+QMake
+
+<code>QT += testlib</code></pre>
+
+        <h2>QTest</h2>
+        <pre id="preh2">QTest, Qt'nin test modülündeki ana sınıftır. Test işlemleri bu sınıf üzerinde gerçekleştirilir. Bu sınıf içerisinde QVERIFY ve QCOMPARE makrolarını sunar. QVERIFY temel bir test çıktısı verirken QCOMPARE daha detaylı bir şekilde test çıktısı vermektedir.</pre>
+
+        <pre id="preh2">Örnek olması açısından uygulama başladığında doğru ve yanlış, QVERIFY ve QCOMPARE testlerini çalıştıran bir uygulama yazalım.</pre>
+
+<pre id="codeh2">Bunun için hangi akla hizmet bilinmez fakat testler ayrı bir sınıf dosyasına yazılmak zorundadır. Bu durum sebebiyle "testler" adlı bir sınıf oluşturalım.
+
+testler.h
+
+<code class="language-cpp">#ifndef TESTLER_H
+#define TESTLER_H
+
+#include &lt;QObject>
+#include &lt;QTest>
+
+class testler
+{
+    Q_OBJECT
+
+private:
+    int a = 100; // Herhangi bir değişken
+
+private slots:
+    void qVerifyDogruTest();
+    void qVerifyYanlisTest();
+
+    void qCompareDogruTest();
+    void CompareYanlisTest();
+};
+
+#endif // TESTLER_H
+</code>
+
+testler.cpp
+
+<code class="language-cpp">#include "testler.h"
+
+void testler::qVerifyDogruTest()
+{
+    QVERIFY(a / 10 == 10); // Bu kısımda test mantığı şu şekilde çalışır. QVERIFY aslında ifadeye bakar. Eğer ifadenin sonunu 1 ise test doğru olur. Fakat ifade 0 ise içerisine yazılan ifadeyle bir test çıktısı gönderir
+}
+void testler::qVerifyYanlisTest()
+{
+    QVERIFY(a / 5 == 40);
+}
+
+void testler::qCompareDogruTest()
+{
+    QCOMPARE(a / 10, 10); // QCOMPARE farklı olarak bizden 2 parametreli bir yapı ister. İlk parametre ifade, diyeri ise olması gerekn sonucu temsil eder
+}
+void testler::CompareYanlisTest()
+{
+    QCOMPARE(a / 5, 40);
+}</code>
+
+mainwindow.h
+
+<code class="language-cpp">#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include "testler.h" // Sınıfın başlık dosyasını dahil ettik
+
+#include &lt;QMainWindow>
+#include &lt;QTest> // Kütüphanemiz
+
+QT_BEGIN_NAMESPACE
+namespace Ui {
+class MainWindow;
+}
+QT_END_NAMESPACE
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
+
+private:
+    Ui::MainWindow *ui;
+    testler test; // Nesnemizi oluşturduk
+};
+#endif // MAINWINDOW_H
+</code>
+
+mainwindow.cpp
+
+<code class="language-cpp">#include "mainwindow.h"
+#include "ui_mainwindow.h"
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+    QTest::qExec(&test); // Testi çalıştırdık
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}</code>
+
+Çıktı;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/43 Qt Test Sistemi.html/2.png" alt="43.2" width="100%">
+        </div>
+
+        
+
+        <h2>Kaynakça</h2>
+        <ul>
+            <li><a href="https://doc.qt.io/qt-6/qtest-overview.html"></a></li>
+            <li><a href="https://doc.qt.io/qt-6/qttestlib-tutorial1-example.html">https://doc.qt.io/qt-6/qttestlib-tutorial1-example.html</a></li>
+        </ul>
+    </div>
+
+    <div style="height: 100px;"></div>
+
+    <footer style="position: fixed; left: 0; bottom: 0; width: 100%; background: transparent; text-align: center; padding: 10px 0; z-index: 100;">
+        <div>
+            <a href="./42 Qt QMake.html" style="margin-right: 20px; cursor:pointer;">
+                &larr; Önceki
+            </a>
+            <a href="" style="cursor:pointer;">
+                Sonraki &rarr;
+            </a>
+        </div>
+        <div>
+            <p>&copy; 2026 Data's Book</p>
+        </div>
+
+        <div style="position: absolute; right: 20px; bottom: 20px;">
+            <a href="./1 Cpp İçindekiler.html" style="text-decoration: none;">
+                İçindekiler
+            </a>
+        </div>
+    </footer>
+</body>
+</html>
+
+<!-- Muhammet Enes nam-ı diğer Data Delete tarafından sevgi ile yapıldı <3 -->
