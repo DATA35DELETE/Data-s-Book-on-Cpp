@@ -682,7 +682,7 @@
 - **Test Sınıfı Yazma**: `QObject` Türetme. `private slots`. Örnek.
 - **QCOMPARE ve QVERIFY**: Tanım. Örnek.
 - **QBENCHMARK**: Tanım. Performans Testi. Örnek.
-- **GUI Test**: `QTest::mouseClick`. `QTest::keyClick`. Örnek.
+- **GUI Test**: `QTest::mouseClick`. Örnek.
 - **Sinyal Testi**: `QSignalSpy`. Tanım. Örnek.
 
 ---

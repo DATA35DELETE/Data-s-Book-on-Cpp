@@ -157,12 +157,165 @@ MainWindow::~MainWindow()
             <img src="../Bibliography/43 Qt Test Sistemi.html/2.png" alt="43.2" width="100%">
         </div>
 
-        
+        <h2>QBENCHMARK</h2>
+        <pre id="codeh2">QBENCHMARK, işlemin hızını ölçer.
+
+testler.cpp
+
+<code class="language-cpp">#include "testler.h"
+
+void testler::qVerifyDogruTest()
+{
+    QVERIFY(a / 10 == 10);
+}
+void testler::qVerifyYanlisTest()
+{
+    QVERIFY(a / 5 == 40);
+}
+
+void testler::qCompareDogruTest()
+{
+    QCOMPARE(a / 10, 10);
+}
+void testler::CompareYanlisTest()
+{
+    QCOMPARE(a / 5, 40);
+}
+
+void testler::qBenchmarkTest()
+{
+    QBENCHMARK(a / 10); // QVERIFY gibi yazılır
+}</code>
+
+Çıktı;</pre>
+
+        <div id="divh2Img">
+            <img src="../Bibliography/43 Qt Test Sistemi.html/3.png" alt="43.3" width="100%">
+        </div>
+
+        <h2>Tıklama Testi</h2>
+        <pre id="preh2">QTest sınıfı, bizlere fare tıklamasını simüle eden ve test etirebilmemizi sağlayan bir işlev sunar. QTest::mouseClick ile bu test gerçekleştirilebilir.</pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/43 Qt Test Sistemi.html/4.mp4" alt="43.4" width="100%"></video>
+        </div>
+
+        <pre id="codeh2">mainwindow.cpp
+
+<code class="language-cpp">#include "mainwindow.h"
+#include "ui_mainwindow.h"
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+    QTest::qExec(&test);
+
+    connect(ui->pushButton, &QPushButton::clicked, this, [](){qDebug() << "Butona tıklandı!";}); // Test edilcek butona bir işlev ekledik
+
+    QTest::mouseClick(ui->pushButton, Qt::MouseButton::LeftButton, Qt::NoModifier, QPoint(10,10), 100); // Tıklama testi
+    // ui->pushButton; Test edilcek Widget
+    // Qt::MouseButton::LeftButton; Hangi fare butonu
+    // Qt::NoModifier; Düzenleme
+    // QPoint(10,10); Widget üzerinde hangi noktada tıklanıcak
+    // 100; Tıklama için gecikme
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}</code>
+
+Çıktısı;</pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/43 Qt Test Sistemi.html/5.mp4" alt="43.5" width="100%"></video>
+        </div>
+
+        <h2>QSignalSpy</h2>
+        <pre id="codeh2">QSignalSpy; herhangi bir Widget'ın herhangi bir sinyaline bağlanarak, o sinyali izliyip analiz eden bir sınıftır.</pre>
+
+        <pre id="codeh2">mainwindow.h
+
+<code class="language-cpp">#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include "testler.h"
+
+#include &lt;QMainWindow>
+#include &lt;QMessageBox>
+#include &lt;QTest>
+#include &lt;QSignalSpy> // Kütüphanemiz
+
+QT_BEGIN_NAMESPACE
+namespace Ui {
+class MainWindow;
+}
+QT_END_NAMESPACE
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
+
+private:
+    Ui::MainWindow *ui;
+    testler test;
+};
+#endif // MAINWINDOW_H
+</code>
+
+mainwindow.cpp
+
+<code class="language-cpp">#include "mainwindow.h"
+#include "ui_mainwindow.h"
+
+QSignalSpy *spy; // Sinyal izlicimiz
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+    //QTest::qExec(&test);
+
+    //QTest::mouseClick(ui->pushButton, Qt::MouseButton::LeftButton, Qt::NoModifier, QPoint(10,10), 100);
+
+    spy = new QSignalSpy(ui->pushButton, SIGNAL(clicked(bool))); // Nesnesini oluşturduk
+    // ui->pushButton; İzlenicek Widget
+    // SIGNAL(clicked(bool)); İzlenen Widget'ın sinyali
+
+    connect(ui->pushButton, &QPushButton::clicked, this, []()
+    {
+        qDebug() << spy->count(); // Miktarını alıp yazdırıyoruz
+    });
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}</code>
+
+Çıktısı;</pre>
+
+        <div id="divh2Vid">
+            <video controls src="../Bibliography/43 Qt Test Sistemi.html/6.mp4" alt="43.6" width="100%"></video>
+        </div>
 
         <h2>Kaynakça</h2>
         <ul>
-            <li><a href="https://doc.qt.io/qt-6/qtest-overview.html"></a></li>
+            <li><a href="https://doc.qt.io/qt-6/qtest-overview.html">https://doc.qt.io/qt-6/qtest-overview.html</a></li>
             <li><a href="https://doc.qt.io/qt-6/qttestlib-tutorial1-example.html">https://doc.qt.io/qt-6/qttestlib-tutorial1-example.html</a></li>
+            <li><a href="https://doc.qt.io/qt-6/qttestlib-tutorial5-example.html">https://doc.qt.io/qt-6/qttestlib-tutorial5-example.html</a></li>
+            <li><a href="https://runebook.dev/en/docs/qt/qtest/mouseClick">https://runebook.dev/en/docs/qt/qtest/mouseClick</a></li>
+            <li><a href="https://stackoverflow.com/questions/20394236/qtest-mouseclick-on-a-qpushbutton">https://stackoverflow.com/questions/20394236/qtest-mouseclick-on-a-qpushbutton</a></li>
+            <li><a href="https://doc.qt.io/qt-6/qsignalspy.html">https://doc.qt.io/qt-6/qsignalspy.html</a></li>
         </ul>
     </div>
 
